@@ -1,153 +1,674 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { ArrowDownToLine, ArrowLeft, ArrowRight, ArrowUpRight, BookOpen, Check, CheckCircle2, ChevronDown, ChevronLeft, ChevronRight, CircleHelp, Clapperboard, Clock3, FileText, Film, FolderOpen, LayoutDashboard, Link2, ListFilter, LoaderCircle, MoreHorizontal, Package, Play, Plus, Search, Settings2, ShieldCheck, Sparkles, TriangleAlert, Upload, X, XCircle, BarChart3, MessageSquare, Send, RotateCcw, Monitor, ExternalLink } from 'lucide-react';
+import {
+  ArrowDownToLine,
+  ArrowRight,
+  BookOpen,
+  CheckCircle2,
+  ChevronDown,
+  FileText,
+  Library,
+  LoaderCircle,
+  Play,
+  Settings2,
+  Sun,
+  TriangleAlert,
+  X,
+} from 'lucide-react';
 import { allProjects, saveProject, downloadFile, reportMarkdown } from './storage.js';
-import { fold } from './core/parser.js';
+import { Empty } from './components/ui.jsx';
+import { GuidedTour, TOUR_STEPS } from './components/GuidedTour.jsx';
+import { Dialogs } from './components/Dialogs.jsx';
+import {
+  AnalysisWorkspace,
+  ScriptWorkspace,
+  ReviewWorkspace,
+  Evaluation,
+} from './components/Workspace.jsx';
+import { readModelSelection, persistModelSelection } from './model-settings.js';
 import './styles.css';
 
-const NAV = [{ id: 'overview', label: "Vue d'ensemble", icon: LayoutDashboard }, { id: 'script', label: 'Scénario', icon: FileText }, { id: 'objects', label: 'Accessoires', icon: Package }, { id: 'continuity', label: 'Continuité', icon: Link2 }];
-const STATE = { intact: 'Intact', broken: 'Brisé', destroyed: 'Détruit', present: 'Présent', lost: 'Perdu', empty: 'Vide', full: 'Plein', wet: 'Mouillé', dry: 'Sec', clean: 'Propre', dirty: 'Sale', open: 'Ouvert', closed: 'Fermé', lit: 'Allumé', unlit: 'Éteint', loaded: 'Chargé', unloaded: 'Déchargé', unknown: 'Non précisé' };
-const STATUS = { pending: 'À vérifier', confirmed: 'Confirmé', dismissed: 'Écarté' };
-const safeText = error => error?.message || 'Une erreur est survenue.';
-async function api(path, body, options = {}) {
-  const response = await fetch('/api/' + path, body ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body), ...options } : options);
-  if (!response.ok) { const data = await response.json().catch(() => ({})); throw new Error(data.error || `Erreur ${response.status}`); }
-  return response.json();
+const STEPS = [
+  { id: 'script', label: 'Scénario', description: 'Importer et lire' },
+  { id: 'analysis', label: 'Analyse', description: 'Choisir le périmètre' },
+  { id: 'review', label: 'Relecture', description: 'Vérifier et décider' },
+];
+const THEME_LABELS = { paper: 'Papier', slate: 'Ardoise', system: 'Système' };
+const safeText = (error) => error?.message || 'Une erreur est survenue.';
+function preference(name, fallback) {
+  try {
+    return localStorage.getItem(name) || fallback;
+  } catch {
+    return fallback;
+  }
 }
-function Badge({ children, tone = '' }) { return <span className={`badge ${tone}`}>{children}</span>; }
-function Empty({ icon: Icon = Package, title, children, action }) { return <div className="empty"><span className="empty-icon"><Icon size={28}/></span><h3>{title}</h3><p>{children}</p>{action}</div>; }
-function Modal({ title, subtitle, children, onClose, wide = false }) {
-  const ref = useRef();
-  useEffect(() => { const old = document.activeElement; ref.current?.focus(); const key = e => { if (e.key === 'Escape') onClose(); if (e.key === 'Tab') { const nodes = ref.current.querySelectorAll('button,input,select,textarea,a[href],[tabindex="0"]'); const first = nodes[0], last = nodes[nodes.length - 1]; if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last?.focus(); } else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first?.focus(); } } }; document.addEventListener('keydown', key); return () => { document.removeEventListener('keydown', key); old?.focus(); }; }, []);
-  return <div className="modal-backdrop" onClick={e => e.target === e.currentTarget && onClose()}><section className={`modal ${wide ? 'wide' : ''}`} role="dialog" aria-modal="true" aria-label={title} ref={ref} tabIndex={-1}><button className="icon-button modal-close" aria-label="Fermer" onClick={onClose}><X size={20}/></button><div className="eyebrow">FAUX RACCORD / STUDIO</div><h2>{title}</h2>{subtitle && <p className="modal-subtitle">{subtitle}</p>}{children}</section></div>;
+async function api(path, body) {
+  const response = await fetch(
+    '/api/' + path,
+    body
+      ? {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
+        }
+      : {},
+  );
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.error || `Erreur ${response.status}`);
+  return data;
 }
+
 function App() {
-  const [project, setProject] = useState(null), [saved, setSaved] = useState([]), [samples, setSamples] = useState([]), [system, setSystem] = useState(null);
-  const [tab, setTab] = useState('overview'), [modal, setModal] = useState(null), [error, setError] = useState(''), [toast, setToast] = useState(''), [query, setQuery] = useState('');
-  const [provider, setProvider] = useState('groq'), [model, setModel] = useState(''), [busy, setBusy] = useState(false), [progress, setProgress] = useState(null), [scope, setScope] = useState(12), [consent, setConsent] = useState(false);
-  const [activeScene, setActiveScene] = useState(null), [selectedAlert, setSelectedAlert] = useState(null), [selectedObject, setSelectedObject] = useState(null), [filter, setFilter] = useState('all'), [reviewNote, setReviewNote] = useState('');
-  const [question, setQuestion] = useState(''), [answer, setAnswer] = useState(null), [asking, setAsking] = useState(false), [evalReport, setEvalReport] = useState(null);
-  const abort = useRef(null), fileInput = useRef(null);
+  const [project, setProject] = useState(null);
+  const [saved, setSaved] = useState([]);
+  const [samples, setSamples] = useState([]);
+  const [system, setSystem] = useState(null);
+  const [selection, setSelection] = useState(() => readModelSelection());
+  const [tab, setTab] = useState('script');
+  const [modal, setModal] = useState(null);
+  const [theme, setTheme] = useState(() => preference('fr-theme', 'system'));
+  const [error, setError] = useState('');
+  const [toast, setToast] = useState('');
+  const [saveStatus, setSaveStatus] = useState('opening');
+  const [busy, setBusy] = useState(false);
+  const [progress, setProgress] = useState(null);
+  const [startScene, setStartScene] = useState(1);
+  const [scope, setScope] = useState(12);
+  const [consent, setConsent] = useState(false);
+  const [replaceConsent, setReplaceConsent] = useState(false);
+  const [activeScene, setActiveScene] = useState(null);
+  const [reviewTab, setReviewTab] = useState('points');
+  const [activeAlert, setActiveAlert] = useState(null);
+  const [question, setQuestion] = useState('');
+  const [answer, setAnswer] = useState(null);
+  const [asking, setAsking] = useState(false);
+  const [evalReport, setEvalReport] = useState(null);
+  const [tourStep, setTourStep] = useState(null);
+  const tourReturn = useRef(null);
+  const abort = useRef(null);
+  const fileInput = useRef(null);
+  const questionRequest = useRef(0);
+
   useEffect(() => {
-    Promise.all([api('status'), api('samples'), allProjects()]).then(async ([status, list, projects]) => {
-      setSystem(status); setSamples(list); setSaved(projects); setModel(status.model);
-      if (projects.length) setProject(projects.sort((a, b) => String(b.savedAt).localeCompare(String(a.savedAt)))[0]);
-      else { const initial = await api('samples/valkaama'); setProject(initial); }
-    }).catch(e => setError(safeText(e)));
-    api('evaluation').then(setEvalReport).catch(() => {});
+    Promise.all([api('status'), api('samples'), allProjects().catch(() => [])])
+      .then(async ([status, list, projects]) => {
+        setSystem(status);
+        setSamples(list);
+        setSaved(projects);
+        setSelection(readModelSelection(status));
+        const latest = projects.sort((a, b) =>
+          String(b.savedAt).localeCompare(String(a.savedAt)),
+        )[0];
+        setProject(latest || (await api('samples/valkaama')));
+        if (!preference('fr-introduction-seen', '')) setModal('welcome');
+      })
+      .catch((error) => setError(safeText(error)));
+    api('evaluation')
+      .then(setEvalReport)
+      .catch(() => {});
+    return () => abort.current?.abort();
   }, []);
-  useEffect(() => { if (!project) return; const id = setTimeout(() => saveProject(project).then(() => setSaved(s => [...s.filter(p => p.id !== project.id), project])).catch(() => setError('La sauvegarde locale est indisponible. Exportez votre projet pour le conserver.')), 300); return () => clearTimeout(id); }, [project]);
-  useEffect(() => { if (toast) { const id = setTimeout(() => setToast(''), 4000); return () => clearTimeout(id); } }, [toast]);
-  const analysis = project?.analysis, objects = analysis?.objects || [], alerts = analysis?.alerts || [], pending = alerts.filter(a => a.status === 'pending');
-  const characters = [...new Set((project?.scenes || []).flatMap(s => s.characters))];
-  const visibleObjects = objects.filter(o => fold(o.name + ' ' + o.aliases.join(' ')).includes(fold(query)));
-  const visibleAlerts = alerts.filter(a => (filter === 'all' || (filter === 'high' ? a.severity === 'high' : a.status === filter)) && fold(a.title + ' ' + a.entityName + ' ' + a.description).includes(fold(query)));
-  const visibleScenes = (project?.scenes || []).filter(s => fold(s.text).includes(fold(query)));
-  const changeProject = p => { setProject(p); setTab('overview'); setModal(null); setActiveScene(null); setSelectedObject(null); setSelectedAlert(null); setQuery(''); setAnswer(null); setError(''); };
-  const openSample = async id => { try { changeProject(await api('samples/' + id)); setToast('Scénario chargé dans votre atelier.'); } catch (e) { setError(safeText(e)); } };
-  const openScene = id => { setActiveScene(id); setTab('script'); setModal(null); };
-  const importFile = async file => {
+
+  useEffect(() => {
+    const nextTheme = Object.hasOwn(THEME_LABELS, theme) ? theme : 'system';
+    document.documentElement.dataset.theme = nextTheme;
+    try {
+      localStorage.setItem('fr-theme', nextTheme);
+    } catch {}
+  }, [theme]);
+  useEffect(() => {
+    if (system) persistModelSelection(selection);
+  }, [selection, system]);
+  useEffect(() => {
+    // Le guide modifie une copie jetable, jamais le projet sauvegardé.
+    if (!project || tourStep !== null) return;
+    setSaveStatus('saving');
+    const timer = setTimeout(
+      () =>
+        saveProject(project)
+          .then(() => {
+            setSaved((items) => [...items.filter((item) => item.id !== project.id), project]);
+            setSaveStatus('saved');
+          })
+          .catch(() => {
+            setSaveStatus('error');
+            setError(
+              'La sauvegarde locale est indisponible. Exportez votre projet pour le conserver.',
+            );
+          }),
+      300,
+    );
+    return () => clearTimeout(timer);
+  }, [project, tourStep]);
+  useEffect(() => {
+    if (!toast) return;
+    const timer = setTimeout(() => setToast(''), 4500);
+    return () => clearTimeout(timer);
+  }, [toast]);
+
+  const analysis = project?.analysis;
+  const scenes = project?.scenes || [];
+  const selectedScenes = scenes.slice(startScene - 1, startScene - 1 + scope);
+  const pending = analysis?.alerts.filter((alert) => alert.status === 'pending').length || 0;
+  const currentStep = STEPS.findIndex((step) => step.id === tab);
+
+  function navigate(next) {
+    setTab(next);
+    setError('');
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }
+  function changeProject(nextProject) {
+    questionRequest.current++;
+    setProject(nextProject);
+    setTab('script');
+    setModal(null);
+    setActiveScene(null);
+    setActiveAlert(null);
+    setReviewTab('points');
+    setAnswer(null);
+    setQuestion('');
+    setError('');
+    setConsent(false);
+    setReplaceConsent(false);
+    setStartScene(1);
+    setScope(Math.min(12, nextProject.scenes.length));
+  }
+  async function openSample(id) {
+    try {
+      changeProject(saved.find((item) => item.id === id) || (await api('samples/' + id)));
+    } catch (error) {
+      setError(safeText(error));
+    }
+  }
+  function openScene(id) {
+    setActiveScene(id);
+    navigate('script');
+  }
+
+  async function importFile(file) {
     if (!file) return;
     if (file.size > 5 * 1024 * 1024) return setError('Le fichier dépasse 5 Mo.');
-    setBusy(true); setError('');
+    setBusy(true);
+    setError('');
     try {
-      if (file.name.endsWith('.json')) {
-        const data = JSON.parse(await file.text());
-        if (data.format !== 'faux-raccord-v1' || !Array.isArray(data.project?.scenes) || data.project.scenes.length > 200) throw new Error('Ce fichier ne correspond pas à un export Faux Raccord.');
-        changeProject(data.project); setToast('Projet restauré.');
+      let imported;
+      if (file.name.toLowerCase().endsWith('.json')) {
+        const { readProjectExport } = await import('./project-import.js');
+        imported = readProjectExport(await file.text());
       } else {
-        const form = new FormData(); form.append('file', file);
-        const response = await fetch('/api/import', { method: 'POST', body: form }); const data = await response.json();
-        if (!response.ok) throw new Error(data.error);
-        changeProject(data); setToast(`${data.scenes.length} scènes importées.`);
+        const form = new FormData();
+        form.append('file', file);
+        const response = await fetch('/api/import', { method: 'POST', body: form });
+        imported = await response.json();
+        if (!response.ok) throw new Error(imported.error);
       }
-    } catch (e) { setError(safeText(e)); } finally { setBusy(false); }
-  };
-  const runAnalysis = async () => {
-    setBusy(true); setModal(null); setError(''); setProgress({ stage: 'extract', done: 0, total: Math.min(scope, project.scenes.length), message: 'Connexion au moteur IA…' });
+      changeProject(imported);
+      setToast(
+        `${imported.scenes.length} scènes disponibles. Vérifiez le découpage avant l’analyse.`,
+      );
+    } catch (error) {
+      setError(safeText(error));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function runAnalysis() {
+    const projectId = project.id;
+    setBusy(true);
+    setError('');
+    setProgress({ done: 0, total: selectedScenes.length, message: 'Connexion au moteur…' });
     abort.current = new AbortController();
     try {
-      const response = await fetch('/api/analyze', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ scenes: project.scenes.slice(0, scope), provider, model, consent }), signal: abort.current.signal });
-      if (!response.ok) { const result = await response.json(); throw new Error(result.error); }
-      const reader = response.body.getReader(), decoder = new TextDecoder(); let buffer = '';
-      const receive = line => { if (!line.trim()) return; const event = JSON.parse(line); if (event.type === 'error') throw new Error(event.error); if (event.type === 'progress') setProgress(event); if (event.type === 'result') { setProject(p => ({ ...p, analysis: event.result })); setToast('Analyse terminée. Les points sont prêts à être relus.'); } };
-      while (true) { const { done, value } = await reader.read(); if (done) break; buffer += decoder.decode(value, { stream: true }); const lines = buffer.split('\n'); buffer = lines.pop(); lines.forEach(receive); }
+      const response = await fetch('/api/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ scenes: selectedScenes, ...selection, consent }),
+        signal: abort.current.signal,
+      });
+      if (!response.ok) throw new Error((await response.json()).error);
+      const reader = response.body.getReader(),
+        decoder = new TextDecoder();
+      let buffer = '';
+      // Le flux NDJSON transmet la progression entre deux appels au modèle.
+      function receive(line) {
+        if (!line.trim()) return;
+        const event = JSON.parse(line);
+        if (event.type === 'error') throw new Error(event.error);
+        if (event.type === 'progress') setProgress(event);
+        if (event.type === 'result') {
+          setProject((previous) =>
+            previous.id === projectId ? { ...previous, analysis: event.result } : previous,
+          );
+          setActiveAlert(null);
+          setReplaceConsent(false);
+          setToast('Analyse terminée. Ouvrez Relecture pour vérifier les points signalés.');
+        }
+      }
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop();
+        lines.forEach(receive);
+      }
+      buffer += decoder.decode();
       if (buffer.trim()) receive(buffer);
-    } catch (e) { if (e.name !== 'AbortError') setError(safeText(e)); else setToast('Analyse interrompue. Votre dernière analyse est conservée.'); }
-    finally { setBusy(false); setProgress(null); abort.current = null; }
-  };
-  const updateAlert = (id, status, note = reviewNote) => { setProject(p => ({ ...p, analysis: { ...p.analysis, alerts: p.analysis.alerts.map(a => a.id === id ? { ...a, status, note, reviewedAt: new Date().toISOString() } : a) } })); setSelectedAlert(a => a && ({ ...a, status, note })); setToast('Votre décision a été sauvegardée.'); };
-  const ask = async e => { e.preventDefault(); if (!question.trim()) return; setAsking(true); setError(''); try { setAnswer(await api('ask', { scenes: project.scenes.slice(0, 60), question, provider, model })); } catch (e) { setError(safeText(e)); } finally { setAsking(false); } };
-  const exportProject = () => { downloadFile(`${project.title}-faux-raccord.json`, JSON.stringify({ format: 'faux-raccord-v1', project }, null, 2)); setModal(null); };
-  const openAlert = a => { setSelectedAlert(a); setReviewNote(a.note || ''); setModal('alert'); };
-  const topLabel = NAV.find(n => n.id === tab)?.label || (tab === 'evaluation' ? 'Évaluation' : 'Assistant du scénario');
+    } catch (error) {
+      if (error.name === 'AbortError')
+        setToast('Analyse interrompue. Le résultat précédent est conservé.');
+      else setError(safeText(error));
+    } finally {
+      setBusy(false);
+      setProgress(null);
+      abort.current = null;
+    }
+  }
 
-  return <div className="app-shell">
-    <aside className="sidebar">
-      <a className="brand" href="#" onClick={e => { e.preventDefault(); setTab('overview'); }} aria-label="Faux Raccord, accueil"><span className="brand-icon"><Clapperboard size={25}/></span><span>faux raccord<span className="brand-dot">.</span><small>ATELIER DE CONTINUITÉ</small></span></a>
-      <button className="project-switch" onClick={() => setModal('projects')}><span className="project-avatar"><Film size={19}/></span><span><small>VOTRE PROJET</small><strong>{project?.title || 'Chargement…'}</strong></span><ChevronDown size={16}/></button>
-      <div className="nav-label">ESPACE DE TRAVAIL</div>
-      <nav aria-label="Navigation principale">{NAV.map(({ id, label, icon: Icon }) => <button className={`nav-item ${tab === id ? 'active' : ''}`} onClick={() => { setTab(id); setQuery(''); }} key={id}><Icon size={19}/>{label}{id === 'continuity' && pending.length > 0 && <span className="nav-count">{pending.length}</span>}</button>)}</nav>
-      <div className="nav-label second">EXPLORER</div>
-      <button className={`nav-item ${tab === 'assistant' ? 'active' : ''}`} onClick={() => setTab('assistant')}><MessageSquare size={19}/>Interroger le scénario<ArrowUpRight size={14}/></button>
-      <button className={`nav-item ${tab === 'evaluation' ? 'active' : ''}`} onClick={() => setTab('evaluation')}><BarChart3 size={19}/>Évaluation</button>
-      <div className="sidebar-bottom"><div className="workspace-note"><span className="tiny-line"/><strong>Un détail change tout.</strong><p>Gardez le fil de votre histoire,<br/>scène après scène.</p><span className="film-perforations">▱ ▱ ▱ ▱ ▱ ▱ ▱ ▱</span></div><button className="nav-item" onClick={() => setModal('settings')}><Settings2 size={18}/>Paramètres du studio</button><button className="nav-item" onClick={() => setModal('about')}><CircleHelp size={18}/>À propos du projet</button><div className="local-save"><span className="green-dot"/>Sauvegardé sur cet appareil</div></div>
-    </aside>
-    <div className="workspace">
-      <header className="topbar"><div className="breadcrumbs">Mon atelier<ChevronRight size={13}/><strong>{topLabel}</strong></div><div className="topbar-actions"><span className="engine-status"><span className={system?.groq ? 'green-dot' : 'muted-dot'}/>{system?.groq ? 'Groq connecté' : 'Moteur à configurer'}</span><button className="icon-button" onClick={() => setModal('about')} aria-label="Aide"><CircleHelp size={18}/></button><span className="team-avatar" title="Équipe de projet">FR</span></div></header>
-      <main>
-        {error && <div className="error-banner" role="alert"><TriangleAlert size={19}/><span>{error}</span><button onClick={() => setError('')} aria-label="Fermer l’erreur"><X size={18}/></button></div>}
-        {progress && <div className="progress-banner" role="status"><LoaderCircle size={20} className="spin"/><div><strong>{progress.message}</strong><div className="progress-track"><span style={{ width: `${Math.max(4, progress.done / progress.total * 100)}%` }}/></div></div><button className="text-button" onClick={() => abort.current?.abort()}>Interrompre</button></div>}
-        {!project ? <Empty icon={LoaderCircle} title="Ouverture de votre atelier…">Le scénario et les sources sont en cours de chargement.</Empty> : <>
-          <div className="page-heading"><div><div className="eyebrow"><span/>LE STUDIO / {project.synthetic ? 'SCÉNARIO DE DÉMONSTRATION' : 'SCÉNARIO EN COURS'}</div><h1>{tab === 'overview' ? <>Chaque détail compte<span className="coral">.</span></> : topLabel}</h1><p>{tab === 'overview' ? 'Une vue claire de votre scénario, pour ne rien laisser au hasard.' : tab === 'script' ? 'Le texte original et ses scènes. Les preuves restent à portée de clic.' : tab === 'objects' ? 'Les accessoires, leurs apparitions et ce qui change au fil de l’histoire.' : tab === 'continuity' ? 'Des points à relire. Votre regard reste le dernier mot.' : tab === 'assistant' ? 'Posez une question. Retrouvez la réponse dans les passages du scénario.' : 'Des mesures traçables, des limites visibles.'}</p></div><div className="heading-actions"><button className="button secondary" onClick={() => setModal('export')}><ArrowDownToLine size={17}/>Exporter</button><button className="button primary" disabled={busy} onClick={() => { setConsent(false); setScope(Math.min(12, project.scenes.length)); setModal('analyze'); }}><Sparkles size={17}/>{busy ? 'Analyse en cours' : analysis ? 'Relancer l’analyse' : 'Analyser le scénario'}</button></div></div>
-          <div className="project-line"><span className="project-name"><Film size={15}/>{project.title}</span><span className="dot-separator">·</span><span>{project.author}</span><Badge tone={project.synthetic ? 'amber' : 'mint'}>{project.synthetic ? 'Fiction synthétique' : 'Corpus réel'}</Badge>{analysis?.recorded && <span className="recorded-label"><Clock3 size={13}/>Analyse enregistrée · {new Date(analysis.completedAt).toLocaleDateString('fr-FR')}</span>}</div>
+  function updateAlert(id, status, note, notify = true) {
+    setProject((previous) => ({
+      ...previous,
+      analysis: {
+        ...previous.analysis,
+        alerts: previous.analysis.alerts.map((alert) =>
+          alert.id === id
+            ? { ...alert, status, note, reviewedAt: new Date().toISOString() }
+            : alert,
+        ),
+      },
+    }));
+    if (notify)
+      setToast(
+        tourStep !== null
+          ? 'Décision enregistrée dans la copie de démonstration.'
+          : 'Décision enregistrée.',
+      );
+  }
+  async function ask(event) {
+    event.preventDefault();
+    if (!question.trim()) return;
+    const requestId = ++questionRequest.current;
+    setAsking(true);
+    setError('');
+    setAnswer(null);
+    try {
+      const result = await api('ask', { scenes: scenes.slice(0, 60), question, ...selection });
+      if (requestId === questionRequest.current) setAnswer(result);
+    } catch (error) {
+      if (requestId === questionRequest.current) setError(safeText(error));
+    } finally {
+      setAsking(false);
+    }
+  }
+  function exportProject() {
+    downloadFile(
+      `${project.title}-faux-raccord.json`,
+      JSON.stringify({ format: 'faux-raccord-v1', project }, null, 2),
+    );
+    setModal(null);
+  }
+  function exportReport() {
+    downloadFile(`${project.title}-rapport.md`, reportMarkdown(project), 'text/markdown');
+    setModal(null);
+  }
+  function dismissWelcome() {
+    try {
+      localStorage.setItem('fr-introduction-seen', 'true');
+    } catch {}
+    setModal(null);
+  }
+  async function startTour() {
+    if (busy) return;
+    try {
+      const demo = await api('samples/les-heures-creuses');
+      tourReturn.current = { project, tab, activeScene, activeAlert, reviewTab, answer, question };
+      questionRequest.current++;
+      setTourStep(0);
+      setProject({ ...demo, id: 'tutorial-copy' });
+      setTab('script');
+      setToast('');
+      setActiveScene(null);
+      setActiveAlert(null);
+      setReviewTab('points');
+      setAnswer(null);
+      setQuestion('');
+      setAsking(false);
+      setError('');
+      dismissWelcome();
+    } catch (error) {
+      setError(safeText(error));
+    }
+  }
+  function moveTour(step) {
+    setTourStep(step);
+    setTab(TOUR_STEPS[step].tab);
+    setReviewTab('points');
+  }
+  function closeTour() {
+    const previous = tourReturn.current;
+    if (previous) {
+      setProject(previous.project);
+      setTab(previous.tab);
+      setActiveScene(previous.activeScene);
+      setActiveAlert(previous.activeAlert);
+      setReviewTab(previous.reviewTab);
+      setAnswer(previous.answer);
+      setQuestion(previous.question);
+    }
+    tourReturn.current = null;
+    setTourStep(null);
+    setModal(null);
+    setToast('Votre projet a été restauré. Le guide reste accessible dans le menu.');
+  }
 
-          {tab === 'overview' && <>
-            <div className="stats-grid"><Stat label="SCÈNES DU SCÉNARIO" value={project.scenes.length} icon={Clapperboard} detail={analysis ? `${analysis.analyzedSceneIds.length} scènes analysées` : 'Prêtes à être explorées'} trend="Votre matière première"/><Stat label="ACCESSOIRES SUIVIS" value={objects.length || '—'} icon={Package} detail={analysis ? `${objects.reduce((n, o) => n + o.mentions.length, 0)} apparitions documentées` : 'Lancez une première analyse'} trend="Chaque objet a son histoire"/><Stat label="POINTS À VÉRIFIER" value={analysis ? pending.length : '—'} icon={Link2} detail={analysis ? `${alerts.filter(a => a.status === 'confirmed').length} confirmés · ${alerts.filter(a => a.status === 'dismissed').length} écartés` : 'Avec preuves à l’appui'} accent trend="Le regard humain fait la différence"/></div>
-            <div className="overview-grid"><section className="panel alerts-panel"><div className="panel-heading"><div><span className="section-kicker">LE FIL À GARDER</span><h2>Points de continuité <span className="round-count">{pending.length}</span></h2></div><button className="text-button" onClick={() => setTab('continuity')}>Tout voir<ArrowRight size={15}/></button></div>{!analysis ? <Empty title="Votre prochaine lecture commence ici" icon={Sparkles} action={<button className="button secondary" onClick={() => setModal('analyze')}>Lancer l’analyse<ArrowRight size={16}/></button>}>L’analyse suivra les accessoires et comparera leurs états avec les passages du scénario.</Empty> : pending.length ? <div className="alert-list">{pending.slice(0, 3).map(a => <AlertRow alert={a} key={a.id} onClick={() => openAlert(a)}/>)}</div> : <Empty icon={CheckCircle2} title="Aucun point en attente">{alerts.length ? 'Tous les points ont été relus. Retrouvez vos décisions dans Continuité.' : 'Aucune incompatibilité signalée dans les scènes analysées. Une relecture humaine reste nécessaire.'}</Empty>}<div className="panel-footnote"><ShieldCheck size={15}/>Chaque point est accompagné de passages vérifiés dans le texte.</div></section>
-              <section className="panel script-card"><div className="panel-heading"><div><span className="section-kicker">SUR VOTRE TABLE</span><h2>Le scénario</h2></div><button className="icon-button" aria-label="Choisir un scénario" onClick={() => setModal('projects')}><MoreHorizontal size={20}/></button></div><div className="script-cover" onClick={() => setTab('script')} role="button" tabIndex={0} onKeyDown={e => e.key === 'Enter' && setTab('script')}><div className="cover-corner">FR / {project.synthetic ? 'DÉMO' : 'CORPUS'}</div><div className="cover-icon"><Clapperboard size={36}/></div><div className="cover-title">{project.title}</div><div className="cover-subtitle">{project.synthetic ? 'Un scénario pour explorer la continuité' : 'Scénario original · Version anglaise'}</div><div className="cover-bottom"><span>{project.scenes.length} SCÈNES</span><span>{project.license}</span></div></div><button className="script-open" onClick={() => setTab('script')}>Ouvrir le scénario<ArrowUpRight size={18}/></button></section>
+  const heading =
+    tab === 'script'
+      ? 'Lire le scénario'
+      : tab === 'analysis'
+        ? 'Analyser les accessoires'
+        : tab === 'review'
+          ? 'Relire la continuité'
+          : 'Résultats et méthode';
+  const description =
+    tab === 'script'
+      ? 'Vérifiez le texte et le découpage des scènes avant de lancer l’analyse.'
+      : tab === 'analysis'
+        ? 'Sélectionnez les scènes à examiner et le moteur qui les traitera.'
+        : tab === 'review'
+          ? 'Comparez les passages, puis indiquez si le changement mérite une correction.'
+          : 'Des résultats mesurés, avec leur périmètre et leurs limites.';
+
+  return (
+    <div className={`app-shell ${tourStep !== null ? 'tour-running' : ''}`}>
+      <a className="skip-link" href="#content">
+        Aller au contenu
+      </a>
+      <aside className="sidebar">
+        <a
+          className="brand"
+          href="#"
+          onClick={(event) => {
+            event.preventDefault();
+            navigate('script');
+          }}
+          aria-label="Faux Raccord, accueil"
+        >
+          <span className="brand-mark" aria-hidden="true">
+            F<span>/</span>R
+          </span>
+          <span>
+            Faux Raccord<small>Continuité du scénario</small>
+          </span>
+        </a>
+        <div className="sidebar-caption">VOTRE PARCOURS</div>
+        <nav aria-label="Navigation principale">
+          {STEPS.map((step, index) => (
+            <button
+              key={step.id}
+              className={`nav-step ${tab === step.id ? 'active' : ''}`}
+              aria-current={tab === step.id ? 'page' : undefined}
+              onClick={() => navigate(step.id)}
+            >
+              <span className="step-number">0{index + 1}</span>
+              <span>
+                <strong>{step.label}</strong>
+                <small>{step.description}</small>
+              </span>
+              {step.id === 'review' && pending > 0 && <span className="nav-count">{pending}</span>}
+            </button>
+          ))}
+        </nav>
+        <div className="sidebar-bottom">
+          <button className="nav-utility" onClick={startTour} disabled={busy || tourStep !== null}>
+            <Play size={17} />
+            Guide interactif
+          </button>
+          <button className="nav-utility" onClick={() => setModal('documentation')}>
+            <BookOpen size={17} />
+            Documentation
+          </button>
+          <div className="sidebar-footnote">
+            Analyse du texte.
+            <br />
+            Décision de l’équipe.
+          </div>
+        </div>
+      </aside>
+      <div className="workspace">
+        <header className="topbar">
+          <button
+            className="project-switch"
+            onClick={() => setModal('projects')}
+            disabled={busy || tourStep !== null}
+          >
+            <FileText size={18} />
+            <span>{project?.title || 'Ouverture…'}</span>
+            <ChevronDown size={16} />
+          </button>
+          <div className="topbar-actions">
+            <span className={`save-state ${saveStatus === 'error' ? 'error' : ''}`}>
+              <span className="status-dot" />
+              {tourStep !== null
+                ? 'Copie de démonstration'
+                : saveStatus === 'saved'
+                  ? 'Enregistré sur cet appareil'
+                  : saveStatus === 'error'
+                    ? 'Sauvegarde indisponible'
+                    : 'Enregistrement…'}
+            </span>
+            <label className="theme-picker">
+              <Sun size={16} />
+              <span className="sr-only">Thème</span>
+              <select
+                aria-label="Thème"
+                value={theme}
+                onChange={(event) => setTheme(event.target.value)}
+              >
+                {Object.entries(THEME_LABELS).map(([value, label]) => (
+                  <option key={value} value={value}>
+                    {label}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <button
+              className="icon-button"
+              onClick={() => setModal('settings')}
+              aria-label="Réglages du moteur"
+              title="Réglages du moteur"
+            >
+              <Settings2 size={19} />
+            </button>
+          </div>
+        </header>
+        <main id="content" tabIndex={-1}>
+          {error && (
+            <div className="notice error-notice" role="alert">
+              <TriangleAlert size={19} />
+              <span>{error}</span>
+              <button
+                className="icon-button"
+                onClick={() => setError('')}
+                aria-label="Fermer l’erreur"
+              >
+                <X size={18} />
+              </button>
             </div>
-            <section className="panel scene-panel"><div className="panel-heading"><div><span className="section-kicker">D’UNE SCÈNE À L’AUTRE</span><h2>Votre récit en un regard</h2></div><button className="text-button" onClick={() => setTab('script')}>Explorer les scènes<ArrowRight size={15}/></button></div><div className="scene-strip">{project.scenes.slice(0, 6).map((s, i) => <button className={`scene-tile ${alerts.some(a => a.status === 'pending' && a.evidence.some(e => e.sceneId === s.id)) ? 'has-alert' : ''}`} key={s.id} onClick={() => openScene(s.id)}><span className="scene-tile-top">SCÈNE {s.number}<span>{s.time === 'NIGHT' || s.time === 'NUIT' ? '☾' : '◷'}</span></span><strong>{s.location}</strong><span className="scene-tile-bottom">{s.characters.length ? `${s.characters.length} personnages` : 'Description'}<ArrowUpRight size={14}/></span></button>)}</div></section>
-            <div className="bottom-caption"><span><span className="green-dot"/>Le travail se sauvegarde automatiquement sur cet appareil.</span><button className="text-button" onClick={() => setModal('projects')}><Plus size={14}/>Changer de scénario</button></div>
-          </>}
-
-          {tab === 'script' && <section className="script-workbench panel"><div className="scene-sidebar"><div className="scene-sidebar-head"><strong>{project.scenes.length} scènes</strong><label className="search small"><Search size={15}/><input aria-label="Chercher dans le scénario" placeholder="Chercher un passage…" value={query} onChange={e => setQuery(e.target.value)}/></label></div><div className="scene-nav">{visibleScenes.map(s => <button className={(activeScene || project.scenes[0].id) === s.id ? 'selected' : ''} key={s.id} onClick={() => setActiveScene(s.id)}><span>{s.number.padStart(2, '0')}</span><div><strong>{s.location}</strong><small>{s.time} · p. {s.pages.join('–')}</small></div></button>)}</div></div><ScriptPage scene={project.scenes.find(s => s.id === (activeScene || project.scenes[0].id)) || project.scenes[0]} alerts={alerts} onAlert={openAlert} onNext={direction => { const i = project.scenes.findIndex(s => s.id === (activeScene || project.scenes[0].id)); setActiveScene(project.scenes[Math.max(0, Math.min(project.scenes.length - 1, i + direction))].id); }}/></section>}
-
-          {tab === 'objects' && <><div className="toolbar"><span>{objects.length} accessoires · {analysis?.analyzedSceneIds.length || 0} scènes analysées</span><label className="search"><Search size={16}/><input placeholder="Rechercher un accessoire…" aria-label="Rechercher un accessoire" value={query} onChange={e => setQuery(e.target.value)}/></label></div>{!objects.length ? <section className="panel"><Empty title={analysis ? 'Aucun accessoire extrait' : 'Les accessoires attendent leur première lecture'}>Lancez une analyse pour documenter les objets et leurs apparitions.</Empty></section> : <div className="object-grid">{visibleObjects.map((o, i) => <button className="object-card panel" key={o.id} onClick={() => { setSelectedObject(o); setModal('object'); }}><div className="object-top"><span className={`object-symbol color-${i % 4}`}><Package size={25}/></span><span className="mono">{o.id}</span><ArrowUpRight size={17}/></div><h3>{o.name}</h3><p>{o.aliases.slice(0, 3).join(' · ') || 'Accessoire du scénario'}</p><div className="object-states">{[...new Set(o.mentions.map(m => m.state))].filter(s => s !== 'unknown').slice(0, 3).map(s => <Badge key={s} tone={s === 'broken' || s === 'destroyed' ? 'coral' : ''}>{STATE[s]}</Badge>)}</div><div className="object-card-foot"><span>{o.mentions.length} apparitions</span><span>{new Set(o.mentions.map(m => m.sceneId)).size} scènes</span></div></button>)}</div>}{objects.length > 0 && visibleObjects.length === 0 && <Empty icon={Search} title="Aucun accessoire correspondant">Essayez un autre nom.</Empty>}</>}
-
-          {tab === 'continuity' && <><div className="toolbar"><div className="filter-tabs">{[['all', 'Tous'], ['pending', 'À vérifier'], ['confirmed', 'Confirmés'], ['dismissed', 'Écartés']].map(([id, label]) => <button key={id} className={filter === id ? 'selected' : ''} onClick={() => setFilter(id)}>{label}</button>)}</div><label className="search"><Search size={16}/><input aria-label="Rechercher une alerte" placeholder="Rechercher un point…" value={query} onChange={e => setQuery(e.target.value)}/></label></div><section className="panel"><div className="panel-heading"><h2>{visibleAlerts.length} point{visibleAlerts.length > 1 ? 's' : ''} de continuité</h2><span className="subtle">L’IA propose. Vous validez.</span></div>{visibleAlerts.length ? visibleAlerts.map(a => <AlertRow alert={a} key={a.id} onClick={() => openAlert(a)}/>) : <Empty icon={CheckCircle2} title={analysis ? 'Aucun point dans cette sélection' : 'Une première analyse est nécessaire'}>Les changements expliqués ne sont pas présentés comme des erreurs.</Empty>}</section></>}
-
-          {tab === 'assistant' && <section className="assistant-layout"><div className="panel assistant-panel"><span className="assistant-mark"><Sparkles size={25}/></span><h2>Le scénario a ses réponses.</h2><p>Retrouvez un passage, un objet ou une information explicitement écrite.</p><form onSubmit={ask} className="question-form"><input value={question} onChange={e => setQuestion(e.target.value)} placeholder={project.synthetic ? 'Qui reçoit l’enveloppe rouge ?' : 'Who has a laptop?'} aria-label="Votre question sur le scénario" maxLength={800}/><button className="button primary" disabled={asking || question.length < 3}>{asking ? <LoaderCircle size={18} className="spin"/> : <Send size={18}/>}Rechercher</button></form><div className="suggestions">{(project.synthetic ? ['Qui reçoit l’enveloppe rouge ?', 'Que contient la boîte en métal ?', 'Qui répare le moteur du bateau ?'] : ['Who has a laptop?', 'What does Magnus drink?', 'Where does the story begin?']).map(q => <button key={q} onClick={() => setQuestion(q)}>{q}<ArrowUpRight size={13}/></button>)}</div>{answer && <div className="answer-box"><div className="eyebrow">RÉPONSE ANCRÉE DANS LE TEXTE</div><p>{answer.answer === 'NOT FOUND' ? 'Cette information n’a pas été trouvée dans les passages disponibles.' : answer.answer}</p>{answer.sources?.map(s => <button className="source-card" key={s.id} onClick={() => openScene(s.sceneId)}><span>{s.id} · p. {s.page}</span><q>{s.text.slice(0, 400)}</q><ArrowUpRight size={16}/></button>)}</div>}</div><aside className="assistant-note"><ShieldCheck size={24}/><h3>Une réponse doit avoir une source.</h3><p>L’assistant recherche des extraits du scénario. Il s’abstient si les passages ne suffisent pas.</p><p>Pour une question précise, reprenez aussi un mot de la langue du scénario : la recherche utilise les mots du texte.</p><Badge tone="mint">Sources consultables</Badge></aside></section>}
-
-          {tab === 'evaluation' && <Evaluation report={evalReport} analysis={analysis}/>}
-          <footer className="workspace-footer"><span>FAUX RACCORD <span className="coral">/</span> ATELIER DE CONTINUITÉ</span><span>Projet GenAI · {project.synthetic ? 'Démonstration synthétique' : project.license}</span></footer>
-        </>}
-      </main>
+          )}
+          {!project ? (
+            <Empty icon={LoaderCircle} title="Ouverture du projet">
+              Chargement du scénario et de vos dernières décisions.
+            </Empty>
+          ) : (
+            <>
+              <div className="page-heading">
+                <div>
+                  <p className="page-index">
+                    {currentStep >= 0 ? `ÉTAPE 0${currentStep + 1} / 03` : 'DOCUMENTATION'}
+                  </p>
+                  <h1>{heading}</h1>
+                  <p className="page-description">{description}</p>
+                </div>
+                <div className="page-actions">
+                  {tab === 'script' && (
+                    <button
+                      className="button secondary"
+                      disabled={busy || tourStep !== null}
+                      onClick={() => setModal('sources')}
+                    >
+                      <Library size={17} />
+                      Bibliothèque
+                    </button>
+                  )}
+                  <button
+                    className="button secondary"
+                    data-tour="export"
+                    onClick={() => setModal('export')}
+                  >
+                    <ArrowDownToLine size={17} />
+                    Exporter
+                  </button>
+                </div>
+              </div>
+              {tourStep !== null && (
+                <div className="training-banner">
+                  <Play size={16} />
+                  <span>Guide en cours · vous travaillez sur une copie de l’exemple.</span>
+                  <button className="text-button" onClick={closeTour}>
+                    Quitter
+                  </button>
+                </div>
+              )}
+              {tab === 'script' && (
+                <>
+                  <ScriptWorkspace
+                    project={project}
+                    activeScene={activeScene}
+                    onScene={setActiveScene}
+                    onReview={(id) => {
+                      setActiveAlert(id);
+                      setReviewTab('points');
+                      navigate('review');
+                    }}
+                  />
+                  <div className="step-footer">
+                    <p>Le découpage correspond à votre document ? Passez à l’analyse.</p>
+                    <button className="button primary" onClick={() => navigate('analysis')}>
+                      Configurer l’analyse
+                      <ArrowRight size={17} />
+                    </button>
+                  </div>
+                </>
+              )}
+              {tab === 'analysis' && (
+                <AnalysisWorkspace
+                  project={project}
+                  selection={selection}
+                  system={system}
+                  startScene={startScene}
+                  scope={scope}
+                  onStart={(value) => {
+                    setStartScene(value);
+                    setReplaceConsent(false);
+                  }}
+                  onScope={(value) => {
+                    setScope(value);
+                    setReplaceConsent(false);
+                  }}
+                  consent={consent}
+                  onConsent={setConsent}
+                  replaceConsent={replaceConsent}
+                  onReplaceConsent={setReplaceConsent}
+                  busy={busy}
+                  progress={progress}
+                  tutorial={tourStep !== null}
+                  onSettings={() => setModal('settings')}
+                  onRun={runAnalysis}
+                  onStop={() => abort.current?.abort()}
+                  onReview={() => navigate('review')}
+                />
+              )}
+              {tab === 'review' && (
+                <ReviewWorkspace
+                  project={project}
+                  reviewTab={reviewTab}
+                  onTab={setReviewTab}
+                  activeAlert={activeAlert}
+                  onAlert={setActiveAlert}
+                  onDecision={updateAlert}
+                  onScene={openScene}
+                  onAnalyze={() => navigate('analysis')}
+                  question={question}
+                  onQuestion={setQuestion}
+                  answer={answer}
+                  asking={asking}
+                  onAsk={ask}
+                  selection={selection}
+                  tutorial={tourStep !== null}
+                />
+              )}
+              {tab === 'evaluation' && <Evaluation report={evalReport} analysis={analysis} />}
+            </>
+          )}
+          <footer className="workspace-footer">
+            <span>Faux Raccord · Aide à la relecture de scénarios</span>
+            <button className="text-button" onClick={() => setModal('documentation')}>
+              Méthode et limites
+              <ArrowRight size={14} />
+            </button>
+          </footer>
+        </main>
+      </div>
+      <input
+        ref={fileInput}
+        type="file"
+        hidden
+        accept=".pdf,.txt,.fountain,.md,.json"
+        onChange={(event) => {
+          importFile(event.target.files?.[0]);
+          event.target.value = '';
+        }}
+      />
+      <Dialogs
+        modal={modal}
+        onModal={setModal}
+        project={project}
+        saved={saved}
+        samples={samples}
+        busy={busy}
+        tutorial={tourStep !== null}
+        system={system}
+        selection={selection}
+        onSelection={setSelection}
+        onSample={openSample}
+        onProject={changeProject}
+        onFile={() => fileInput.current.click()}
+        onExportProject={exportProject}
+        onExportReport={exportReport}
+        onWelcomeClose={dismissWelcome}
+        onTour={startTour}
+        onEvaluation={() => {
+          setModal(null);
+          navigate('evaluation');
+        }}
+      />
+      {tourStep !== null && !modal && (
+        <GuidedTour
+          step={tourStep}
+          onStep={moveTour}
+          onClose={closeTour}
+          decisionMade={project?.analysis?.alerts?.some((alert) => alert.status !== 'pending')}
+        />
+      )}
+      {toast && (
+        <div className="toast" role="status">
+          <CheckCircle2 size={18} />
+          {toast}
+        </div>
+      )}
     </div>
-
-    <input type="file" ref={fileInput} hidden accept=".pdf,.txt,.fountain,.md,.json" onChange={e => { importFile(e.target.files?.[0]); e.target.value = ''; }}/>
-    {modal === 'projects' && <Modal title="Sur quelle histoire travaille-t-on ?" subtitle="Retrouvez un projet ou importez un nouveau scénario." onClose={() => setModal(null)} wide><button className="drop-zone" disabled={busy} onClick={() => fileInput.current.click()} onDragOver={e => e.preventDefault()} onDrop={e => { e.preventDefault(); importFile(e.dataTransfer.files[0]); }}><Upload size={26}/><strong>Importer un scénario</strong><span>PDF avec texte, TXT, Fountain ou export de projet · 5 Mo max.</span></button>{saved.filter(p => !samples.some(s => s.id === p.id)).length > 0 && <><h3 className="modal-section-title">Vos projets sur cet appareil</h3>{saved.filter(p => !samples.some(s => s.id === p.id)).map(p => <button className="project-option" key={p.id} onClick={() => changeProject(p)}><FileText size={22}/><span><strong>{p.title}</strong><small>{p.scenes.length} scènes · {p.analysis ? 'Analyse disponible' : 'À analyser'}</small></span><ArrowRight size={17}/></button>)}</>}<h3 className="modal-section-title">Explorer les scénarios disponibles</h3>{samples.map(s => <button className="project-option" key={s.id} onClick={() => saved.some(p => p.id === s.id) ? changeProject(saved.find(p => p.id === s.id)) : openSample(s.id)}><span className="project-option-icon"><Film size={23}/></span><span><strong>{s.title} <Badge tone={s.synthetic ? 'amber' : 'mint'}>{s.synthetic ? 'Synthétique' : 'Corpus réel'}</Badge></strong><small>{s.sceneCount} scènes · {s.license}</small><small>{s.description}</small></span><ArrowRight size={17}/></button>)}<p className="privacy-note"><Monitor size={15}/>Les projets sont sauvegardés sur cet appareil. Exportez-les pour les transmettre à votre groupe.</p></Modal>}
-
-    {modal === 'analyze' && <Modal title="Une nouvelle lecture du scénario" subtitle="L’IA extrait les accessoires, retrouve les passages liés et compare les états." onClose={() => setModal(null)}><div className="analysis-settings"><label>Scènes à analyser<select value={scope} onChange={e => setScope(Number(e.target.value))}>{[...new Set([Math.min(6, project.scenes.length), Math.min(12, project.scenes.length), Math.min(24, project.scenes.length), Math.min(60, project.scenes.length)])].map(n => <option key={n} value={n}>{n === project.scenes.length ? `Tout le scénario (${n} scènes)` : `Les ${n} premières scènes`}</option>)}</select></label><div className="setting-summary"><Sparkles size={20}/><span><strong>{provider === 'groq' ? 'Groq' : 'Ollama'} · {model}</strong><small>{provider === 'groq' ? 'Les scènes sélectionnées sont transmises à Groq.' : 'L’analyse s’exécute sur votre machine.'}</small></span><button className="text-button" onClick={() => setModal('settings')}>Modifier</button></div><label className="checkbox-label"><input type="checkbox" checked={consent} onChange={e => setConsent(e.target.checked)}/><span>Je dispose des droits nécessaires pour analyser ces scènes avec le moteur choisi.</span></label><p className="privacy-note">L’analyse remplacera la précédente et ses décisions. Exportez votre projet si vous souhaitez en conserver une copie.</p></div><button className="button primary full" onClick={runAnalysis} disabled={!consent || busy || (provider === 'groq' && !system?.groq)}><Sparkles size={17}/>Analyser {scope} scènes<ArrowRight size={17}/></button></Modal>}
-
-    {modal === 'settings' && <Modal title="Le moteur de votre atelier" subtitle="Les clés restent côté serveur. Les prompts et les réglages sont documentés dans le dépôt." onClose={() => setModal(null)}><div className="provider-options"><button className={provider === 'groq' ? 'selected' : ''} onClick={() => { setProvider('groq'); setModel(system?.model || 'openai/gpt-oss-20b'); }}><Sparkles size={22}/><strong>Groq</strong><small>{system?.groq ? 'Connecté au serveur' : 'Clé serveur à configurer'}</small></button><button disabled={!system?.ollama} className={provider === 'ollama' ? 'selected' : ''} onClick={() => { setProvider('ollama'); setModel(system?.ollamaModel || 'qwen3:1.7b'); }}><Monitor size={22}/><strong>Ollama</strong><small>{system?.ollama ? 'Modèle sur votre machine' : 'Disponible en lancement local'}</small></button></div><label className="field-label">Modèle<input value={model} maxLength={100} onChange={e => setModel(e.target.value)}/></label><div className="info-box"><ShieldCheck size={20}/><p>{provider === 'groq' ? 'Seuls les passages nécessaires sont envoyés au fournisseur. Pour un scénario confidentiel, utilisez le lancement local avec Ollama.' : 'Ollama doit être démarré et le modèle installé. Les documents ne quittent pas la machine.'}</p></div><button className="button primary full" onClick={() => { setModal(null); setToast('Réglages du moteur mis à jour.'); }}>Conserver ces réglages<Check size={16}/></button></Modal>}
-
-    {modal === 'export' && <Modal title="Emportez votre travail" subtitle="Les exports incluent les passages sources et les décisions de revue." onClose={() => setModal(null)}><button className="project-option" onClick={exportProject}><FolderOpen size={23}/><span><strong>Projet complet · JSON</strong><small>Réimportable dans Faux Raccord, pour travailler en groupe.</small></span><ArrowDownToLine size={18}/></button><button className="project-option" onClick={() => { downloadFile(`${project.title}-rapport.md`, reportMarkdown(project), 'text/markdown'); setModal(null); }}><FileText size={23}/><span><strong>Rapport de continuité · Markdown</strong><small>Alertes, citations, décisions et limites de l’analyse.</small></span><ArrowDownToLine size={18}/></button></Modal>}
-
-    {modal === 'alert' && selectedAlert && <Modal title={selectedAlert.title} subtitle={selectedAlert.description} onClose={() => setModal(null)} wide><div className="alert-meta"><Badge tone={selectedAlert.verdict === 'ambiguous' ? 'amber' : 'coral'}>{selectedAlert.verdict === 'ambiguous' ? 'Interprétation à confirmer' : 'Incompatibilité potentielle'}</Badge><Badge>{STATUS[selectedAlert.status]}</Badge><span>{selectedAlert.entityName}</span></div><div className="evidence-grid">{selectedAlert.evidence.map((e, i) => <div className="evidence-card" key={i}><div><span className="eyebrow">{i === 0 ? 'AVANT' : 'APRÈS'}</span><Badge>{STATE[e.state] || e.state}</Badge></div><blockquote>{e.quote}</blockquote><button className="text-button" onClick={() => openScene(e.sceneId)}>Scène {project.scenes.find(s => s.id === e.sceneId)?.number} · page {e.page}<ArrowUpRight size={15}/></button></div>)}</div><div className="info-box"><CircleHelp size={20}/><p>{selectedAlert.question}</p></div><label className="field-label">Note de revue<textarea value={reviewNote} onChange={e => setReviewNote(e.target.value)} placeholder="Expliquez votre décision pour le reste de l’équipe…" maxLength={1500}/></label><div className="review-actions"><button className="button secondary" onClick={() => updateAlert(selectedAlert.id, 'pending')}><RotateCcw size={16}/>À revoir</button><button className="button secondary" onClick={() => updateAlert(selectedAlert.id, 'dismissed')}><XCircle size={17}/>Écarter</button><button className="button primary" onClick={() => updateAlert(selectedAlert.id, 'confirmed')}><Check size={17}/>Confirmer le point</button></div></Modal>}
-
-    {modal === 'object' && selectedObject && <Modal title={selectedObject.name} subtitle={`${selectedObject.mentions.length} apparitions documentées dans le scénario.`} onClose={() => setModal(null)} wide><div className="object-timeline">{selectedObject.mentions.map((m, i) => <div className="timeline-event" key={i}><span className="timeline-number">{project.scenes.find(s => s.id === m.sceneId)?.number}</span><div><div><strong>Scène {project.scenes.find(s => s.id === m.sceneId)?.number}</strong><Badge tone={m.state === 'broken' ? 'coral' : ''}>{STATE[m.state]}</Badge>{m.owner !== 'unknown' && <span className="subtle">{m.owner}</span>}</div><blockquote>{m.quote}</blockquote><button className="text-button" onClick={() => openScene(m.sceneId)}>Voir le passage · p. {m.page}<ArrowUpRight size={14}/></button></div></div>)}</div></Modal>}
-
-    {modal === 'about' && <Modal title="Le regard qui relie les scènes." subtitle="Faux Raccord est un projet étudiant de Generative AI, conçu pour aider à relire la continuité d’un scénario." onClose={() => setModal(null)}><div className="about-copy"><p>Le système extrait des accessoires et leurs états, recherche les passages associés puis propose des points à vérifier. Les citations sont contrôlées dans le texte ; l’interprétation reste humaine.</p><h3>Ce que l’outil prend en charge</h3><p>Le texte d’un scénario et les changements d’état ou de possession d’accessoires explicitement mentionnés. Les faux raccords visuels, le montage et les plannings ne sont pas analysés.</p><h3>Corpus et droits</h3><p>Valkaama : scénario de Tim Baumann d’après Hendrik Behnisch, CC BY-SA 3.0. Les Heures Creuses : fiction synthétique de démonstration, clairement distincte du corpus réel.</p>{project?.sourceUrl && <a href={project.sourceUrl} target="_blank" rel="noreferrer">Consulter la source du scénario<ExternalLink size={14}/></a>}<h3>Vos documents</h3><p>Sauvegarde sur cet appareil, export JSON pour le groupe. L’analyse Groq transmet les scènes sélectionnées ; Ollama fonctionne en local. Aucun document n’est publié automatiquement.</p></div></Modal>}
-    {toast && <div className="toast" role="status"><CheckCircle2 size={18}/>{toast}</div>}
-  </div>;
+  );
 }
 
-function Stat({ label, value, detail, icon: Icon, accent, trend }) { return <section className={`stat-card ${accent ? 'accent' : ''}`}><div className="stat-top"><span>{label}</span><span className="stat-icon"><Icon size={20}/></span></div><div className="stat-value">{value}<span>{detail}</span></div><div className="stat-trend">{accent ? <span className="tiny-dot"/> : <span className="tiny-line"/>}{trend}</div></section>; }
-function AlertRow({ alert, onClick }) { return <button className={`alert-row ${alert.status !== 'pending' ? 'reviewed' : ''}`} onClick={onClick}><span className={`alert-symbol ${alert.severity}`}>{alert.status === 'confirmed' ? <Check size={18}/> : alert.status === 'dismissed' ? <X size={18}/> : <Link2 size={18}/>}</span><div className="alert-row-body"><div className="alert-title-line"><h3>{alert.title}</h3><Badge tone={alert.status !== 'pending' ? 'mint' : alert.severity === 'high' ? 'coral' : 'amber'}>{alert.status !== 'pending' ? STATUS[alert.status] : alert.severity === 'high' ? 'À vérifier' : 'À clarifier'}</Badge></div><p>{alert.description}</p><div className="alert-row-meta"><Package size={13}/>{alert.entityName}<span>·</span>{alert.evidence.map(e => e.sceneId.replace('S', 'Sc. ')).join(' → ')}</div></div><ChevronRight size={19}/></button>; }
-function ScriptPage({ scene, alerts, onAlert, onNext }) { return <article className="script-page"><div className="script-page-tools"><span>SCÈNE {scene.number} <span className="subtle">/ p. {scene.pages.join('–')}</span></span><div><button className="icon-button" aria-label="Scène précédente" onClick={() => onNext(-1)}><ChevronLeft size={18}/></button><button className="icon-button" aria-label="Scène suivante" onClick={() => onNext(1)}><ChevronRight size={18}/></button></div></div><div className="script-paper"><div className="script-paper-label">TEXTE ORIGINAL</div><pre>{scene.text}</pre></div>{alerts.filter(a => a.evidence.some(e => e.sceneId === scene.id)).map(a => <button className="scene-alert-link" key={a.id} onClick={() => onAlert(a)}><Link2 size={17}/>{a.title}<ArrowUpRight size={16}/></button>)}</article>; }
-function Evaluation({ report, analysis }) {
-  const ready = report?.status === 'completed';
-  return <><div className="evaluation-intro panel"><BarChart3 size={28}/><div><h2>Mesurer, puis améliorer.</h2><p>Un seuil de précision de 80 % est un objectif. Les résultats ci-dessous proviennent uniquement des exécutions enregistrées.</p></div><Badge tone={ready ? 'mint' : 'amber'}>{ready ? 'Rapport disponible' : 'Évaluation à exécuter'}</Badge></div>{ready ? <><div className="stats-grid"><Stat label="CAS D’ÉVALUATION" value={report.n} detail={report.datasetLabel} icon={BookOpen} trend="Référence versionnée"/><Stat label="PRÉCISION DU SYSTÈME" value={report.system?.precision == null ? '—' : `${Math.round(report.system.precision * 100)} %`} detail={report.system?.precisionCI ? `IC 95 % : ${report.system.precisionCI.map(x => Math.round(x * 100)).join('–')} %` : 'Pas d’alerte émise'} icon={ShieldCheck} trend="Alertes justifiées / alertes émises"/><Stat label="RAPPEL DU SYSTÈME" value={report.system?.recall == null ? '—' : `${Math.round(report.system.recall * 100)} %`} detail="Erreurs attendues retrouvées" icon={Search} accent trend="À lire avec les fausses alertes"/></div><section className="panel evaluation-table"><h2>Baseline et système</h2><table><thead><tr><th>Méthode</th><th>Précision</th><th>Rappel</th><th>F1</th><th>Latence médiane</th></tr></thead><tbody>{[['Prompt simple', report.baseline], ['Extraction + RAG + comparaison', report.system]].map(([label, row]) => <tr key={label}><td>{label}</td>{['precision', 'recall', 'f1'].map(k => <td key={k}>{row?.[k] == null ? '—' : `${Math.round(row[k] * 100)} %`}</td>)}<td>{row?.medianSeconds == null ? '—' : `${row.medianSeconds.toFixed(1)} s`}</td></tr>)}</tbody></table><p>{report.note}</p><Badge tone="amber">Annotations à faire relire par le groupe</Badge></section></> : <section className="panel"><Empty icon={BarChart3} title="Le protocole est prêt">Le script d’évaluation compare le prompt simple au pipeline sur des cas versionnés. Aucun score n’est inventé quand les tests n’ont pas encore été exécutés.</Empty></section>}<div className="evaluation-details"><section className="panel"><h3>Ce qui est vérifié</h3><p>États incompatibles, transferts, transitions explicites, ellipses et cas sans réponse. Les variantes synthétiques sont signalées et séparées du corpus réel.</p></section><section className="panel"><h3>Dernière analyse de ce projet</h3>{analysis ? <><p>{analysis.model} · prompt {analysis.promptVersion}</p><p>{analysis.usage.calls} appels · {analysis.usage.inputTokens.toLocaleString('fr-FR')} tokens d’entrée · {(analysis.milliseconds / 1000).toFixed(1)} secondes</p><p>{analysis.rejectedEvidence} citation(s) ou résultat(s) non conformes écartés.</p></> : <p>Aucune analyse exécutée pour ce projet.</p>}</section></div></>;
-}
-createRoot(document.getElementById('root')).render(<App/>);
+createRoot(document.getElementById('root')).render(<App />);

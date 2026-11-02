@@ -34,12 +34,12 @@ export default {
     void env;
     void ctx;
 
-    if (new URL(request.url).pathname !== "/") {
-      return new Response("Not found", { status: 404 });
+    if (new URL(request.url).pathname !== '/') {
+      return new Response('Not found', { status: 404 });
     }
 
     return new Response(page, {
-      headers: { "content-type": "text/html; charset=utf-8" },
+      headers: { 'content-type': 'text/html; charset=utf-8' },
     });
   },
 };
