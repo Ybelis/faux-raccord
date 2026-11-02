@@ -72,6 +72,28 @@ export function modelConfig(env = {}, provider = 'groq', model, settings) {
   };
 }
 
+function isOllamaEmbedding(item, id) {
+  const name = id.split('/').at(-1).split(':')[0];
+  const embeddingName =
+    /(?:^|[-_.])embed(?:ding|dings)?(?:[-_.]|$)|^(?:bge|all-minilm|embeddinggemma)(?:[-_.]|$)/i.test(
+      name,
+    );
+  const families = [
+    item.details?.family,
+    ...(Array.isArray(item.details?.families) ? item.details.families : []),
+  ]
+    .filter((family) => typeof family === 'string')
+    .map((family) => family.toLowerCase());
+  const embeddingFamilies = new Set(['bert', 'nomic-bert', 'jina-bert', 'jina-bert-v2']);
+  // Les tags ne certifient pas les capacités : on retire seulement les noms
+  // d'embeddings explicites ou les familles d'encodeurs connues. Un modèle
+  // inconnu reste proposé et doit passer le test JSON avant utilisation.
+  return (
+    embeddingName ||
+    (families.length > 0 && families.every((family) => embeddingFamilies.has(family)))
+  );
+}
+
 function catalogItem(item, provider) {
   if (!item || typeof item !== 'object') return null;
   const id = provider === 'groq' ? item.id : item.name || item.model;
@@ -84,6 +106,7 @@ function catalogItem(item, provider) {
     return null;
   // Groq's general catalogue also contains non-chat endpoints such as Whisper.
   if (provider === 'groq' && /whisper|tts|guard|orpheus|embed|compound/i.test(id)) return null;
+  if (provider === 'ollama' && isOllamaEmbedding(item, id)) return null;
   if (provider === 'groq') {
     return {
       id,

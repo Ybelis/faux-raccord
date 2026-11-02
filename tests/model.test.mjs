@@ -173,6 +173,28 @@ test('a model check sends no screenplay and rejects a valid JSON reply with the 
   );
 });
 
+test('Ollama catalogue excludes clear embedding models while retaining chat and unknown families', async () => {
+  const result = await listModels(environment, 'ollama', {
+    fetcher: async () =>
+      Response.json({
+        models: [
+          { name: 'bge-m3:latest', details: { family: 'bert' } },
+          { name: 'nomic-embed-text:latest' },
+          { name: 'qwen3-embedding:latest' },
+          { name: 'embeddinggemma:latest' },
+          { name: 'custom-encoder:latest', details: { families: ['nomic-bert'] } },
+          { name: 'llama3.2:latest', details: { family: 'llama' } },
+          { name: 'qwen3:1.7b', details: { family: 'qwen3' } },
+          { name: 'custom-script-model:latest', details: { family: 'unknown' } },
+        ],
+      }),
+  });
+  assert.deepEqual(
+    result.models.map((model) => model.id),
+    ['custom-script-model:latest', 'llama3.2:latest', 'qwen3:1.7b'],
+  );
+});
+
 test('provider catalogue errors do not expose authentication data', async () => {
   await assert.rejects(
     () =>
