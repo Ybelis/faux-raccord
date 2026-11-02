@@ -24,7 +24,7 @@ async function checkGuide() {
   await page.goto(`${baseURL}/#/docs/utiliser`, { waitUntil: 'networkidle' });
   await expect(page.getByRole('dialog')).toHaveCount(0);
   const navigation = page.getByRole('navigation', { name: 'Rubriques de la documentation' });
-  await expect(navigation.getByRole('link')).toHaveCount(5);
+  await expect(navigation.getByRole('link')).toHaveCount(guideChapters.length);
   for (const width of [1440, 768, 390, 360]) {
     await page.setViewportSize({ width, height: width > 768 ? 1000 : 844 });
     for (const chapter of guideChapters) {
@@ -35,16 +35,24 @@ async function checkGuide() {
       await expect(page).toHaveURL(new RegExp(`#/docs/${chapter.id}$`));
       for (const section of chapter.sections)
         await expect(page.getByRole('heading', { name: section.title, exact: true })).toBeVisible();
+      await expect(page.locator('.guide-content')).not.toContainText(
+        /préparer le travail à l’oral|soutenance|répartition des commits|questions de l’oral/i,
+      );
       await assertNoOverflow(page, `guide-${chapter.id}-${width}`);
       await page.screenshot({ path: `artifacts/guide-${chapter.id}-${width}.png`, fullPage: true });
     }
   }
   checks.push(
-    'Five documentation chapters render through direct links at 1440/768/390/360px, with no document overflow',
+    `${guideChapters.length} product documentation chapters render through direct links at 1440/768/390/360px, without internal oral-preparation content or document overflow`,
   );
 
   // Follow actual generated PDF links rather than merely checking their labels.
-  await navigation.getByRole('link', { name: 'Résultats et tests', exact: true }).click();
+  await navigation
+    .getByRole('link', {
+      name: guideChapters.find((chapter) => chapter.id === 'evaluation').title,
+      exact: true,
+    })
+    .click();
   for (const [label, path] of [
     ['Rapport d’évaluation — PDF', '/docs/print/evaluation.pdf'],
     ['Fiche système — PDF', '/docs/print/system-card.pdf'],
@@ -208,7 +216,7 @@ try {
   );
   console.log(
     guideOnly
-      ? 'Internal guide checked at four widths, including both PDF links. No inference.'
+      ? 'Product documentation checked at four widths, including both PDF links. No inference.'
       : 'Guide, primary controlled evaluation, historical scores and every alert source checked. No inference.',
   );
 } catch (error) {

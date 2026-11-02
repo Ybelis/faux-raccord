@@ -18,7 +18,7 @@ export function Evaluation({ report, analysis, onOpenControlled, onControlledSce
       >
         <div className="evaluation-title">
           <div>
-            <p className="group-label">EXPÉRIENCE PRINCIPALE · CONSIGNE DU PROFESSEUR</p>
+            <p className="group-label">EXPÉRIENCE DE CONTINUITÉ</p>
             <h2>15 erreurs injectées dans un seul scénario</h2>
           </div>
           <Badge>Valkaama · adaptation</Badge>
@@ -83,6 +83,12 @@ export function Evaluation({ report, analysis, onOpenControlled, onControlledSce
                 Précision = VP / (VP + FP) : parmi les alertes dans le périmètre annoté, combien
                 correspondent à une injection ? Rappel = VP / (VP + FN) : combien des 15 injections
                 sont retrouvées ? F1 combine ces deux proportions.
+              </p>
+              <p>
+                Le score exige aussi deux preuves littérales valides. Dans cet essai, le faux
+                positif du prompt simple vient d’une citation approximative de la montre : l’erreur
+                a été reconnue, mais la preuve est non conforme. Ce compteur ne signifie donc pas
+                une contradiction inventée.
               </p>
               {[
                 ['Système', controlled.system],

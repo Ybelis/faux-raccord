@@ -2,14 +2,14 @@ import React from 'react';
 import { ArrowRight, BookOpen } from 'lucide-react';
 import { guideChapters } from '../../data/project-guide.js';
 
-/** Une source de contenu, cinq rubriques : aucun générateur de documentation requis. */
+/** La documentation utilisateur partage une seule source de contenu. */
 export function ProjectGuide({ chapterId, onChapter, onEvaluation }) {
   const chapter = guideChapters.find((item) => item.id === chapterId) || guideChapters[0];
   return (
     <div className="project-guide">
       <header className="page-heading">
         <div>
-          <p className="page-index">DOCUMENTATION DU PROJET</p>
+          <p className="page-index">DOCUMENTATION</p>
           <h1>{chapter.title}</h1>
           <p className="page-description">{chapter.summary}</p>
         </div>

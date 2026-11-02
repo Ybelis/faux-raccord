@@ -197,6 +197,13 @@ export default function ModelSettings({ system = {}, value, onChange }) {
           Vous pouvez saisir un identifiant absent de la liste. Le test ci-dessous vérifie la
           connexion et une réponse JSON ; il ne garantit pas la qualité de l’analyse.
         </p>
+        {provider === 'ollama' && (
+          <p className="field-help">
+            La liste reflète les modèles installés sur le serveur. Elle ne constitue pas une
+            sélection validée pour l’extraction d’accessoires. Consultez les profils et leurs
+            limites dans Documentation → Données et fonctionnement.
+          </p>
+        )}
         {currentModel && (
           <p className="model-metadata">
             {currentModel.owner && <span>Éditeur : {currentModel.owner}</span>}
@@ -217,8 +224,8 @@ export default function ModelSettings({ system = {}, value, onChange }) {
       <details className="advanced-settings">
         <summary>Réglages avancés</summary>
         <p className="field-help">
-          Les valeurs par défaut sont celles du benchmark. Modifier ces réglages ou le modèle change
-          les résultats ; les scores du rapport ne s’appliquent pas à cette configuration.
+          Les réglages effectifs accompagnent chaque analyse. Les scores enregistrés concernent
+          uniquement le modèle, les paramètres et le profil indiqués dans leur rapport.
         </p>
         <div className="settings-grid">
           <label className="field-label" htmlFor="model-temperature">

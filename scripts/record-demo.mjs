@@ -2,6 +2,7 @@ import { expect } from '@playwright/test';
 import { copyFile, mkdir, readFile, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { baseURL, navigate, openBrowser } from './check-ui.mjs';
+import { guideChapters } from '../data/project-guide.js';
 
 // The backup records the real UI and a genuine saved analysis, never a simulated live run.
 const evaluation = await (await fetch(`${baseURL}/api/evaluation`)).json();
@@ -76,7 +77,7 @@ try {
   const primary = page.getByRole('region', { name: 'Expérience contrôlée principale' });
   await show(primary);
   await pause(
-    'Consigne du professeur : 15 injections et quatre transitions expliquées dans un seul scénario',
+    'Expérience contrôlée : 15 injections et quatre transitions expliquées dans un seul scénario',
     2500,
   );
   await primary.getByRole('button', { name: 'Ouvrir le scénario de test', exact: true }).click();
@@ -168,9 +169,15 @@ try {
   await page.getByRole('button', { name: 'Documentation', exact: true }).click();
   await page
     .getByRole('navigation', { name: 'Rubriques de la documentation' })
-    .getByRole('link', { name: 'Exigences et limites', exact: true })
+    .getByRole('link', {
+      name: guideChapters.find((chapter) => chapter.id === 'limites').title,
+      exact: true,
+    })
     .click();
-  await pause('Guide unique : exigences, preuves, limites et travail humain restant', 2500);
+  await pause(
+    'Limites et confidentialité : comprendre la portée des résultats et le traitement des données',
+    2500,
+  );
 
   expect(errors).toEqual([]);
   expect(inferenceRequests).toEqual([]);

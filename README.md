@@ -39,10 +39,10 @@ relançable utilise une copie séparée de la démonstration. Les projets resten
 sur cet appareil ; exporter le projet JSON pour sauvegarder ou partager notes
 et décisions. Il n’y a pas de synchronisation entre les membres.
 
-La **[documentation interne](http://127.0.0.1:4173/#/docs/utiliser)** rassemble
-l’utilisation, le fonctionnement, les métriques, l’oral et l’audit des exigences
-en cinq chapitres. Sa source unique est [data/project-guide.js](data/project-guide.js).
-Les choix techniques et leurs limites y sont expliqués au même endroit.
+La **[documentation utilisateur](http://127.0.0.1:4173/#/docs/utiliser)** rassemble
+l’utilisation, les données et le fonctionnement, les résultats et tests,
+ainsi que les limites et la confidentialité. Sa source unique est
+[data/project-guide.js](data/project-guide.js).
 
 ```text
 Scénario → scènes → extraction LLM → contrôle des citations
@@ -53,6 +53,22 @@ Scénario → scènes → extraction LLM → contrôle des citations
 Le cœur est dans `src/core/`, l’interface React dans `src/components/`, les routes
 dans `worker/`. `npm run explain` déroule un exemple avec des sorties de modèle
 **simulées et annoncées** : il explique le code, sans mesurer un LLM.
+
+## Choix des modèles
+
+Le profil mesuré utilise `openai/gpt-oss-120b` sur Groq : sorties JSON,
+inférence distante sans charger les poids sur le poste, licence Apache-2.0.
+Le passage du 20B au 120B répondait au quota disponible. Les résultats conservés
+comparent le pipeline au prompt simple avec le même 120B ; ils ne prouvent pas
+qu’il soit meilleur que le 20B. [Capacités Groq](https://console.groq.com/docs/model/openai/gpt-oss-120b),
+[configuration et preuves mesurées](eval/controlled-report.json).
+
+Ollama est une option de confidentialité et d’indépendance au réseau, dont le
+profil local reste à valider. Les modèles installés sont détectés, sans être
+réputés adaptés. La [documentation du moteur](http://127.0.0.1:4173/#/docs/fonctionnement)
+justifie trois candidats locaux à partir de sources primaires, distingue leurs
+poids de la mémoire totale et propose un protocole commun. Aucun score n’est
+attribué à un modèle non testé.
 
 ## Données et évaluation
 

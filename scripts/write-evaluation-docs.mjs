@@ -127,7 +127,9 @@ ${summary.inferenceProfile}
 
 ## 2. Métriques, résultats et incertitude
 
-L’unité est **l’alerte associée à une injection**, sur les 19 accessoires annotés. Un vrai positif (VP) doit identifier l’objet et fournir des citations valides dans les deux scènes attendues ; chaque injection ne peut compter qu’une fois. Une alerte erronée ou dupliquée sur ce périmètre est un faux positif (FP). Une injection non détectée est un faux négatif (FN). Les alertes sur les autres objets originaux sont signalées séparément, sans verdict automatique ; elles sont exclues de la précision contrôlée.
+L’unité est **l’alerte associée à une injection**, sur les 19 accessoires annotés. Un vrai positif (VP) doit identifier l’objet et fournir des citations valides dans les deux scènes attendues ; chaque injection ne peut compter qu’une fois. Une alerte erronée, dupliquée ou avec des preuves non conformes est un faux positif (FP). Une injection sans détection conforme est un faux négatif (FN). Les alertes sur les autres objets originaux sont signalées séparément, sans verdict automatique ; elles sont exclues de la précision contrôlée.
+
+Le FP de la baseline vient d’une citation approximative de la montre (« the mechanism » à la place de « its mechanism ») : le changement a été reconnu, mais la preuve ne respecte pas le texte. La métrique mesure donc la reconnaissance avec deux preuves valides, pas uniquement la détection sémantique.
 
 Précision = VP / (VP + FP) : parmi les alertes contrôlables, lesquelles sont justes ? Rappel = VP / 15 : combien d’erreurs introduites sont retrouvées ? F1 = 2 × précision × rappel / (précision + rappel). Les intervalles de Wilson à 95 % sont descriptifs : une seule œuvre, erreurs fabriquées et dépendantes, faible effectif. Ils ne démontrent pas une généralisation à d’autres scénarios.
 

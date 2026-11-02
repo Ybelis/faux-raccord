@@ -13,7 +13,7 @@
 
 Les références proposées avec assistance IA ne sont pas réputées validées par une personne.
 L’audit structurel se trouve dans `annotation_audit.json` ; ses champs de validation humaine
-restent explicitement vides. Le [guide interne](http://127.0.0.1:4173/#/docs/evaluation)
+restent explicitement vides. La [documentation des résultats](http://127.0.0.1:4173/#/docs/evaluation)
 explique les métriques, la portée et les limites de chaque expérience.
 
 ## Expérience principale : erreurs injectées
@@ -28,9 +28,13 @@ les scènes 1–12, où se trouvent les 15 injections et quatre contrôles néga
 Les références et les modifications sont dans `data/controlled-script/`. Le
 scénario publié reste intact. Les associations utilisent les objets et deux
 passages : chaque injection ne peut compter qu’une fois. Les doublons et les
-alertes sur les transitions expliquées comptent comme faux positifs. Une alerte
+alertes sur les transitions expliquées ou avec des preuves non conformes comptent comme faux positifs. Une alerte
 sur un objet hors des références est conservée à relire, hors du score contrôlé ;
 ce score ne mesure donc pas la précision de toutes les alertes possibles.
+
+Dans la mesure publiée, la montre est reconnue par la baseline mais une citation
+remplace « its mechanism » par « the mechanism ». Ce résultat est rejeté par le
+critère de preuve littérale : le FP ne correspond pas à une contradiction inventée.
 
 Le rapport indique `measured` uniquement lorsque les deux méthodes sont mesurées.
 Sans `--live`, la commande valide les données et les résultats déjà enregistrés,
