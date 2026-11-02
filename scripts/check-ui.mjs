@@ -1,0 +1,23 @@
+import { chromium } from '@playwright/test';
+import { mkdir, writeFile } from 'node:fs/promises';
+await mkdir('artifacts', { recursive: true });
+const browser = await chromium.launch({ executablePath: 'C:/Program Files/Google/Chrome/Application/chrome.exe', headless: true });
+const page = await browser.newPage({ viewport: { width: 1512, height: 1100 }, deviceScaleFactor: 1 });
+const errors = []; page.on('pageerror', error => errors.push(error.message));
+await page.goto('http://127.0.0.1:4173/', { waitUntil: 'networkidle' });
+await page.getByRole('heading', { name: 'Chaque détail compte.' }).waitFor();
+await page.screenshot({ path: 'artifacts/overview-desktop.png', fullPage: true });
+await page.getByRole('button', { name: 'Scénario', exact: true }).click();
+await page.getByText('TEXTE ORIGINAL', { exact: true }).waitFor();
+await page.screenshot({ path: 'artifacts/script-desktop.png', fullPage: true });
+await page.getByRole('button', { name: 'Paramètres du studio' }).click();
+await page.getByRole('dialog').waitFor();
+await page.getByRole('button', { name: 'Fermer', exact:true }).click();
+await page.getByRole('button', { name: "Vue d'ensemble", exact:true }).click();
+await page.setViewportSize({ width: 390, height: 844 });
+await page.screenshot({ path: 'artifacts/overview-mobile.png', fullPage: true });
+const horizontalOverflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 2);
+await writeFile('artifacts/browser-check.json', JSON.stringify({ errors, horizontalOverflow }, null, 2));
+await browser.close();
+if (errors.length || horizontalOverflow) { console.log({errors,horizontalOverflow}); process.exitCode=1; }
+else console.log('Browser checks passed: desktop, mobile, navigation, settings, no page errors.');

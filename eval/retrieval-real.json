@@ -1,0 +1,203 @@
+{
+  "corpus": "Valkaama",
+  "license": "CC BY-SA 3.0",
+  "n": 12,
+  "metric": "scene recall@5",
+  "value": 1,
+  "completedAt": "2026-11-02T10:36:42.653Z",
+  "note": "Recherche lexicale seule, pas exactitude des réponses du LLM. Les citations de référence ont été contrôlées dans le texte ; validation étudiante encore à réaliser.",
+  "rows": [
+    {
+      "id": "R001",
+      "question": "Runa cigarette park",
+      "expectedSource": "S001",
+      "expectedQuote": "Runa lights a cigarette.",
+      "synthetic": false,
+      "annotationStatus": "source-quote-verified; student-review-pending",
+      "retrieved": [
+        "S001",
+        "S016",
+        "S048",
+        "S015",
+        "S002"
+      ],
+      "hit": true
+    },
+    {
+      "id": "R002",
+      "question": "Lasse crinkled paper cafe",
+      "expectedSource": "S002",
+      "expectedQuote": "a piece of crinkled paper",
+      "synthetic": false,
+      "annotationStatus": "source-quote-verified; student-review-pending",
+      "retrieved": [
+        "S002",
+        "S015",
+        "S007",
+        "S007",
+        "S006"
+      ],
+      "hit": true
+    },
+    {
+      "id": "R003",
+      "question": "Leila purse pepper spray",
+      "expectedSource": "S004",
+      "expectedQuote": "pepper spray can be seen inside",
+      "synthetic": false,
+      "annotationStatus": "source-quote-verified; student-review-pending",
+      "retrieved": [
+        "S004",
+        "S004",
+        "S004",
+        "S004",
+        "S004"
+      ],
+      "hit": true
+    },
+    {
+      "id": "R004",
+      "question": "Leila glass Scotch full",
+      "expectedSource": "S005",
+      "expectedQuote": "It is still full.",
+      "synthetic": false,
+      "annotationStatus": "source-quote-verified; student-review-pending",
+      "retrieved": [
+        "S005",
+        "S004",
+        "S004",
+        "S004",
+        "S004"
+      ],
+      "hit": true
+    },
+    {
+      "id": "R005",
+      "question": "Runa laptop turned on",
+      "expectedSource": "S006",
+      "expectedQuote": "her laptop which is still turned on",
+      "synthetic": false,
+      "annotationStatus": "source-quote-verified; student-review-pending",
+      "retrieved": [
+        "S006",
+        "S014",
+        "S045",
+        "S002",
+        "S006"
+      ],
+      "hit": true
+    },
+    {
+      "id": "R006",
+      "question": "Runa candle kitchen",
+      "expectedSource": "S006",
+      "expectedQuote": "an almost burnt down candle",
+      "synthetic": false,
+      "annotationStatus": "source-quote-verified; student-review-pending",
+      "retrieved": [
+        "S006",
+        "S007",
+        "S025",
+        "S007",
+        "S022"
+      ],
+      "hit": true
+    },
+    {
+      "id": "R007",
+      "question": "radio pop music breakfast",
+      "expectedSource": "S007",
+      "expectedQuote": "The radio plays pop music.",
+      "synthetic": false,
+      "annotationStatus": "source-quote-verified; student-review-pending",
+      "retrieved": [
+        "S007",
+        "S022",
+        "S023",
+        "S029",
+        "S022"
+      ],
+      "hit": true
+    },
+    {
+      "id": "R008",
+      "question": "Magnus vodka cupboard",
+      "expectedSource": "S008",
+      "expectedQuote": "half-full bottle of vodka in his cupboard",
+      "synthetic": false,
+      "annotationStatus": "source-quote-verified; student-review-pending",
+      "retrieved": [
+        "S008",
+        "S026",
+        "S029",
+        "S037",
+        "S039"
+      ],
+      "hit": true
+    },
+    {
+      "id": "R009",
+      "question": "Magnus LAZARUS alias",
+      "expectedSource": "S009",
+      "expectedQuote": "His alias is LAZARUS.",
+      "synthetic": false,
+      "annotationStatus": "source-quote-verified; student-review-pending",
+      "retrieved": [
+        "S009",
+        "S025",
+        "S009",
+        "S012",
+        "S013"
+      ],
+      "hit": true
+    },
+    {
+      "id": "R010",
+      "question": "Runa money cafe table",
+      "expectedSource": "S002",
+      "expectedQuote": "She puts some money on the table",
+      "synthetic": false,
+      "annotationStatus": "source-quote-verified; student-review-pending",
+      "retrieved": [
+        "S002",
+        "S039",
+        "S002",
+        "S002",
+        "S024"
+      ],
+      "hit": true
+    },
+    {
+      "id": "R011",
+      "question": "Ibsy chocolate cake",
+      "expectedSource": "S001",
+      "expectedQuote": "chocolate cake?",
+      "synthetic": false,
+      "annotationStatus": "source-quote-verified; student-review-pending",
+      "retrieved": [
+        "S001",
+        "S002",
+        "S001",
+        "S002",
+        "S050"
+      ],
+      "hit": true
+    },
+    {
+      "id": "R012",
+      "question": "Magnus Leila paid advance money",
+      "expectedSource": "S004",
+      "expectedQuote": "money which Magnus apparently paid in advance.",
+      "synthetic": false,
+      "annotationStatus": "source-quote-verified; student-review-pending",
+      "retrieved": [
+        "S004",
+        "S004",
+        "S004",
+        "S004",
+        "S004"
+      ],
+      "hit": true
+    }
+  ]
+}

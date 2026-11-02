@@ -1,0 +1,9 @@
+{
+  "model": "openai/gpt-oss-20b",
+  "source": "https://console.groq.com/docs/model/openai/gpt-oss-20b",
+  "checkedAt": "2026-11-02",
+  "currency": "USD",
+  "inputPerMillion": 0.075,
+  "outputPerMillion": 0.30,
+  "note": "Estimation au tarif catalogue, sans remise ni cache ; ce n'est pas une facture et le plan gratuit peut ne rien facturer."
+}

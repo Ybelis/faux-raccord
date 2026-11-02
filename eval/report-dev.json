@@ -1,0 +1,591 @@
+{
+  "status": "completed",
+  "n": 10,
+  "totalDataset": 60,
+  "split": "dev",
+  "model": "openai/gpt-oss-20b",
+  "provider": "groq",
+  "codeHash": "fc3b8d431ac6",
+  "completedAt": "2026-11-02T10:28:56.005Z",
+  "datasetLabel": "Développement · cas synthétiques",
+  "annotationStatus": "proposed-unreviewed",
+  "note": "Cas synthétiques contrôlés ; annotations proposées avec assistance IA et non encore validées par les étudiants. Ces résultats ne démontrent pas la performance sur des scénarios réels. Les erreurs de fournisseur sont comptées et leurs prédictions valent false.",
+  "baseline": {
+    "tp": 5,
+    "fp": 1,
+    "fn": 0,
+    "tn": 4,
+    "precision": 0.8333333333333334,
+    "recall": 1,
+    "f1": 0.9090909090909091,
+    "precisionCI": [
+      0.436,
+      0.97
+    ],
+    "recallCI": [
+      0.566,
+      1
+    ],
+    "medianSeconds": 0.51,
+    "errors": 0,
+    "inputTokens": 2605,
+    "outputTokens": 832
+  },
+  "system": {
+    "tp": 4,
+    "fp": 0,
+    "fn": 1,
+    "tn": 5,
+    "precision": 1,
+    "recall": 0.8,
+    "f1": 0.888888888888889,
+    "precisionCI": [
+      0.51,
+      1
+    ],
+    "recallCI": [
+      0.376,
+      0.964
+    ],
+    "medianSeconds": 1.022,
+    "errors": 0,
+    "inputTokens": 8981,
+    "outputTokens": 2864
+  },
+  "rows": [
+    {
+      "id": "C001",
+      "expected": true,
+      "tags": [
+        "state"
+      ],
+      "reason": "État irréversible sans réparation",
+      "split": "dev",
+      "baseline": {
+        "predicted": true,
+        "reason": "La même montre apparaît avec un verre brisé dans le premier lieu, puis intact dans le second lieu, ce qui constitue une incohérence d’état explicite.",
+        "seconds": 0.901,
+        "usage": {
+          "inputTokens": 265,
+          "outputTokens": 91,
+          "milliseconds": 901,
+          "provider": "groq",
+          "model": "openai/gpt-oss-20b",
+          "promptVersion": "1.0.0"
+        }
+      },
+      "system": {
+        "predicted": true,
+        "seconds": 1.007,
+        "alerts": [
+          {
+            "id": "ALT001",
+            "entityId": "OBJ001",
+            "entityName": "montre de Clara",
+            "category": "state",
+            "severity": "high",
+            "verdict": "contradiction",
+            "title": "Montre de Clara brisée puis intacte sans réparation",
+            "description": "Dans la scène S001, Clara fait tomber sa montre et le verre est brisé. Dans la scène S002, la même montre est décrite comme ayant un verre intact, sans aucune mention de réparation, de remplacement ou de transfert. L’absence d’explication rend ces états incompatibles, constituant une contradiction explicite.",
+            "question": "Y a-t-il un événement non mentionné entre les scènes qui pourrait expliquer la réparation ou le remplacement de la montre de Clara?",
+            "evidence": [
+              {
+                "sceneId": "S001",
+                "quote": "Clara fait tomber sa montre. Le verre de la montre est brisé.",
+                "page": 1,
+                "state": "broken",
+                "owner": "Clara",
+                "action": "break",
+                "temporal": "continuous"
+              },
+              {
+                "sceneId": "S002",
+                "quote": "Clara regarde la même montre : le verre est intact.",
+                "page": 1,
+                "state": "intact",
+                "owner": "Clara",
+                "action": "observe",
+                "temporal": "continuous"
+              }
+            ],
+            "retrieved": [
+              {
+                "id": "S001-C1",
+                "sceneId": "S001",
+                "score": 0.453
+              },
+              {
+                "id": "S002-C1",
+                "sceneId": "S002",
+                "score": 0.346
+              }
+            ],
+            "status": "pending",
+            "note": ""
+          }
+        ],
+        "usage": {
+          "calls": 2,
+          "inputTokens": 1272,
+          "outputTokens": 337,
+          "milliseconds": 1000
+        },
+        "objects": 1,
+        "rejected": 0
+      }
+    },
+    {
+      "id": "C002",
+      "expected": false,
+      "tags": [
+        "transition"
+      ],
+      "reason": "Remplissage explicite",
+      "split": "dev",
+      "baseline": {
+        "predicted": false,
+        "reason": "Pas de problème de continuité : la gourde est montrée vide puis remplie, ce qui est cohérent.",
+        "seconds": 0.596,
+        "usage": {
+          "inputTokens": 263,
+          "outputTokens": 76,
+          "milliseconds": 596,
+          "provider": "groq",
+          "model": "openai/gpt-oss-20b",
+          "promptVersion": "1.0.0"
+        }
+      },
+      "system": {
+        "predicted": false,
+        "seconds": 0.508,
+        "alerts": [],
+        "usage": {
+          "calls": 1,
+          "inputTokens": 656,
+          "outputTokens": 167,
+          "milliseconds": 508
+        },
+        "objects": 1,
+        "rejected": 0
+      }
+    },
+    {
+      "id": "C003",
+      "expected": true,
+      "tags": [
+        "state"
+      ],
+      "reason": "Destruction puis réapparition",
+      "split": "dev",
+      "baseline": {
+        "predicted": true,
+        "reason": "La lettre est d'abord détruite puis relue intacte, ce qui constitue un état explicite incompatible.",
+        "seconds": 0.509,
+        "usage": {
+          "inputTokens": 263,
+          "outputTokens": 64,
+          "milliseconds": 509,
+          "provider": "groq",
+          "model": "openai/gpt-oss-20b",
+          "promptVersion": "1.0.0"
+        }
+      },
+      "system": {
+        "predicted": true,
+        "seconds": 1.022,
+        "alerts": [
+          {
+            "id": "ALT001",
+            "entityId": "OBJ001",
+            "entityName": "lettre",
+            "category": "state",
+            "severity": "medium",
+            "verdict": "ambiguous",
+            "title": "Destruction puis lecture de la même lettre",
+            "description": "Le texte indique que la lettre est d’abord entièrement brûlée puis, quelques secondes plus tard, Marc la relit intacte. Aucun élément explicite n’indique qu’il s’agit d’une copie, d’une restauration, d’un flashback ou d’un changement d’objet. La continuité de l’objet n’est donc pas clairement établie, laissant la situation ouverte à l’interprétation.",
+            "question": "Y a-t-il un indice dans le scénario (par exemple un double, une copie, un flashback) qui pourrait expliquer comment la lettre est à nouveau intacte après sa destruction?",
+            "evidence": [
+              {
+                "sceneId": "S001",
+                "quote": "Marc brûle entièrement la lettre de sa sœur. La lettre est détruite.",
+                "page": 1,
+                "state": "destroyed",
+                "owner": "unknown",
+                "action": "break",
+                "temporal": "continuous"
+              },
+              {
+                "sceneId": "S002",
+                "quote": "Quelques secondes plus tard, Marc relit la même lettre intacte.",
+                "page": 1,
+                "state": "intact",
+                "owner": "unknown",
+                "action": "observe",
+                "temporal": "continuous"
+              }
+            ],
+            "retrieved": [
+              {
+                "id": "S001-C1",
+                "sceneId": "S001",
+                "score": 0.257
+              },
+              {
+                "id": "S002-C1",
+                "sceneId": "S002",
+                "score": 0.176
+              }
+            ],
+            "status": "pending",
+            "note": ""
+          }
+        ],
+        "usage": {
+          "calls": 2,
+          "inputTokens": 1267,
+          "outputTokens": 473,
+          "milliseconds": 1021
+        },
+        "objects": 1,
+        "rejected": 0
+      }
+    },
+    {
+      "id": "C004",
+      "expected": true,
+      "tags": [
+        "ownership"
+      ],
+      "reason": "Retour inexpliqué après transfert",
+      "split": "dev",
+      "baseline": {
+        "predicted": true,
+        "reason": "Lina donne la clé à Jules mais la retrouve plus tard dans sa propre poche, ce qui crée une incohérence de possession.",
+        "seconds": 0.411,
+        "usage": {
+          "inputTokens": 264,
+          "outputTokens": 109,
+          "milliseconds": 411,
+          "provider": "groq",
+          "model": "openai/gpt-oss-20b",
+          "promptVersion": "1.0.0"
+        }
+      },
+      "system": {
+        "predicted": false,
+        "seconds": 0.609,
+        "alerts": [],
+        "usage": {
+          "calls": 1,
+          "inputTokens": 657,
+          "outputTokens": 233,
+          "milliseconds": 608
+        },
+        "objects": 1,
+        "rejected": 0
+      }
+    },
+    {
+      "id": "C005",
+      "expected": false,
+      "tags": [
+        "transition"
+      ],
+      "reason": "Consommation normale",
+      "split": "dev",
+      "baseline": {
+        "predicted": false,
+        "reason": "Le verre passe de plein à vide, ce qui est une transition normale et cohérente.",
+        "seconds": 0.404,
+        "usage": {
+          "inputTokens": 255,
+          "outputTokens": 89,
+          "milliseconds": 404,
+          "provider": "groq",
+          "model": "openai/gpt-oss-20b",
+          "promptVersion": "1.0.0"
+        }
+      },
+      "system": {
+        "predicted": false,
+        "seconds": 0.512,
+        "alerts": [],
+        "usage": {
+          "calls": 1,
+          "inputTokens": 648,
+          "outputTokens": 221,
+          "milliseconds": 512
+        },
+        "objects": 1,
+        "rejected": 0
+      }
+    },
+    {
+      "id": "C006",
+      "expected": false,
+      "tags": [
+        "transition"
+      ],
+      "reason": "Réparation explicite",
+      "split": "dev",
+      "baseline": {
+        "predicted": false,
+        "reason": "La lampe de poche passe de cassée à réparée, ce qui est une transition explicite et cohérente.",
+        "seconds": 0.51,
+        "usage": {
+          "inputTokens": 262,
+          "outputTokens": 109,
+          "milliseconds": 510,
+          "provider": "groq",
+          "model": "openai/gpt-oss-20b",
+          "promptVersion": "1.0.0"
+        }
+      },
+      "system": {
+        "predicted": false,
+        "seconds": 2.149,
+        "alerts": [],
+        "usage": {
+          "calls": 1,
+          "inputTokens": 655,
+          "outputTokens": 166,
+          "milliseconds": 2149
+        },
+        "objects": 1,
+        "rejected": 0
+      }
+    },
+    {
+      "id": "C007",
+      "expected": true,
+      "tags": [
+        "state"
+      ],
+      "reason": "Contenu incompatible",
+      "split": "dev",
+      "baseline": {
+        "predicted": true,
+        "reason": "La boîte de photos est décrite comme vide puis immédiatement pleine, ce qui constitue un état explicite incompatible.",
+        "seconds": 3.578,
+        "usage": {
+          "inputTokens": 263,
+          "outputTokens": 68,
+          "milliseconds": 3578,
+          "provider": "groq",
+          "model": "openai/gpt-oss-20b",
+          "promptVersion": "1.0.0"
+        }
+      },
+      "system": {
+        "predicted": true,
+        "seconds": 15.117,
+        "alerts": [
+          {
+            "id": "ALT001",
+            "entityId": "OBJ001",
+            "entityName": "boîte de photos",
+            "category": "state",
+            "severity": "medium",
+            "verdict": "ambiguous",
+            "title": "Boîte de photos vide puis pleine",
+            "description": "Le texte ne précise pas comment la boîte passe d’un état vide à plein. Il est possible qu’une autre personne ait ajouté des photos entre les deux scènes, mais aucune information explicite n’est fournie. Par conséquent, l’état de la boîte reste incertain.",
+            "question": "Y a-t-il un personnage ou un événement non mentionné qui pourrait expliquer l’ajout de photos dans la boîte entre les scènes S001 et S002?",
+            "evidence": [
+              {
+                "sceneId": "S001",
+                "quote": "La boîte de photos est vide. Iris l’ouvre et le constate.",
+                "page": 1,
+                "state": "empty",
+                "owner": "unknown",
+                "action": "observe",
+                "temporal": "continuous"
+              },
+              {
+                "sceneId": "S002",
+                "quote": "Iris rouvre la même boîte immédiatement : elle est pleine de photos.",
+                "page": 1,
+                "state": "full",
+                "owner": "unknown",
+                "action": "observe",
+                "temporal": "continuous"
+              }
+            ],
+            "retrieved": [
+              {
+                "id": "S001-C1",
+                "sceneId": "S001",
+                "score": 0.373
+              },
+              {
+                "id": "S002-C1",
+                "sceneId": "S002",
+                "score": 0.357
+              }
+            ],
+            "status": "pending",
+            "note": ""
+          }
+        ],
+        "usage": {
+          "calls": 2,
+          "inputTokens": 1267,
+          "outputTokens": 485,
+          "milliseconds": 15116
+        },
+        "objects": 1,
+        "rejected": 0
+      }
+    },
+    {
+      "id": "C008",
+      "expected": false,
+      "tags": [
+        "time"
+      ],
+      "reason": "Séchage possible pendant une ellipse",
+      "split": "dev",
+      "baseline": {
+        "predicted": true,
+        "reason": "Le parapluie rouge est mouillé dans la première scène, puis sec dans la suivante sans explication, ce qui constitue une incohérence de continuité.",
+        "seconds": 0.383,
+        "usage": {
+          "inputTokens": 258,
+          "outputTokens": 106,
+          "milliseconds": 383,
+          "provider": "groq",
+          "model": "openai/gpt-oss-20b",
+          "promptVersion": "1.0.0"
+        }
+      },
+      "system": {
+        "predicted": false,
+        "seconds": 8.561,
+        "alerts": [],
+        "usage": {
+          "calls": 1,
+          "inputTokens": 651,
+          "outputTokens": 178,
+          "milliseconds": 8561
+        },
+        "objects": 1,
+        "rejected": 0
+      }
+    },
+    {
+      "id": "C009",
+      "expected": false,
+      "tags": [
+        "identity"
+      ],
+      "reason": "Deux objets génériques distincts",
+      "split": "dev",
+      "baseline": {
+        "predicted": false,
+        "reason": "Les deux scènes montrent des personnages fumer une cigarette, sans contradiction d’état ou de possession.",
+        "seconds": 0.198,
+        "usage": {
+          "inputTokens": 250,
+          "outputTokens": 58,
+          "milliseconds": 198,
+          "provider": "groq",
+          "model": "openai/gpt-oss-20b",
+          "promptVersion": "1.0.0"
+        }
+      },
+      "system": {
+        "predicted": false,
+        "seconds": 0.521,
+        "alerts": [],
+        "usage": {
+          "calls": 1,
+          "inputTokens": 643,
+          "outputTokens": 70,
+          "milliseconds": 521
+        },
+        "objects": 0,
+        "rejected": 0
+      }
+    },
+    {
+      "id": "C010",
+      "expected": true,
+      "tags": [
+        "state"
+      ],
+      "reason": "Same object, no repair",
+      "split": "dev",
+      "baseline": {
+        "predicted": true,
+        "reason": "Le même compas est décrit comme cassé puis intact sans explication.",
+        "seconds": 2.547,
+        "usage": {
+          "inputTokens": 262,
+          "outputTokens": 62,
+          "milliseconds": 2547,
+          "provider": "groq",
+          "model": "openai/gpt-oss-20b",
+          "promptVersion": "1.0.0"
+        }
+      },
+      "system": {
+        "predicted": true,
+        "seconds": 22.221,
+        "alerts": [
+          {
+            "id": "ALT001",
+            "entityId": "OBJ001",
+            "entityName": "compas",
+            "category": "state",
+            "severity": "medium",
+            "verdict": "ambiguous",
+            "title": "Compas endommagé puis intact",
+            "description": "Le texte ne mentionne pas de réparation, de remplacement ou de transfert du compas entre les deux scènes. Il est donc impossible de déterminer s’il s’agit du même objet ou d’un nouvel objet, ce qui rend la situation ambiguë.",
+            "question": "Y a-t-il un événement non décrit (réparation, remplacement, transfert) qui pourrait expliquer le changement d’état du compas entre les scènes S001 et S002?",
+            "evidence": [
+              {
+                "sceneId": "S001",
+                "quote": "A damaged compass lies in Nora’s hand. The compass glass is broken.",
+                "page": 1,
+                "state": "broken",
+                "owner": "Nora",
+                "action": "observe",
+                "temporal": "continuous"
+              },
+              {
+                "sceneId": "S002",
+                "quote": "Seconds later, Nora checks the same compass. Its glass is intact.",
+                "page": 1,
+                "state": "intact",
+                "owner": "Nora",
+                "action": "observe",
+                "temporal": "continuous"
+              }
+            ],
+            "retrieved": [
+              {
+                "id": "S001-C1",
+                "sceneId": "S001",
+                "score": 0.254
+              },
+              {
+                "id": "S002-C1",
+                "sceneId": "S002",
+                "score": 0.179
+              }
+            ],
+            "status": "pending",
+            "note": ""
+          }
+        ],
+        "usage": {
+          "calls": 2,
+          "inputTokens": 1265,
+          "outputTokens": 534,
+          "milliseconds": 22221
+        },
+        "objects": 1,
+        "rejected": 0
+      }
+    }
+  ]
+}

@@ -1,0 +1,681 @@
+{
+  "les-heures-creuses": {
+    "objects": [
+      {
+        "name": "montre argentée de Clara",
+        "aliases": [
+          "watch"
+        ],
+        "category": "accessoire",
+        "mentions": [
+          {
+            "sceneId": "S001",
+            "quote": "CLARA pose sa montre argentée sur l'établi. Le verre de sa montre est intact.",
+            "page": 1,
+            "state": "intact",
+            "owner": "Clara",
+            "action": "observe",
+            "temporal": "continuous"
+          },
+          {
+            "sceneId": "S002",
+            "quote": "La montre argentée de Clara tombe sur les pavés. Le verre de la montre se brise et les aiguilles s'arrêtent.",
+            "page": 1,
+            "state": "broken",
+            "owner": "Clara",
+            "action": "break",
+            "temporal": "continuous"
+          },
+          {
+            "sceneId": "S004",
+            "quote": "CLARA regarde sa montre argentée : son verre est parfaitement intact et les aiguilles tournent normalement.",
+            "page": 1,
+            "state": "intact",
+            "owner": "Clara",
+            "action": "observe",
+            "temporal": "continuous"
+          }
+        ],
+        "id": "OBJ001",
+        "key": "montre argentee de clara"
+      },
+      {
+        "name": "enveloppe rouge fermée",
+        "aliases": [
+          "envelope"
+        ],
+        "category": "accessoire",
+        "mentions": [
+          {
+            "sceneId": "S001",
+            "quote": "Elle glisse une enveloppe rouge fermée dans la poche de son manteau bleu.",
+            "page": 1,
+            "state": "present",
+            "owner": "Clara",
+            "action": "observe",
+            "temporal": "continuous"
+          },
+          {
+            "sceneId": "S003",
+            "quote": "Clara donne l'enveloppe rouge fermée à Noé. Noé range cette enveloppe dans son sac et le ferme.",
+            "page": 1,
+            "state": "present",
+            "owner": "Noé",
+            "action": "give",
+            "temporal": "continuous"
+          },
+          {
+            "sceneId": "S005",
+            "quote": "Clara sort l'enveloppe rouge fermée de la poche de son manteau.",
+            "page": 1,
+            "state": "present",
+            "owner": "Clara",
+            "action": "observe",
+            "temporal": "continuous"
+          }
+        ],
+        "id": "OBJ002",
+        "key": "enveloppe rouge fermee"
+      },
+      {
+        "name": "boîte en métal",
+        "aliases": [],
+        "category": "accessoire",
+        "mentions": [
+          {
+            "sceneId": "S006",
+            "quote": "Il ouvre une boîte en métal. La boîte en métal est vide.",
+            "page": 1,
+            "state": "empty",
+            "owner": "unknown",
+            "action": "observe",
+            "temporal": "continuous"
+          },
+          {
+            "sceneId": "S007",
+            "quote": "Clara prend la même boîte en métal. La boîte est pleine de vieilles photographies.",
+            "page": 1,
+            "state": "full",
+            "owner": "Clara",
+            "action": "take",
+            "temporal": "continuous"
+          }
+        ],
+        "id": "OBJ003",
+        "key": "boite en metal"
+      },
+      {
+        "name": "manteau bleu de Clara",
+        "aliases": [],
+        "category": "accessoire",
+        "mentions": [
+          {
+            "sceneId": "S008",
+            "quote": "Le manteau bleu de Clara est trempé. Elle retire le manteau et le pose sur le siège arrière de la voiture.",
+            "page": 1,
+            "state": "wet",
+            "owner": "Clara",
+            "action": "take",
+            "temporal": "continuous"
+          },
+          {
+            "sceneId": "S009",
+            "quote": "Clara remet le manteau parfaitement sec.",
+            "page": 1,
+            "state": "dry",
+            "owner": "Clara",
+            "action": "unknown",
+            "temporal": "continuous"
+          }
+        ],
+        "id": "OBJ004",
+        "key": "manteau bleu de clara"
+      },
+      {
+        "name": "carafe",
+        "aliases": [],
+        "category": "accessoire",
+        "mentions": [
+          {
+            "sceneId": "S010",
+            "quote": "Lina remplit une carafe d'eau. La carafe est pleine.",
+            "page": 1,
+            "state": "full",
+            "owner": "Lina",
+            "action": "fill",
+            "temporal": "continuous"
+          },
+          {
+            "sceneId": "S010",
+            "quote": "Noé verse toute l'eau dans une casserole. La carafe est maintenant vide.",
+            "page": 1,
+            "state": "empty",
+            "owner": "Noé",
+            "action": "empty",
+            "temporal": "continuous"
+          },
+          {
+            "sceneId": "S011",
+            "quote": "Clara reprend la carafe vide, ouvre le robinet et la remplit. La carafe est à nouveau pleine.",
+            "page": 1,
+            "state": "full",
+            "owner": "Clara",
+            "action": "fill",
+            "temporal": "continuous"
+          }
+        ],
+        "id": "OBJ005",
+        "key": "carafe"
+      },
+      {
+        "name": "enveloppe rouge",
+        "aliases": [
+          "envelope"
+        ],
+        "category": "accessoire",
+        "mentions": [
+          {
+            "sceneId": "S012",
+            "quote": "Clara remet l'enveloppe rouge à Noé. Il la range dans son sac.",
+            "page": 1,
+            "state": "present",
+            "owner": "Noé",
+            "action": "give",
+            "temporal": "continuous"
+          }
+        ],
+        "id": "OBJ006",
+        "key": "enveloppe rouge"
+      }
+    ],
+    "alerts": [
+      {
+        "id": "ALT001",
+        "entityId": "OBJ001",
+        "entityName": "montre argentée de Clara",
+        "category": "state",
+        "severity": "medium",
+        "verdict": "ambiguous",
+        "title": "Montre argentée de Clara",
+        "description": "La scène S002 indique que la montre est brisée, tandis que S004 montre qu’elle est intacte. Aucun événement de réparation ou de remplacement n’est explicitement mentionné, donc l’état change sans explication claire.",
+        "question": "Y a-t-il un moment entre les scènes où la montre a été réparée ou remplacée ?",
+        "evidence": [
+          {
+            "sceneId": "S002",
+            "quote": "La montre argentée de Clara tombe sur les pavés. Le verre de la montre se brise et les aiguilles s'arrêtent.",
+            "page": 1,
+            "state": "broken",
+            "owner": "Clara",
+            "action": "break",
+            "temporal": "continuous"
+          },
+          {
+            "sceneId": "S004",
+            "quote": "CLARA regarde sa montre argentée : son verre est parfaitement intact et les aiguilles tournent normalement.",
+            "page": 1,
+            "state": "intact",
+            "owner": "Clara",
+            "action": "observe",
+            "temporal": "continuous"
+          }
+        ],
+        "retrieved": [
+          {
+            "id": "S002-C1",
+            "sceneId": "S002",
+            "score": 1.276
+          },
+          {
+            "id": "S004-C1",
+            "sceneId": "S004",
+            "score": 1.174
+          },
+          {
+            "id": "S003-C1",
+            "sceneId": "S003",
+            "score": 0.179
+          }
+        ],
+        "status": "pending",
+        "note": ""
+      },
+      {
+        "id": "ALT002",
+        "entityId": "OBJ003",
+        "entityName": "boîte en métal",
+        "category": "state",
+        "severity": "medium",
+        "verdict": "ambiguous",
+        "title": "Boîte en métal",
+        "description": "S006 décrit la boîte vide, alors que S007 la montre pleine de photos. Aucun détail de remplissage ou de transfert n’est fourni, laissant la transition incertaine.",
+        "question": "Qui a rempli la boîte en métal entre les deux scènes ?",
+        "evidence": [
+          {
+            "sceneId": "S006",
+            "quote": "Il ouvre une boîte en métal. La boîte en métal est vide.",
+            "page": 1,
+            "state": "empty",
+            "owner": "unknown",
+            "action": "observe",
+            "temporal": "continuous"
+          },
+          {
+            "sceneId": "S007",
+            "quote": "Clara prend la même boîte en métal. La boîte est pleine de vieilles photographies.",
+            "page": 1,
+            "state": "full",
+            "owner": "Clara",
+            "action": "take",
+            "temporal": "continuous"
+          }
+        ],
+        "retrieved": [
+          {
+            "id": "S006-C1",
+            "sceneId": "S006",
+            "score": 0.49
+          },
+          {
+            "id": "S007-C1",
+            "sceneId": "S007",
+            "score": 0.446
+          }
+        ],
+        "status": "pending",
+        "note": ""
+      },
+      {
+        "id": "ALT003",
+        "entityId": "OBJ005",
+        "entityName": "carafe",
+        "category": "ownership",
+        "severity": "medium",
+        "verdict": "ambiguous",
+        "title": "Carafe",
+        "description": "Dans la même scène S010, la carafe passe de pleine à vide sans explication de l’action de vider. L’état change sans justification claire.",
+        "question": "Comment la carafe est-elle devenue vide dans la même scène ?",
+        "evidence": [
+          {
+            "sceneId": "S010",
+            "quote": "Lina remplit une carafe d'eau. La carafe est pleine.",
+            "page": 1,
+            "state": "full",
+            "owner": "Lina",
+            "action": "fill",
+            "temporal": "continuous"
+          },
+          {
+            "sceneId": "S010",
+            "quote": "Noé verse toute l'eau dans une casserole. La carafe est maintenant vide.",
+            "page": 1,
+            "state": "empty",
+            "owner": "Noé",
+            "action": "empty",
+            "temporal": "continuous"
+          }
+        ],
+        "retrieved": [
+          {
+            "id": "S010-C1",
+            "sceneId": "S010",
+            "score": 0.452
+          }
+        ],
+        "status": "pending",
+        "note": ""
+      }
+    ],
+    "analyzedSceneIds": [
+      "S001",
+      "S002",
+      "S003",
+      "S004",
+      "S005",
+      "S006",
+      "S007",
+      "S008",
+      "S009",
+      "S010",
+      "S011",
+      "S012"
+    ],
+    "candidateCount": 4,
+    "rejectedEvidence": 0,
+    "usage": {
+      "calls": 5,
+      "inputTokens": 5048,
+      "outputTokens": 1722,
+      "milliseconds": 4531
+    },
+    "model": "openai/gpt-oss-20b",
+    "provider": "groq",
+    "promptVersion": "1.0.0",
+    "completedAt": "2026-11-02T10:43:42.782Z",
+    "milliseconds": 4544,
+    "recorded": true,
+    "provenance": "Appels réels Groq, pas de résultats simulés.",
+    "corpusVersion": "1.0.0"
+  },
+  "valkaama": {
+    "objects": [
+      {
+        "name": "cigarette",
+        "aliases": [
+          "cigarette"
+        ],
+        "category": "accessoire",
+        "mentions": [
+          {
+            "sceneId": "S001",
+            "quote": "Runa lights a cigarette",
+            "page": 2,
+            "state": "present",
+            "owner": "Runa",
+            "action": "light",
+            "temporal": "continuous"
+          }
+        ],
+        "id": "OBJ001",
+        "key": "cigarette"
+      },
+      {
+        "name": "glass de vin rouge",
+        "aliases": [
+          "glass",
+          "red wine"
+        ],
+        "category": "accessoire",
+        "mentions": [
+          {
+            "sceneId": "S002",
+            "quote": "Runa drinks a glass of red wine",
+            "page": 3,
+            "state": "present",
+            "owner": "Runa",
+            "action": "unknown",
+            "temporal": "continuous"
+          }
+        ],
+        "id": "OBJ002",
+        "key": "glass de vin rouge"
+      },
+      {
+        "name": "gâteau",
+        "aliases": [
+          "cake"
+        ],
+        "category": "accessoire",
+        "mentions": [
+          {
+            "sceneId": "S002",
+            "quote": "Ibsy is busy with her cake",
+            "page": 3,
+            "state": "present",
+            "owner": "Ibsy",
+            "action": "observe",
+            "temporal": "continuous"
+          }
+        ],
+        "id": "OBJ003",
+        "key": "gateau"
+      },
+      {
+        "name": "papier froissé",
+        "aliases": [
+          "paper",
+          "crinkled paper"
+        ],
+        "category": "accessoire",
+        "mentions": [
+          {
+            "sceneId": "S002",
+            "quote": "Lasse is focused on the lines he is writing on a piece of crinkled paper",
+            "page": 3,
+            "state": "present",
+            "owner": "Lasse",
+            "action": "unknown",
+            "temporal": "continuous"
+          }
+        ],
+        "id": "OBJ004",
+        "key": "papier froisse"
+      },
+      {
+        "name": "ordinateur portable",
+        "aliases": [
+          "laptop"
+        ],
+        "category": "accessoire",
+        "mentions": [
+          {
+            "sceneId": "S002",
+            "quote": "from your laptop",
+            "page": 3,
+            "state": "present",
+            "owner": "unknown",
+            "action": "observe",
+            "temporal": "continuous"
+          },
+          {
+            "sceneId": "S006",
+            "quote": "she spots her laptop which is still turned on",
+            "page": 12,
+            "state": "present",
+            "owner": "Runa",
+            "action": "observe",
+            "temporal": "continuous"
+          }
+        ],
+        "id": "OBJ005",
+        "key": "ordinateur portable"
+      },
+      {
+        "name": "bouteille de Scotch",
+        "aliases": [
+          "bottle of Scotch"
+        ],
+        "category": "accessoire",
+        "mentions": [
+          {
+            "sceneId": "S004",
+            "quote": "the half-empty bottle is standing on the bedside locker",
+            "page": 6,
+            "state": "present",
+            "owner": "unknown",
+            "action": "observe",
+            "temporal": "continuous"
+          }
+        ],
+        "id": "OBJ006",
+        "key": "bouteille de scotch"
+      },
+      {
+        "name": "verre de Scotch",
+        "aliases": [
+          "glass of Scotch"
+        ],
+        "category": "accessoire",
+        "mentions": [
+          {
+            "sceneId": "S004",
+            "quote": "there is her glass of Scotch and money",
+            "page": 6,
+            "state": "present",
+            "owner": "Leila",
+            "action": "observe",
+            "temporal": "continuous"
+          },
+          {
+            "sceneId": "S005",
+            "quote": "her glass of Scotch is standing. It is still full",
+            "page": 11,
+            "state": "full",
+            "owner": "Leila",
+            "action": "observe",
+            "temporal": "continuous"
+          }
+        ],
+        "id": "OBJ007",
+        "key": "verre de scotch"
+      },
+      {
+        "name": "cigarette",
+        "aliases": [
+          "cigarette"
+        ],
+        "category": "accessoire",
+        "mentions": [
+          {
+            "sceneId": "S004",
+            "quote": "She smokes a cigarette",
+            "page": 5,
+            "state": "present",
+            "owner": "Leila",
+            "action": "observe",
+            "temporal": "continuous"
+          },
+          {
+            "sceneId": "S004",
+            "quote": "Leila lights another cigarette",
+            "page": 8,
+            "state": "present",
+            "owner": "Leila",
+            "action": "light",
+            "temporal": "continuous"
+          }
+        ],
+        "id": "OBJ008",
+        "key": "cigarette"
+      },
+      {
+        "name": "purse",
+        "aliases": [
+          "purse"
+        ],
+        "category": "accessoire",
+        "mentions": [
+          {
+            "sceneId": "S004",
+            "quote": "Carefully she looks into her half-open purse",
+            "page": 7,
+            "state": "present",
+            "owner": "Leila",
+            "action": "observe",
+            "temporal": "continuous"
+          }
+        ],
+        "id": "OBJ009",
+        "key": "purse"
+      },
+      {
+        "name": "can de spray de poivre",
+        "aliases": [
+          "pepper spray can"
+        ],
+        "category": "accessoire",
+        "mentions": [
+          {
+            "sceneId": "S004",
+            "quote": "A can of pepper spray can be seen inside",
+            "page": 7,
+            "state": "present",
+            "owner": "Leila",
+            "action": "observe",
+            "temporal": "continuous"
+          }
+        ],
+        "id": "OBJ010",
+        "key": "can de spray de poivre"
+      },
+      {
+        "name": "bougie presque brûlée",
+        "aliases": [
+          "candle"
+        ],
+        "category": "accessoire",
+        "mentions": [
+          {
+            "sceneId": "S006",
+            "quote": "an almost burnt down candle is flickering",
+            "page": 12,
+            "state": "present",
+            "owner": "unknown",
+            "action": "observe",
+            "temporal": "continuous"
+          }
+        ],
+        "id": "OBJ011",
+        "key": "bougie presque brulee"
+      },
+      {
+        "name": "papier",
+        "aliases": [
+          "paper"
+        ],
+        "category": "accessoire",
+        "mentions": [
+          {
+            "sceneId": "S006",
+            "quote": "a piece of paper on the table",
+            "page": 13,
+            "state": "present",
+            "owner": "unknown",
+            "action": "observe",
+            "temporal": "continuous"
+          }
+        ],
+        "id": "OBJ012",
+        "key": "papier"
+      },
+      {
+        "name": "paquet de cigarettes",
+        "aliases": [
+          "cigarette"
+        ],
+        "category": "accessoire",
+        "mentions": [
+          {
+            "sceneId": "S010",
+            "quote": "Between a pile of photographs she finds two packages of cigarettes. They are empty.",
+            "page": 19,
+            "state": "empty",
+            "owner": "unknown",
+            "action": "find",
+            "temporal": "continuous"
+          }
+        ],
+        "id": "OBJ013",
+        "key": "paquet de cigarettes"
+      }
+    ],
+    "alerts": [],
+    "analyzedSceneIds": [
+      "S001",
+      "S002",
+      "S003",
+      "S004",
+      "S005",
+      "S006",
+      "S007",
+      "S008",
+      "S009",
+      "S010"
+    ],
+    "candidateCount": 0,
+    "rejectedEvidence": 3,
+    "usage": {
+      "calls": 4,
+      "inputTokens": 8194,
+      "outputTokens": 1644,
+      "milliseconds": 49834
+    },
+    "model": "openai/gpt-oss-20b",
+    "provider": "groq",
+    "promptVersion": "1.0.0",
+    "completedAt": "2026-11-02T10:44:32.651Z",
+    "milliseconds": 49846,
+    "recorded": true,
+    "provenance": "Appels réels Groq, pas de résultats simulés.",
+    "corpusVersion": "2007-06-30"
+  }
+}
