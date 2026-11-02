@@ -268,6 +268,48 @@ test('cancellation interrupts a quota retry instead of waiting for its full dela
   await assert.rejects(() => pending, /interrompue/);
 });
 
+test('an expired timeout is reported separately from a user cancellation without a real wait', async () => {
+  const expired = new AbortController();
+  expired.abort(new DOMException('Time limit exceeded', 'TimeoutError'));
+  await assert.rejects(
+    () =>
+      callModel(modelConfig(environment), 'JSON', 'Test', {
+        signal: expired.signal,
+        fetcher: async (url, options) => {
+          throw options.signal.reason;
+        },
+      }),
+    (error) =>
+      error.code === 'MODEL_TIMEOUT' &&
+      error.message.includes('délai prévu') &&
+      !error.message.includes('interrompue'),
+  );
+  const cancelled = new AbortController();
+  cancelled.abort();
+  await assert.rejects(
+    () =>
+      callModel(modelConfig(environment), 'JSON', 'Test', {
+        signal: cancelled.signal,
+        fetcher: async (url, options) => {
+          throw options.signal.reason;
+        },
+      }),
+    (error) => error.code !== 'MODEL_TIMEOUT' && error.message === 'Analyse interrompue.',
+  );
+});
+
+test('a timeout raised by fetch keeps its timeout classification without an external signal', async () => {
+  await assert.rejects(
+    () =>
+      callModel(modelConfig(environment), 'JSON', 'Test', {
+        fetcher: async () => {
+          throw new DOMException('Time limit exceeded', 'TimeoutError');
+        },
+      }),
+    (error) => error.code === 'MODEL_TIMEOUT' && error.message.includes('délai prévu'),
+  );
+});
+
 function analysisRequest(signal) {
   return new Request('http://localhost/api/analyze', {
     method: 'POST',

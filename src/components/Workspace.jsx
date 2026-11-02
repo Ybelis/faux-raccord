@@ -772,11 +772,8 @@ function Questions({
                 onClick={() => onScene(source.sceneId)}
               >
                 <span>
-                  {sourceLabel(
-                    project.scenes.find((scene) => scene.id === source.sceneId),
-                    source.page,
-                  )}{' '}
-                  · {source.id}
+                  {sourceLabel(project.scenes.find((scene) => scene.id === source.sceneId))} ·{' '}
+                  {source.id}
                   <ArrowUpRight size={14} />
                 </span>
                 <q>{source.text}</q>

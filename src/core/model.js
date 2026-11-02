@@ -237,6 +237,24 @@ function providerError(status, result) {
   return error;
 }
 
+function connectionError(error, signal) {
+  // Un délai dépassé utilise aussi un signal d'abandon. Sa raison doit être
+  // distinguée d'un arrêt demandé par l'utilisateur, y compris après any().
+  const reason = signal?.aborted ? signal.reason : error;
+  if (reason?.name === 'TimeoutError') {
+    return new ModelError(
+      'Le moteur n’a pas répondu dans le délai prévu. Réessayez ou choisissez un modèle plus léger.',
+      502,
+      'MODEL_TIMEOUT',
+    );
+  }
+  return new ModelError(
+    signal?.aborted ? 'Analyse interrompue.' : 'Le moteur IA ne répond pas. Vérifiez sa connexion.',
+    502,
+    'MODEL_UNREACHABLE',
+  );
+}
+
 async function waitForRetry(response, attempt, signal) {
   const seconds = Number(response.headers.get('retry-after') || 0);
   const wait = Math.min(
@@ -251,7 +269,7 @@ async function waitForRetry(response, attempt, signal) {
     }
     function cancel() {
       clearTimeout(timer);
-      reject(new ModelError('Analyse interrompue.', 502, 'MODEL_UNREACHABLE'));
+      reject(connectionError(signal?.reason, signal));
     }
     if (signal?.aborted) cancel();
     else signal?.addEventListener('abort', cancel, { once: true });
@@ -277,8 +295,9 @@ export async function callModel(
   ];
   for (let attempt = 0; ; attempt++) {
     let response;
+    const timeout = AbortSignal.timeout(180000);
+    const requestSignal = signal ? AbortSignal.any([signal, timeout]) : timeout;
     try {
-      const timeout = AbortSignal.timeout(180000);
       response = await fetcher(config.baseUrl, {
         method: 'POST',
         headers: {
@@ -286,16 +305,10 @@ export async function callModel(
           ...(config.provider === 'groq' ? { Authorization: `Bearer ${config.key}` } : {}),
         },
         body: JSON.stringify(completionBody(config, settings, messages, outputLimit)),
-        signal: signal ? AbortSignal.any([signal, timeout]) : timeout,
+        signal: requestSignal,
       });
-    } catch {
-      throw new ModelError(
-        signal?.aborted
-          ? 'Analyse interrompue.'
-          : 'Le moteur IA ne répond pas. Vérifiez sa connexion.',
-        502,
-        'MODEL_UNREACHABLE',
-      );
+    } catch (error) {
+      throw connectionError(error, requestSignal);
     }
     if ([429, 500, 502, 503].includes(response.status) && attempt < retries) {
       await waitForRetry(response, attempt, signal);
