@@ -1,10 +1,18 @@
 import { parseScreenplay } from '../src/core/parser.js';
 import { retrieve } from '../src/core/retrieval.js';
 import { analyze, answerQuestion } from '../src/core/pipeline.js';
-import { modelConfig, listModels, checkModel, DEFAULT_MODEL_SETTINGS } from '../src/core/model.js';
+import {
+  callModel,
+  modelConfig,
+  listModels,
+  checkModel,
+  DEFAULT_MODEL_SETTINGS,
+} from '../src/core/model.js';
+import { withContinuityProfile } from '../src/core/inference-profile.js';
 import { handleSources } from './sources.js';
 import { demo } from '../data/demo.js';
 import valkaama from '../data/valkaama.json' with { type: 'json' };
+import controlled from '../data/controlled-script/project.json' with { type: 'json' };
 
 let recorded = {},
   evaluation = { status: 'not_run', message: 'Évaluation non exécutée.' };
@@ -24,7 +32,11 @@ const json = (value, status = 200) =>
       'X-Content-Type-Options': 'nosniff',
     },
   });
-const samples = { valkaama, [demo.id]: demo };
+const samples = { [controlled.id]: controlled, valkaama, [demo.id]: demo };
+const sampleScenes = (sample) =>
+  sample.scenes
+    ? { scenes: sample.scenes, warnings: sample.warnings || [] }
+    : parseScreenplay(sample.pages ? sample : sample.text);
 
 function validateScenes(scenes) {
   if (!Array.isArray(scenes) || !scenes.length || scenes.length > 60)
@@ -68,8 +80,10 @@ export async function api(request, env = {}) {
           author: s.author,
           license: s.license,
           synthetic: s.synthetic,
+          controlled: s.controlled,
+          controlledInjectionCount: s.controlledInjectionCount,
           description: s.description,
-          sceneCount: parseScreenplay(s.pages ? s : s.text).scenes.length,
+          sceneCount: sampleScenes(s).scenes.length,
         })),
       );
     if (path.startsWith('/api/samples/')) {
@@ -77,8 +91,8 @@ export async function api(request, env = {}) {
       if (!s) return json({ error: 'Scénario introuvable.' }, 404);
       return json({
         ...s,
-        ...parseScreenplay(s.pages ? s : s.text),
-        analysis: recorded[s.id] || null,
+        ...sampleScenes(s),
+        analysis: recorded[s.id] ? { ...recorded[s.id], recorded: true } : null,
       });
     }
     if (path === '/api/evaluation') return json(evaluation);
@@ -188,11 +202,24 @@ export async function api(request, env = {}) {
           const emit = (value) => {
             if (!cancelled) controller.enqueue(encoder.encode(JSON.stringify(value) + '\n'));
           };
+          const profiled =
+            config.provider === 'groq'
+              ? withContinuityProfile(callModel, {
+                  onProgress: (progress) => emit({ type: 'progress', ...progress }),
+                })
+              : null;
           analyze(body.scenes, config, {
+            ...(profiled ? { model: profiled } : {}),
             signal: analysisSignal,
             onProgress: (progress) => emit({ type: 'progress', ...progress }),
           })
             .then((result) => {
+              if (profiled) {
+                result.inferenceProfile = profiled.profile;
+                result.usage.logicalCalls = profiled.stats.logicalCalls;
+                result.usage.physicalCalls = profiled.stats.physicalCalls;
+                result.usage.calls = profiled.stats.physicalCalls;
+              }
               // Aucun objet n'est différent d'une extraction dont toutes les
               // citations ont été rejetées. Rendre cet échec visible à la revue.
               if (!result.objects.length && result.rejectedEvidence > 0) {

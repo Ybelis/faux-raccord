@@ -3,6 +3,7 @@ import { build as bundle } from 'esbuild';
 import { mkdir, readFile, writeFile, readdir, copyFile } from 'node:fs/promises';
 import path from 'node:path';
 import { loadEvaluation } from './evaluation-data.mjs';
+import { documentAssets, readDocumentAsset } from './document-assets.mjs';
 const root = process.cwd();
 await viteBuild({ root, build: { outDir: 'dist/client', emptyOutDir: true, sourcemap: false } });
 let recorded = {};
@@ -31,6 +32,11 @@ async function walk(dir) {
   }
 }
 await walk('dist/client');
+for (const pathname of Object.keys(documentAssets)) {
+  const document = await readDocumentAsset(pathname);
+  if (document)
+    assets[pathname] = { type: document.type, base64: document.bytes.toString('base64') };
+}
 await mkdir('.local', { recursive: true });
 const entry = `import {api,setRecorded,setEvaluation} from '../worker/api.js';
 setRecorded(${JSON.stringify(recorded)});setEvaluation(${JSON.stringify(evaluation)});

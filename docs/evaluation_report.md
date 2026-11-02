@@ -1,47 +1,61 @@
-# Rapport d'évaluation — Faux Raccord
+# Rapport d’évaluation — Faux Raccord
 
-Exécution réelle Groq du 02/11/2026, modèle `openai/gpt-oss-20b`, prompts v1.0.0. Référence du code de l'exécution : `fc3b8d431ac6`. Prédictions détaillées : [report.json](../eval/report.json).
+État des preuves : 2 novembre 2026. [Rapport principal brut](../eval/controlled-report.json), [script reproductible](../eval/controlled-run.mjs).
 
-## Jeu et protocole
+## 1. Expérience principale demandée : un scénario, quinze erreurs
 
-60 cas synthétiques contrôlés ont été proposés avec assistance IA : dix cas de développement et **50 cas réservés au test** (21 positifs, 29 négatifs). Ils couvrent états, possession, réparations/remplacements, objets homonymes, ellipses, absences de mention et injections. Les annotations restent **à relire et à valider par les étudiants**. Il ne s'agit ni d'erreurs trouvées dans des films ni d'une validation utilisateur.
+**Valkaama**, Tim Baumann d’après Hendrik Behnisch, version 2007-06-30, contient 56 scènes. Une adaptation pédagogique conserve ces scènes et ajoute 19 accessoires. Une version de référence est d’abord cohérente ; **exactement 15 phrases ultérieures sont modifiées pour créer 15 faux raccords**, avec quatre transitions expliquées laissées comme contrôles négatifs. L’évaluation porte sur les scènes S001–S012 du même scénario, où se trouvent toutes les injections. Ce ne sont pas des erreurs attribuées aux auteurs originaux.
 
-La baseline reçoit le texte intégral de chaque cas avec un prompt simple. Le système reçoit les mêmes scènes : extraction structurée, validation des citations, suivi d'états, recherche BM25 puis comparaison LLM. Une alerte ambiguë compte comme un point signalé. Le modèle et la température sont identiques. Les appels et tokens supplémentaires du système sont comptés. Les cas de test n'ont pas servi à modifier le détecteur après lecture des résultats.
+La [page officielle de l’auteur](https://www.valkaama.com/index.php?l=en&page=sources) annonce la licence **CC BY-SA 3.0** du scénario. Attribution et modifications sont conservées dans [license.json](../data/controlled-script/license.json) ; l’adaptation reprend cette licence. La validation automatique vérifie les deux passages de chaque annotation et qu’annuler les quinze modifications restitue exactement la référence. Validation des fichiers : **réussie**. Annotations proposées avec assistance IA ; relecture humaine non encore attestée. Jeu de développement visible, pas test indépendant.
 
-## Métriques et résultats
+Le système applique le pipeline du produit : extraction structurée par lots de trois scènes, contrôle des preuves, suivi d’états, recherche BM25 et comparaison LLM. Protocole baseline : les mêmes 12 scènes en deux moitiés de 6 scènes, deux appels sans mémoire ni RAG ; aucune annotation fournie. Chaque paire annotée tient dans une moitié. Modèle de cette expérience : `openai/gpt-oss-120b` via groq, température 0. Modèle disponible dans le catalogue Groq et compatible JSON ; profil retenu après vérification du quota. Identique pour le système et la baseline ; aucun changement du pipeline. Licence modèle : Apache-2.0 ([texte de licence](https://github.com/openai/gpt-oss/blob/main/LICENSE)). Empreinte du pipeline : `317d4f315597`.
 
-L'unité est le cas : une prédiction est positive dès qu'au moins une alerte est produite. Précision = cas positifs correctement signalés / cas signalés ; rappel = cas positifs signalés / cas positifs ; F1 = moyenne harmonique. Intervalles à 95 % calculés par Wilson sur les proportions. Ils ne corrigent ni la proximité de certains cas synthétiques ni l'absence d'échantillonnage représentatif des tournages.
+Profil continuity-free-v1 : extraction par lots de 3 scènes, plafond de 3000 tokens de sortie ; jugement par groupes de 2 candidats, plafond de 1000 tokens ; baseline en 2 lots de six scènes, plafond de 3000 tokens. Empreinte du profil : b0ebadb133d2.
 
-| Méthode | Précision [IC 95 %] | Rappel [IC 95 %] | F1 | Latence médiane / cas |
+## 2. Métriques, résultats et incertitude
+
+L’unité est **l’alerte associée à une injection**, sur les 19 accessoires annotés. Un vrai positif (VP) doit identifier l’objet et fournir des citations valides dans les deux scènes attendues ; chaque injection ne peut compter qu’une fois. Une alerte erronée ou dupliquée sur ce périmètre est un faux positif (FP). Une injection non détectée est un faux négatif (FN). Les alertes sur les autres objets originaux sont signalées séparément, sans verdict automatique ; elles sont exclues de la précision contrôlée.
+
+Précision = VP / (VP + FP) : parmi les alertes contrôlables, lesquelles sont justes ? Rappel = VP / 15 : combien d’erreurs introduites sont retrouvées ? F1 = 2 × précision × rappel / (précision + rappel). Les intervalles de Wilson à 95 % sont descriptifs : une seule œuvre, erreurs fabriquées et dépendantes, faible effectif. Ils ne démontrent pas une généralisation à d’autres scénarios.
+
+**Mesure réelle du système et de la baseline disponible.**
+
+| Méthode | VP / FP / FN | Précision [IC 95 %] | Rappel [IC 95 %] | F1 |
 |---|---|---|---|---|
-| Prompt simple | 84,0 % [65,3 %–93,6 %] | 100,0 % [84,5 %–100,0 %] | 91,3 % | 0.508 s |
-| Extraction + RAG + comparaison | 94,4 % [74,2 %–99,0 %] | 81,0 % [60,0 %–92,3 %] | 87,2 % | 6.426 s |
+| Prompt simple | 6 / 1 / 9 | 85,7 % [48,7 %–97,4 %] | 40,0 % [19,8 %–64,3 %] | 54,5 % |
+| Extraction + RAG + comparaison | 7 / 0 / 8 | 100,0 % [64,6 %–100,0 %] | 46,7 % [24,8 %–69,9 %] | 63,6 % |
 
-Système : 17 vrais positifs, 1 faux positif, 4 faux négatifs et 28 vrais négatifs. Baseline : 21, 4, 0, 25. Erreurs de fournisseur : 0 pour le système et 0 pour la baseline.
+Système : 7 alertes au total, dont 0 hors périmètre annoté à relire. Baseline : 7 alertes, dont 0 hors périmètre.
 
-**Interprétation :** le système émet moins de fausses alertes, mais manque davantage de points. Le prompt simple obtient ici un meilleur F1. Le seuil visé de 80 % de précision est dépassé ponctuellement, mais la borne basse de l'intervalle du système reste inférieure à 80 %. Cela ne prouve pas une supériorité globale du pipeline.
+Interprétation : le système retrouve 7/15 injections et en manque 8. Aucune fausse alerte contrôlée observée ne signifie pas une précision garantie de 100 % : sa borne basse à 95 % est 64,6 %. La baseline retrouve 6/15 injections et produit 1 fausse alerte contrôlée. Un écart sur une seule œuvre ne démontre pas une supériorité générale.
 
-## Analyse des échecs
+**Échecs système.** E03 : yellow flask (S001 → S002) ; E04 : folded street map (S001 → S002) ; E06 : blue cigarette case (S004 → S005) ; E07 : green medicine vial (S004 → S005) ; E08 : red coin purse (S004 → S005) ; E11 : navy passport holder (S007 → S011) ; E12 : brown hip flask (S008 → S009) ; E15 : rear-door keyring (S008 → S009)  Les deux passages sont consultables dans l’interface et dans [annotations.json](../data/controlled-script/annotations.json). Une citation présente ne garantit pas une bonne interprétation.
 
-- Quatre points de possession manqués : C013, C024, C032, C059. Exemple : un passeport conservé par un agent réapparaît chez sa propriétaire sans restitution décrite. Le suivi des transferts reste à améliorer ; l'extraction et les actions doivent être inspectées avant de choisir la correction.
-- Une fausse alerte temporelle : C051. Un lecteur cassette cassé est vu intact dans une séquence explicitement située cinq ans plus tôt.
-- Les erreurs JSON initiales et la fusion d'objets génériques ont des tests de régression ; ce ne sont pas des échecs masqués du benchmark final.
+Les traces d’extraction donnent des pistes, à vérifier humainement : E03/E06/E12 sont classés comme remplissages malgré la négation ; E04/E08/E15 conservent l’état « perdu » alors que l’objet réapparaît ; E07/E11 ont une mention manquante ou une identité séparée. Le résultat brut n’a pas été corrigé après ce diagnostic. La fausse alerte baseline vient d’une citation presque exacte (« the mechanism » au lieu de « its mechanism »), rejetée par le contrôle des preuves.
 
-## Questions sur le corpus réel
 
-Exécution réelle du 02/11/2026, modèle `openai/gpt-oss-120b`, code `317d4f315597`. **24 questions** sur les scènes 1–10 de Valkaama : vingt réponses appuyées par un passage inchangé et quatre informations absentes. Cette configuration QA est distincte du benchmark de continuité `openai/gpt-oss-20b`. Le profil 120B a été choisi pour son quota disponible après saturation du profil 20B ; il ne remplace pas rétroactivement les anciens scores. Les questions et grilles ont été proposées avec assistance IA ; citations contrôlées par script, relecture étudiante en attente. La baseline reçoit les dix scènes intégrales ; le système cherche sur les mêmes dix scènes.
 
-| Méthode | Réponse conforme et scène citée, ou abstention correcte [IC 95 %] | Abstentions correctes | Durée médiane observée |
-|---|---|---|---|
-| Prompt simple | 16/24 · 66,7 % [46,7 %–82,0 %] | 4/4 | 57.003 s |
-| Questions avec RAG | 19/24 · 79,2 % [59,5 %–90,8 %] | 4/4 | 0.573 s |
+## 3. Tokens, coût et durée
 
-Les durées QA incluent la régulation des quotas de tokens ; elles ne comparent pas la vitesse intrinsèque des modèles. La grille exige les éléments lexicaux attendus, la scène dans le champ des citations et une référence dans le texte, ou `NOT FOUND` sans citation. Des synonymes valables peuvent être rejetés et une négation peut échapper à cette grille. C'est un indicateur automatique approximatif, pas un jugement sémantique indépendant. Les échecs observés du système sont : QA008, QA012, QA013, QA016, QA018. Tokens système : 44044 entrée, 1789 sortie ; baseline : 134090, 1711. [Résultats détaillés](../eval/qa-real-report.json). Cette mesure porte sur les questions, pas sur la continuité ; elle ne démontre pas une généralisation à d'autres œuvres.
+| Exécution sur les 12 scènes | Requêtes physiques / appels logiques | Tokens entrée / sortie | Durées cumulées | Coût catalogue estimé |
+|---|---|---|---|---|
+| Prompt simple | 2 / 2 | 7 531 / 1 088 | 41,093 s | 0,001782 USD |
+| Pipeline | 8 / 6 | 22 344 / 6 085 | 184,217 s | 0,007003 USD |
 
-## Recherche, coût et limites
+Tarif [openai/gpt-oss-120b](https://console.groq.com/docs/model/openai/gpt-oss-120b), vérifié le 2 novembre 2026 : 0.15 USD/M de tokens d’entrée et 0.6 USD/M de sortie. Non mesuré : quota gratuit. Coût théorique au tarif public, hors essais et réessais. Les durées ne sont pas des médianes sur plusieurs scénarios ; attentes de quota, cache et volume influencent le temps observé. La comparaison porte sur le coût des sorties mesurées, pas sur tous les essais de développement.
 
-Sur **12 recherches de référence dans Valkaama**, la bonne scène est retrouvée dans les cinq premiers résultats : 100,0 %. Les citations de référence ont été contrôlées dans le texte. Cette mesure porte uniquement sur la recherche, pas sur la justesse d'une analyse de continuité ou d'une réponse générée.
+Les requêtes physiques comptent les divisions de transport du jugement ; les appels logiques comptent les lots avant cette division. Les durées cumulées conservent le temps des réponses reprises du cache, y compris la régulation de quota. Les 93,072 s de la dernière reprise ne sont pas la durée totale du système (184,217 s).
 
-Le système consomme 45405 tokens d'entrée et 16483 de sortie sur les 50 tests, contre 12977 et 4449 pour la baseline. Au [tarif catalogue Groq vérifié le 2 novembre 2026](https://console.groq.com/docs/model/openai/gpt-oss-20b) (0.075 USD/M en entrée, 0.3 USD/M en sortie), l'estimation est **0.008350 USD au total**, soit 0.000167 USD/cas, contre 0.000046 USD/cas. Hors cache, remises et éventuel plan gratuit ; il ne s'agit pas du montant effectivement facturé. Les latences incluent les éventuelles attentes de quota et ne prédisent pas celles d'un long scénario.
+Notes d’exécution : Profil de sortie : extraction et baseline3000, jugement1000 pour les verdicts courts. Aucune réponse valide régénérée pour améliorer son score. Les profils précédents ont rencontré des plafonds de quota (Qwen OTPM1000, GPT-OSS20B TPD200000). Les refus restent dans executionAttempts ; les réponses de modèles différents ne sont pas mélangées. La durée cumulative est la somme des durées des appels validés, pauses quota comprises. resumedWallSeconds mesure seulement la dernière reprise ; les essais refusés et sondes ne sont pas inclus dans le coût théorique. Les 3 tentatives d’infrastructure antérieures sont conservées dans le rapport brut ; leurs sorties ne sont pas mélangées aux scores affichés.
 
-Prochaines étapes : faire relire les annotations, recueillir l'avis d'un scripte, compléter par de vrais dossiers de production et réserver un nouveau jeu indépendant avant de retoucher le détecteur. Aucun gain de temps utilisateur n'a encore été mesuré.
+## 4. Expériences secondaires et limites
+
+L’ancien jeu séparé de **50 courtes vignettes synthétiques** reste disponible : système, précision 94,4 % [74,2 %–99,0 %], rappel 81,0 %, F1 87,2 % ; baseline 84,0 %, 100,0 %, 91,3 %. L’unité y est le **cas positif**, différente de l’alerte du benchmark principal. Le prompt simple obtient ici le meilleur F1. Modèle `openai/gpt-oss-20b`, exécution du 2 novembre 2026, code `fc3b8d431ac6` ; ces scores historiques ne valident pas rétroactivement le modèle du nouvel essai. [Résultats](../eval/report.json).
+
+**24 questions sur de vrais passages inchangés** des dix premières scènes de Valkaama, modèle `openai/gpt-oss-120b` : 19/24 conformes avec RAG [IC 95 % 59,5 %–90,8 %], contre 16/24 avec prompt simple [46,7 %–82,0 %]. Abstentions correctes : 4/4 et 4/4. La grille lexicale vérifie réponse et citation, ou `NOT FOUND` ; synonymes et négations peuvent la tromper. Ce résultat mesure les réponses, pas la continuité. [Rapport QA](../eval/qa-real-report.json).
+
+Recherche seule : 12 requêtes lexicales sur Valkaama, scène attendue dans les cinq premiers résultats dans 100,0 % des cas. Sécurité : 3/3 tests adversariaux réels réussis ; échantillon limité. [Journal](red_team_log.md).
+
+L’utilité pour une équipe de tournage et le gain de temps ne sont pas validés. Le jeu principal est visible et ses annotations attendent une relecture humaine. Objets homonymes, possession implicite et flashbacks restent difficiles. La modalité image/audio/vidéo est encouragée dans le brief ; aucune n’est revendiquée ici. Réserver un autre scénario annoté avant de conclure sur la généralisation.
+
+Reproduction sans inférence : `node eval/controlled-run.mjs`, puis `node scripts/write-evaluation-docs.mjs` et `node scripts/print-deliverables.mjs --pdf`. Nouvelle mesure payante ou soumise au quota : commande `commands.live` conservée dans le rapport brut.

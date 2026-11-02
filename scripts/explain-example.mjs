@@ -90,4 +90,4 @@ console.log(
 console.log(
   '\n6. Le statut pending signifie : un membre de l’équipe doit encore relire et décider.',
 );
-console.log('Voir docs/code_walkthrough.md pour retrouver chaque fonction.');
+console.log('Guide du code : http://127.0.0.1:4173/#/docs/fonctionnement');

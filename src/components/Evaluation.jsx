@@ -8,7 +8,221 @@ function seconds(value) {
 }
 
 /** Une expérience à la fois : les tests de code ne sont pas un score du LLM. */
-export function Evaluation({ report, analysis }) {
+export function Evaluation({ report, analysis, onOpenControlled, onControlledScene }) {
+  const controlled = report?.controlled;
+  return (
+    <>
+      <section
+        className="panel evaluation-panel controlled-evaluation"
+        aria-label="Expérience contrôlée principale"
+      >
+        <div className="evaluation-title">
+          <div>
+            <p className="group-label">EXPÉRIENCE PRINCIPALE · CONSIGNE DU PROFESSEUR</p>
+            <h2>15 erreurs injectées dans un seul scénario</h2>
+          </div>
+          <Badge>Valkaama · adaptation</Badge>
+        </div>
+        <p>
+          Une version préparée contient 19 accessoires ajoutés. Quinze de leurs transitions sont
+          modifiées pour créer des incohérences ; quatre restent expliquées. Les 56 scènes sont
+          conservées, les passages évalués se trouvent dans les scènes 1 à 12. Le scénario original
+          reste intact.
+        </p>
+        <button className="button secondary" onClick={onOpenControlled}>
+          Ouvrir le scénario de test
+        </button>
+        {controlled?.status === 'measured' ? (
+          <>
+            <p>
+              <strong>Unité : une alerte associée à une erreur injectée.</strong> L’association
+              exige l’objet et deux citations vérifiables dans les scènes attendues. Chaque erreur
+              ne rapporte qu’un vrai positif ; les doublons coûtent de la précision.
+            </p>
+            <div className="table-scroll controlled-metrics">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Méthode</th>
+                    <th>Détectées (VP)</th>
+                    <th>Fausses alertes (FP)</th>
+                    <th>Manquées (FN)</th>
+                    <th>Précision</th>
+                    <th>Rappel</th>
+                    <th>F1</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[
+                    ['Prompt simple', controlled.baseline],
+                    ['Système', controlled.system],
+                  ].map(([label, result]) => (
+                    <tr key={label}>
+                      <th scope="row">{label}</th>
+                      <td>{result?.tp}</td>
+                      <td>{result?.fp}</td>
+                      <td>{result?.fn}</td>
+                      <td>{percent(result?.precision)}</td>
+                      <td>{percent(result?.recall)}</td>
+                      <td>{percent(result?.f1)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="body-note">
+              Même texte et modèle pour les deux méthodes : <code>{controlled.model?.id}</code>. Les
+              alertes sur les accessoires d’origine non annotés sont exclues de cette précision
+              contrôlée : {controlled.system?.unannotatedAlertCount} pour le système,{' '}
+              {controlled.baseline?.unannotatedAlertCount} pour le prompt simple. Ce score ne mesure
+              donc pas toutes les fausses alertes possibles dans le scénario.
+            </p>
+            <details className="metric-details">
+              <summary>Comprendre les chiffres et leur incertitude</summary>
+              <p>
+                Précision = VP / (VP + FP) : parmi les alertes dans le périmètre annoté, combien
+                correspondent à une injection ? Rappel = VP / (VP + FN) : combien des 15 injections
+                sont retrouvées ? F1 combine ces deux proportions.
+              </p>
+              {[
+                ['Système', controlled.system],
+                ['Prompt simple', controlled.baseline],
+              ].map(([label, result]) => (
+                <p key={label}>
+                  <strong>{label} :</strong> précision {result.tp} / ({result.tp} + {result.fp}) ;
+                  rappel {result.tp} / 15. IC descriptif à 95 % : précision{' '}
+                  {result.precisionCI95?.map(percent).join(' – ') || 'non défini'}, rappel{' '}
+                  {result.recallCI95?.map(percent).join(' – ') || 'non défini'}. Durée{' '}
+                  {seconds(result.seconds)} ; {result.usage?.inputTokens?.toLocaleString('fr-FR')}{' '}
+                  tokens d’entrée et {result.usage?.outputTokens?.toLocaleString('fr-FR')} de
+                  sortie. Coût catalogue indicatif :{' '}
+                  {result.indicativeCostUSD == null
+                    ? 'non estimé'
+                    : `${result.indicativeCostUSD.toFixed(4)} USD`}
+                  .
+                </p>
+              ))}
+              <p>
+                Une seule œuvre et des erreurs construites, dépendantes les unes des autres. Le
+                corrigé est proposé avec assistance IA et doit être relu par l’équipe. Les
+                intervalles de Wilson décrivent l’effectif ; ils ne prouvent aucune généralisation à
+                un tournage réel. L’association automatique vérifie les objets et passages, sans
+                être un jugement sémantique indépendant.
+              </p>
+              <p>
+                Injections manquées par le système :{' '}
+                {controlled.system?.missedErrorIds?.join(', ') || 'aucune'}. La baseline peut faire
+                mieux sur ce jeu ; le rapport conserve aussi ses résultats.
+              </p>
+              <p>{controlled.systemProtocol}</p>
+              <p>Prompt simple : {controlled.baselineProtocol?.input}</p>
+              {controlled.executionNotes?.map((note) => (
+                <p key={note}>{note}</p>
+              ))}
+            </details>
+            <details className="metric-details">
+              <summary>Voir les associations des alertes aux erreurs attendues</summary>
+              <div className="table-scroll controlled-ledger">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Alerte</th>
+                      <th>Objet</th>
+                      <th>Résultat</th>
+                      <th>Erreur associée</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {controlled.system?.ledger?.map((row) => (
+                      <tr key={row.alertId}>
+                        <td>{row.alertId}</td>
+                        <td>{row.entityName}</td>
+                        <td>
+                          {{
+                            'true-positive': 'Détectée',
+                            'false-positive-controlled-scope': 'Fausse alerte',
+                            unannotated: 'Hors annotation',
+                          }[row.status] || row.status}
+                        </td>
+                        <td>{row.matchedErrorId || row.reason}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </details>
+          </>
+        ) : (
+          <p className="notice">
+            La mesure contrôlée n’est pas encore complète. Aucun score n’est déduit des anciens
+            tests.{controlled?.errors?.system && ` Système : ${controlled.errors.system.message}`}
+            {controlled?.errors?.baseline && ` Baseline : ${controlled.errors.baseline.message}`}
+          </p>
+        )}
+        {report?.controlledAnnotations?.entries && (
+          <details className="metric-details">
+            <summary>Corrigé des 15 erreurs insérées et des 4 transitions expliquées</summary>
+            <p>
+              Ce corrigé sert à l’évaluation. Il n’est jamais envoyé au modèle pendant l’analyse.
+              Les citations proviennent de l’adaptation de test et ont été proposées avec assistance
+              IA ; une relecture humaine reste nécessaire.
+            </p>
+            <div className="controlled-gold">
+              {report.controlledAnnotations.entries.map((entry) => (
+                <section key={entry.errorId}>
+                  <h3>
+                    {entry.errorId} · {entry.object} ·{' '}
+                    {entry.expectedAlert ? 'Erreur injectée' : 'Transition expliquée'}
+                  </h3>
+                  <p>{entry.reason}</p>
+                  {[
+                    ['Avant', entry.before],
+                    ['Après', entry.after],
+                  ].map(([label, source]) => (
+                    <div key={label}>
+                      <button
+                        className="text-button"
+                        onClick={() => onControlledScene(source.sceneId)}
+                      >
+                        {label} · {source.sceneId} · repère p. {source.sourcePages.join('–')}
+                      </button>
+                      <blockquote>{source.quote}</blockquote>
+                    </div>
+                  ))}
+                </section>
+              ))}
+            </div>
+          </details>
+        )}
+        <p>
+          Source : Tim Baumann, scénario de Valkaama (30 juin 2007), d’après Hendrik Behnisch.{' '}
+          <a
+            href="https://www.valkaama.com/index.php?l=en&page=sources"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Publication de l’auteur
+          </a>{' '}
+          ·{' '}
+          <a
+            href="https://creativecommons.org/licenses/by-sa/3.0/"
+            target="_blank"
+            rel="noreferrer"
+          >
+            CC BY-SA 3.0
+          </a>
+          . Les ajouts et modifications sont signalés, l’adaptation conserve cette licence.
+        </p>
+      </section>
+      <details className="historical-evaluation">
+        <summary>Vérifications complémentaires</summary>
+        <HistoricalEvaluation report={report} analysis={analysis} />
+      </details>
+    </>
+  );
+}
+
+function HistoricalEvaluation({ report, analysis }) {
   const [method, setMethod] = useState('system');
   if (report?.status !== 'completed')
     return (

@@ -1,0 +1,21 @@
+{
+  "originalTitle": "Valkaama",
+  "originalAuthor": "Tim Baumann",
+  "basedOn": "Novel by Hendrik Behnisch",
+  "originalVersion": "2007-06-30",
+  "originalSourceUrl": "https://www.valkaama.com/index.php?l=en&page=sources",
+  "originalDownloadUrl": "https://www.valkaama.com/download.php?target=media%2Fscript%2FValkaama_v.2007-06-30%28English-Final%29.pdf",
+  "originalLocalFile": "data/valkaama.json",
+  "originalPdf": "data/raw/valkaama-en.pdf",
+  "originalSha256": "9514fc49ff19d862e066e84e29999548e743cc7addf9b4d8488916fcc70fbc30",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+  "verification": {
+    "date": "2026-11-02",
+    "url": "https://www.valkaama.com/index.php?l=en&page=sources",
+    "section": "Script",
+    "result": "La page officielle annonce explicitement la licence Creative Commons Attribution-ShareAlike 3.0 pour le scénario et propose le PDF anglais."
+  },
+  "adaptationNotice": "Les accessoires et phrases listés dans annotations.json ont été ajoutés ou modifiés pour un exercice pédagogique par l’équipe Faux Raccord avec assistance IA. Les scènes originales et leurs auteurs restent crédités. Cette adaptation est partagée sous CC BY-SA 3.0. Ne pas attribuer les faux raccords injectés aux auteurs originaux.",
+  "attribution": "Valkaama (scénario, version 2007-06-30), Tim Baumann, d’après le roman de Hendrik Behnisch, https://www.valkaama.com/index.php?l=en&page=sources, CC BY-SA 3.0. Adaptation de continuité : équipe Faux Raccord (2026), modifications synthétiques documentées, même licence."
+}

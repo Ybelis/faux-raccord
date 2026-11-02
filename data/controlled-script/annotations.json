@@ -1,0 +1,824 @@
+{
+  "id": "controlled-valkaama-v1",
+  "version": 1,
+  "role": "development-controlled-benchmark",
+  "annotationStatus": "machine-authored-proposed-for-human-review",
+  "scriptId": "controlled-valkaama",
+  "referenceScriptId": "controlled-valkaama-reference",
+  "evaluationSceneIds": [
+    "S001",
+    "S002",
+    "S003",
+    "S004",
+    "S005",
+    "S006",
+    "S007",
+    "S008",
+    "S009",
+    "S010",
+    "S011",
+    "S012"
+  ],
+  "injectionCount": 15,
+  "negativeControlCount": 4,
+  "limitations": [
+    "Un seul scénario, erreurs artificielles explicites : ne mesure pas la performance sur tous les scénarios réels.",
+    "Jeu de développement visible ; ne constitue pas un test aveugle indépendant.",
+    "Seuls les 19 accessoires ajoutés sont annotés. Les autres alertes sont à relire et exclues de la précision contrôlée.",
+    "Les intervalles de Wilson sont descriptifs : les 15 observations appartiennent au même scénario et ne sont pas indépendantes."
+  ],
+  "entries": [
+    {
+      "errorId": "E01",
+      "kind": "injected-error",
+      "object": "brass pocket watch",
+      "owner": "Runa",
+      "objectAliases": [
+        "brass pocket watch"
+      ],
+      "expectedAlert": true,
+      "expectedStates": {
+        "before": "broken",
+        "after": "intact"
+      },
+      "reason": "Le même accessoire passe de broken à intact sans réparation, remplacement, récupération ni remplissage, explicitement exclus.",
+      "before": {
+        "sceneId": "S001",
+        "sourcePages": [
+          2,
+          3
+        ],
+        "quote": "Runa drops her brass pocket watch. Its glass breaks and its mechanism stops."
+      },
+      "after": {
+        "sceneId": "S002",
+        "sourcePages": [
+          3,
+          4,
+          5
+        ],
+        "quote": "Runa checks the same brass pocket watch: its glass is intact and its mechanism works. Nobody has repaired or replaced it."
+      },
+      "edit": {
+        "operation": "replace-prepared-sentence",
+        "originalScriptPassage": "2) EXT. HALMSTAD - STREET - CAFE – DAY\nRuna, Lasse, Ibsy\nRuna drinks a glass of red wine, Ibsy is busy with her cake\nand Lasse is focused on the lines he is writing on a piece\nof crinkled paper.\nRuna observes the two, li",
+        "originalScriptContainsAddedProp": false,
+        "insertionAnchor": "2) EXT. HALMSTAD - STREET - CAFE – DAY",
+        "sourcePage": 3,
+        "preparedSentence": "Runa holds the same brass pocket watch, still broken and stopped.",
+        "adaptedSentence": "Runa checks the same brass pocket watch: its glass is intact and its mechanism works. Nobody has repaired or replaced it."
+      }
+    },
+    {
+      "errorId": "E02",
+      "kind": "injected-error",
+      "object": "red notebook",
+      "owner": "Lasse",
+      "objectAliases": [
+        "red notebook"
+      ],
+      "expectedAlert": true,
+      "expectedStates": {
+        "before": "destroyed",
+        "after": "intact"
+      },
+      "reason": "Le même accessoire passe de destroyed à intact sans réparation, remplacement, récupération ni remplissage, explicitement exclus.",
+      "before": {
+        "sceneId": "S001",
+        "sourcePages": [
+          2,
+          3
+        ],
+        "quote": "Lasse burns his red notebook completely. Only ashes remain."
+      },
+      "after": {
+        "sceneId": "S002",
+        "sourcePages": [
+          3,
+          4,
+          5
+        ],
+        "quote": "Lasse opens the same red notebook, intact with all its original pages. No replacement has been obtained."
+      },
+      "edit": {
+        "operation": "replace-prepared-sentence",
+        "originalScriptPassage": "2) EXT. HALMSTAD - STREET - CAFE – DAY\nRuna, Lasse, Ibsy\nRuna drinks a glass of red wine, Ibsy is busy with her cake\nand Lasse is focused on the lines he is writing on a piece\nof crinkled paper.\nRuna observes the two, li",
+        "originalScriptContainsAddedProp": false,
+        "insertionAnchor": "2) EXT. HALMSTAD - STREET - CAFE – DAY",
+        "sourcePage": 3,
+        "preparedSentence": "Lasse carries only the ashes of his destroyed red notebook.",
+        "adaptedSentence": "Lasse opens the same red notebook, intact with all its original pages. No replacement has been obtained."
+      }
+    },
+    {
+      "errorId": "E03",
+      "kind": "injected-error",
+      "object": "yellow flask",
+      "owner": "Ibsy",
+      "objectAliases": [
+        "yellow flask"
+      ],
+      "expectedAlert": true,
+      "expectedStates": {
+        "before": "empty",
+        "after": "full"
+      },
+      "reason": "Le même accessoire passe de empty à full sans réparation, remplacement, récupération ni remplissage, explicitement exclus.",
+      "before": {
+        "sceneId": "S001",
+        "sourcePages": [
+          2,
+          3
+        ],
+        "quote": "Ibsy empties her yellow flask completely and screws its cap back on."
+      },
+      "after": {
+        "sceneId": "S002",
+        "sourcePages": [
+          3,
+          4,
+          5
+        ],
+        "quote": "Ibsy pours water from her same yellow flask, now completely full. It has not been refilled."
+      },
+      "edit": {
+        "operation": "replace-prepared-sentence",
+        "originalScriptPassage": "2) EXT. HALMSTAD - STREET - CAFE – DAY\nRuna, Lasse, Ibsy\nRuna drinks a glass of red wine, Ibsy is busy with her cake\nand Lasse is focused on the lines he is writing on a piece\nof crinkled paper.\nRuna observes the two, li",
+        "originalScriptContainsAddedProp": false,
+        "insertionAnchor": "2) EXT. HALMSTAD - STREET - CAFE – DAY",
+        "sourcePage": 3,
+        "preparedSentence": "Ibsy shakes her yellow flask; it is still completely empty.",
+        "adaptedSentence": "Ibsy pours water from her same yellow flask, now completely full. It has not been refilled."
+      }
+    },
+    {
+      "errorId": "E04",
+      "kind": "injected-error",
+      "object": "folded street map",
+      "owner": "Lasse",
+      "objectAliases": [
+        "folded street map"
+      ],
+      "expectedAlert": true,
+      "expectedStates": {
+        "before": "lost",
+        "after": "present"
+      },
+      "reason": "Le même accessoire passe de lost à present sans réparation, remplacement, récupération ni remplissage, explicitement exclus.",
+      "before": {
+        "sceneId": "S001",
+        "sourcePages": [
+          2,
+          3
+        ],
+        "quote": "A gust carries Lasse's folded street map into the river. It sinks out of reach and is lost."
+      },
+      "after": {
+        "sceneId": "S002",
+        "sourcePages": [
+          3,
+          4,
+          5
+        ],
+        "quote": "Lasse unfolds his same folded street map. He has neither recovered it nor obtained a replacement."
+      },
+      "edit": {
+        "operation": "replace-prepared-sentence",
+        "originalScriptPassage": "2) EXT. HALMSTAD - STREET - CAFE – DAY\nRuna, Lasse, Ibsy\nRuna drinks a glass of red wine, Ibsy is busy with her cake\nand Lasse is focused on the lines he is writing on a piece\nof crinkled paper.\nRuna observes the two, li",
+        "originalScriptContainsAddedProp": false,
+        "insertionAnchor": "2) EXT. HALMSTAD - STREET - CAFE – DAY",
+        "sourcePage": 3,
+        "preparedSentence": "Lasse searches his pocket; his folded street map is still missing.",
+        "adaptedSentence": "Lasse unfolds his same folded street map. He has neither recovered it nor obtained a replacement."
+      }
+    },
+    {
+      "errorId": "E05",
+      "kind": "injected-error",
+      "object": "silver wristwatch",
+      "owner": "Leila",
+      "objectAliases": [
+        "silver wristwatch"
+      ],
+      "expectedAlert": true,
+      "expectedStates": {
+        "before": "broken",
+        "after": "intact"
+      },
+      "reason": "Le même accessoire passe de broken à intact sans réparation, remplacement, récupération ni remplissage, explicitement exclus.",
+      "before": {
+        "sceneId": "S004",
+        "sourcePages": [
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "quote": "Leila drops her silver wristwatch. The glass shatters and the hands stop."
+      },
+      "after": {
+        "sceneId": "S005",
+        "sourcePages": [
+          10,
+          11
+        ],
+        "quote": "Leila checks her same silver wristwatch: the glass is intact and the hands work. Nobody has repaired or replaced it."
+      },
+      "edit": {
+        "operation": "replace-prepared-sentence",
+        "originalScriptPassage": "5) INT. GOTHENBURG - HOTEL - ROOM – NIGHT\nMagnus, Leila\nMagnus and Leila are lying together in bed. Magnus stares\nat the ceiling. After a while he gets up and takes the now\nalmost empty bottle.\nHe drinks a sip and goes s",
+        "originalScriptContainsAddedProp": false,
+        "insertionAnchor": "5) INT. GOTHENBURG - HOTEL - ROOM – NIGHT",
+        "sourcePage": 10,
+        "preparedSentence": "Leila sets down her silver wristwatch, still broken and stopped.",
+        "adaptedSentence": "Leila checks her same silver wristwatch: the glass is intact and the hands work. Nobody has repaired or replaced it."
+      }
+    },
+    {
+      "errorId": "E06",
+      "kind": "injected-error",
+      "object": "blue cigarette case",
+      "owner": "Magnus",
+      "objectAliases": [
+        "blue cigarette case"
+      ],
+      "expectedAlert": true,
+      "expectedStates": {
+        "before": "empty",
+        "after": "full"
+      },
+      "reason": "Le même accessoire passe de empty à full sans réparation, remplacement, récupération ni remplissage, explicitement exclus.",
+      "before": {
+        "sceneId": "S004",
+        "sourcePages": [
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "quote": "Magnus takes the last cigarette from his blue cigarette case; the case is completely empty."
+      },
+      "after": {
+        "sceneId": "S005",
+        "sourcePages": [
+          10,
+          11
+        ],
+        "quote": "Magnus opens his same blue cigarette case; it is completely full of cigarettes. Nobody has refilled it."
+      },
+      "edit": {
+        "operation": "replace-prepared-sentence",
+        "originalScriptPassage": "5) INT. GOTHENBURG - HOTEL - ROOM – NIGHT\nMagnus, Leila\nMagnus and Leila are lying together in bed. Magnus stares\nat the ceiling. After a while he gets up and takes the now\nalmost empty bottle.\nHe drinks a sip and goes s",
+        "originalScriptContainsAddedProp": false,
+        "insertionAnchor": "5) INT. GOTHENBURG - HOTEL - ROOM – NIGHT",
+        "sourcePage": 10,
+        "preparedSentence": "Magnus opens his blue cigarette case; it is still empty.",
+        "adaptedSentence": "Magnus opens his same blue cigarette case; it is completely full of cigarettes. Nobody has refilled it."
+      }
+    },
+    {
+      "errorId": "E07",
+      "kind": "injected-error",
+      "object": "green medicine vial",
+      "owner": "Magnus",
+      "objectAliases": [
+        "green medicine vial"
+      ],
+      "expectedAlert": true,
+      "expectedStates": {
+        "before": "destroyed",
+        "after": "intact"
+      },
+      "reason": "Le même accessoire passe de destroyed à intact sans réparation, remplacement, récupération ni remplissage, explicitement exclus.",
+      "before": {
+        "sceneId": "S004",
+        "sourcePages": [
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "quote": "Magnus crushes his green medicine vial under his heel. The vial is destroyed into tiny fragments."
+      },
+      "after": {
+        "sceneId": "S005",
+        "sourcePages": [
+          10,
+          11
+        ],
+        "quote": "Magnus sets his same green medicine vial on the table, intact and unbroken. No replacement has been obtained."
+      },
+      "edit": {
+        "operation": "replace-prepared-sentence",
+        "originalScriptPassage": "5) INT. GOTHENBURG - HOTEL - ROOM – NIGHT\nMagnus, Leila\nMagnus and Leila are lying together in bed. Magnus stares\nat the ceiling. After a while he gets up and takes the now\nalmost empty bottle.\nHe drinks a sip and goes s",
+        "originalScriptContainsAddedProp": false,
+        "insertionAnchor": "5) INT. GOTHENBURG - HOTEL - ROOM – NIGHT",
+        "sourcePage": 10,
+        "preparedSentence": "Magnus sweeps up the fragments of his destroyed green medicine vial.",
+        "adaptedSentence": "Magnus sets his same green medicine vial on the table, intact and unbroken. No replacement has been obtained."
+      }
+    },
+    {
+      "errorId": "E08",
+      "kind": "injected-error",
+      "object": "red coin purse",
+      "owner": "Leila",
+      "objectAliases": [
+        "red coin purse"
+      ],
+      "expectedAlert": true,
+      "expectedStates": {
+        "before": "lost",
+        "after": "present"
+      },
+      "reason": "Le même accessoire passe de lost à present sans réparation, remplacement, récupération ni remplissage, explicitement exclus.",
+      "before": {
+        "sceneId": "S004",
+        "sourcePages": [
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "quote": "Leila accidentally drops her red coin purse down the sealed ventilation shaft. It is lost and unreachable."
+      },
+      "after": {
+        "sceneId": "S005",
+        "sourcePages": [
+          10,
+          11
+        ],
+        "quote": "Leila holds her same red coin purse. She has neither recovered it from the shaft nor obtained a replacement."
+      },
+      "edit": {
+        "operation": "replace-prepared-sentence",
+        "originalScriptPassage": "5) INT. GOTHENBURG - HOTEL - ROOM – NIGHT\nMagnus, Leila\nMagnus and Leila are lying together in bed. Magnus stares\nat the ceiling. After a while he gets up and takes the now\nalmost empty bottle.\nHe drinks a sip and goes s",
+        "originalScriptContainsAddedProp": false,
+        "insertionAnchor": "5) INT. GOTHENBURG - HOTEL - ROOM – NIGHT",
+        "sourcePage": 10,
+        "preparedSentence": "Leila checks her bag; her red coin purse is still missing.",
+        "adaptedSentence": "Leila holds her same red coin purse. She has neither recovered it from the shaft nor obtained a replacement."
+      }
+    },
+    {
+      "errorId": "E09",
+      "kind": "injected-error",
+      "object": "black coffee thermos",
+      "owner": "Runa",
+      "objectAliases": [
+        "black coffee thermos"
+      ],
+      "expectedAlert": true,
+      "expectedStates": {
+        "before": "empty",
+        "after": "full"
+      },
+      "reason": "Le même accessoire passe de empty à full sans réparation, remplacement, récupération ni remplissage, explicitement exclus.",
+      "before": {
+        "sceneId": "S007",
+        "sourcePages": [
+          13,
+          14,
+          15,
+          16
+        ],
+        "quote": "Runa pours out every last drop from her black coffee thermos. It is completely empty."
+      },
+      "after": {
+        "sceneId": "S011",
+        "sourcePages": [
+          21,
+          22,
+          23
+        ],
+        "quote": "Runa pours coffee from her same black coffee thermos, now completely full. Nobody has refilled it since breakfast."
+      },
+      "edit": {
+        "operation": "replace-prepared-sentence",
+        "originalScriptPassage": "11) INT. HALMSTAD - RUNA’S HOME – DAY\nRuna, Lasse\nLasse is packing his bag. Runa leans at the wall. She seems\nto be tense.\nRUNA\nSo you are going to visit one of\nyour girls?\nLASSE\nWhat makes you think that?\nRUNA\n... with ",
+        "originalScriptContainsAddedProp": false,
+        "insertionAnchor": "11) INT. HALMSTAD - RUNA’S HOME – DAY",
+        "sourcePage": 21,
+        "preparedSentence": "Runa holds her black coffee thermos; it has remained empty since breakfast.",
+        "adaptedSentence": "Runa pours coffee from her same black coffee thermos, now completely full. Nobody has refilled it since breakfast."
+      }
+    },
+    {
+      "errorId": "E10",
+      "kind": "injected-error",
+      "object": "green reading glasses",
+      "owner": "Lasse",
+      "objectAliases": [
+        "green reading glasses"
+      ],
+      "expectedAlert": true,
+      "expectedStates": {
+        "before": "broken",
+        "after": "intact"
+      },
+      "reason": "Le même accessoire passe de broken à intact sans réparation, remplacement, récupération ni remplissage, explicitement exclus.",
+      "before": {
+        "sceneId": "S007",
+        "sourcePages": [
+          13,
+          14,
+          15,
+          16
+        ],
+        "quote": "Lasse snaps both arms off his green reading glasses and cracks both lenses."
+      },
+      "after": {
+        "sceneId": "S011",
+        "sourcePages": [
+          21,
+          22,
+          23
+        ],
+        "quote": "Lasse wears his same green reading glasses, with intact arms and lenses. They have not been repaired or replaced since breakfast."
+      },
+      "edit": {
+        "operation": "replace-prepared-sentence",
+        "originalScriptPassage": "11) INT. HALMSTAD - RUNA’S HOME – DAY\nRuna, Lasse\nLasse is packing his bag. Runa leans at the wall. She seems\nto be tense.\nRUNA\nSo you are going to visit one of\nyour girls?\nLASSE\nWhat makes you think that?\nRUNA\n... with ",
+        "originalScriptContainsAddedProp": false,
+        "insertionAnchor": "11) INT. HALMSTAD - RUNA’S HOME – DAY",
+        "sourcePage": 21,
+        "preparedSentence": "Lasse puts his green reading glasses in his pocket, still broken since breakfast.",
+        "adaptedSentence": "Lasse wears his same green reading glasses, with intact arms and lenses. They have not been repaired or replaced since breakfast."
+      }
+    },
+    {
+      "errorId": "E11",
+      "kind": "injected-error",
+      "object": "navy passport holder",
+      "owner": "Runa",
+      "objectAliases": [
+        "navy passport holder"
+      ],
+      "expectedAlert": true,
+      "expectedStates": {
+        "before": "destroyed",
+        "after": "intact"
+      },
+      "reason": "Le même accessoire passe de destroyed à intact sans réparation, remplacement, récupération ni remplissage, explicitement exclus.",
+      "before": {
+        "sceneId": "S007",
+        "sourcePages": [
+          13,
+          14,
+          15,
+          16
+        ],
+        "quote": "Runa cuts her navy passport holder into tiny pieces and burns the pieces to ash."
+      },
+      "after": {
+        "sceneId": "S011",
+        "sourcePages": [
+          21,
+          22,
+          23
+        ],
+        "quote": "Runa opens her same navy passport holder, completely intact. No replacement has been obtained since breakfast."
+      },
+      "edit": {
+        "operation": "replace-prepared-sentence",
+        "originalScriptPassage": "11) INT. HALMSTAD - RUNA’S HOME – DAY\nRuna, Lasse\nLasse is packing his bag. Runa leans at the wall. She seems\nto be tense.\nRUNA\nSo you are going to visit one of\nyour girls?\nLASSE\nWhat makes you think that?\nRUNA\n... with ",
+        "originalScriptContainsAddedProp": false,
+        "insertionAnchor": "11) INT. HALMSTAD - RUNA’S HOME – DAY",
+        "sourcePage": 21,
+        "preparedSentence": "Runa brushes away the ashes of her destroyed navy passport holder.",
+        "adaptedSentence": "Runa opens her same navy passport holder, completely intact. No replacement has been obtained since breakfast."
+      }
+    },
+    {
+      "errorId": "E12",
+      "kind": "injected-error",
+      "object": "brown hip flask",
+      "owner": "Magnus",
+      "objectAliases": [
+        "brown hip flask"
+      ],
+      "expectedAlert": true,
+      "expectedStates": {
+        "before": "empty",
+        "after": "full"
+      },
+      "reason": "Le même accessoire passe de empty à full sans réparation, remplacement, récupération ni remplissage, explicitement exclus.",
+      "before": {
+        "sceneId": "S008",
+        "sourcePages": [
+          16,
+          17
+        ],
+        "quote": "Magnus drains his brown hip flask completely. Not a drop remains inside."
+      },
+      "after": {
+        "sceneId": "S009",
+        "sourcePages": [
+          17,
+          18
+        ],
+        "quote": "Magnus drinks from his same brown hip flask, now completely full. Nobody has refilled it."
+      },
+      "edit": {
+        "operation": "replace-prepared-sentence",
+        "originalScriptPassage": "9) INT. GOTHENBURG - MAGNUS’ FLAT – MORNING\nMagnus, Svenja\nMagnus takes a sip from the bottle while looking through\nthe topics in an internet suicide forum. His alias is\nLAZARUS.\nHe is just reading a post when his instan",
+        "originalScriptContainsAddedProp": false,
+        "insertionAnchor": "9) INT. GOTHENBURG - MAGNUS’ FLAT – MORNING",
+        "sourcePage": 17,
+        "preparedSentence": "Magnus opens his brown hip flask; it is still completely empty.",
+        "adaptedSentence": "Magnus drinks from his same brown hip flask, now completely full. Nobody has refilled it."
+      }
+    },
+    {
+      "errorId": "E13",
+      "kind": "injected-error",
+      "object": "copper fountain pen",
+      "owner": "Magnus",
+      "objectAliases": [
+        "copper fountain pen"
+      ],
+      "expectedAlert": true,
+      "expectedStates": {
+        "before": "broken",
+        "after": "intact"
+      },
+      "reason": "Le même accessoire passe de broken à intact sans réparation, remplacement, récupération ni remplissage, explicitement exclus.",
+      "before": {
+        "sceneId": "S008",
+        "sourcePages": [
+          16,
+          17
+        ],
+        "quote": "Magnus drops his copper fountain pen. Its nib breaks off and it can no longer write."
+      },
+      "after": {
+        "sceneId": "S009",
+        "sourcePages": [
+          17,
+          18
+        ],
+        "quote": "Magnus writes with his same copper fountain pen; its nib is intact. Nobody has repaired or replaced it."
+      },
+      "edit": {
+        "operation": "replace-prepared-sentence",
+        "originalScriptPassage": "9) INT. GOTHENBURG - MAGNUS’ FLAT – MORNING\nMagnus, Svenja\nMagnus takes a sip from the bottle while looking through\nthe topics in an internet suicide forum. His alias is\nLAZARUS.\nHe is just reading a post when his instan",
+        "originalScriptContainsAddedProp": false,
+        "insertionAnchor": "9) INT. GOTHENBURG - MAGNUS’ FLAT – MORNING",
+        "sourcePage": 17,
+        "preparedSentence": "Magnus examines his copper fountain pen; the nib is still broken off.",
+        "adaptedSentence": "Magnus writes with his same copper fountain pen; its nib is intact. Nobody has repaired or replaced it."
+      }
+    },
+    {
+      "errorId": "E14",
+      "kind": "injected-error",
+      "object": "steel memory key",
+      "owner": "Magnus",
+      "objectAliases": [
+        "steel memory key"
+      ],
+      "expectedAlert": true,
+      "expectedStates": {
+        "before": "destroyed",
+        "after": "intact"
+      },
+      "reason": "Le même accessoire passe de destroyed à intact sans réparation, remplacement, récupération ni remplissage, explicitement exclus.",
+      "before": {
+        "sceneId": "S008",
+        "sourcePages": [
+          16,
+          17
+        ],
+        "quote": "Magnus crushes his steel memory key with a hammer until its casing and circuit are destroyed."
+      },
+      "after": {
+        "sceneId": "S009",
+        "sourcePages": [
+          17,
+          18
+        ],
+        "quote": "Magnus plugs in his same steel memory key, its casing and circuit intact and working. No replacement has been obtained."
+      },
+      "edit": {
+        "operation": "replace-prepared-sentence",
+        "originalScriptPassage": "9) INT. GOTHENBURG - MAGNUS’ FLAT – MORNING\nMagnus, Svenja\nMagnus takes a sip from the bottle while looking through\nthe topics in an internet suicide forum. His alias is\nLAZARUS.\nHe is just reading a post when his instan",
+        "originalScriptContainsAddedProp": false,
+        "insertionAnchor": "9) INT. GOTHENBURG - MAGNUS’ FLAT – MORNING",
+        "sourcePage": 17,
+        "preparedSentence": "Magnus collects the destroyed fragments of his steel memory key.",
+        "adaptedSentence": "Magnus plugs in his same steel memory key, its casing and circuit intact and working. No replacement has been obtained."
+      }
+    },
+    {
+      "errorId": "E15",
+      "kind": "injected-error",
+      "object": "rear-door keyring",
+      "owner": "Magnus",
+      "objectAliases": [
+        "rear-door keyring"
+      ],
+      "expectedAlert": true,
+      "expectedStates": {
+        "before": "lost",
+        "after": "present"
+      },
+      "reason": "Le même accessoire passe de lost à present sans réparation, remplacement, récupération ni remplissage, explicitement exclus.",
+      "before": {
+        "sceneId": "S008",
+        "sourcePages": [
+          16,
+          17
+        ],
+        "quote": "Magnus drops his rear-door keyring through a drain grate. It falls out of reach and is lost."
+      },
+      "after": {
+        "sceneId": "S009",
+        "sourcePages": [
+          17,
+          18
+        ],
+        "quote": "Magnus takes his same rear-door keyring from his pocket. He has neither recovered it nor obtained a replacement."
+      },
+      "edit": {
+        "operation": "replace-prepared-sentence",
+        "originalScriptPassage": "9) INT. GOTHENBURG - MAGNUS’ FLAT – MORNING\nMagnus, Svenja\nMagnus takes a sip from the bottle while looking through\nthe topics in an internet suicide forum. His alias is\nLAZARUS.\nHe is just reading a post when his instan",
+        "originalScriptContainsAddedProp": false,
+        "insertionAnchor": "9) INT. GOTHENBURG - MAGNUS’ FLAT – MORNING",
+        "sourcePage": 17,
+        "preparedSentence": "Magnus checks his pocket; his rear-door keyring is still missing.",
+        "adaptedSentence": "Magnus takes his same rear-door keyring from his pocket. He has neither recovered it nor obtained a replacement."
+      }
+    },
+    {
+      "errorId": "N01",
+      "kind": "negative-control",
+      "object": "white toy car",
+      "owner": "Ibsy",
+      "objectAliases": [
+        "white toy car"
+      ],
+      "expectedAlert": false,
+      "expectedStates": {
+        "before": "broken",
+        "after": "intact"
+      },
+      "reason": "La réparation ou le remplissage est explicitement raconté ; aucune alerte attendue.",
+      "before": {
+        "sceneId": "S001",
+        "sourcePages": [
+          2,
+          3
+        ],
+        "quote": "Ibsy's white toy car loses a wheel and cannot roll."
+      },
+      "after": {
+        "sceneId": "S002",
+        "sourcePages": [
+          3,
+          4,
+          5
+        ],
+        "quote": "Lasse repairs Ibsy's white toy car by firmly replacing its wheel. The repaired car rolls normally."
+      },
+      "edit": {
+        "operation": "unchanged-negative-control",
+        "originalScriptPassage": "2) EXT. HALMSTAD - STREET - CAFE – DAY\nRuna, Lasse, Ibsy\nRuna drinks a glass of red wine, Ibsy is busy with her cake\nand Lasse is focused on the lines he is writing on a piece\nof crinkled paper.\nRuna observes the two, li",
+        "originalScriptContainsAddedProp": false,
+        "insertionAnchor": "2) EXT. HALMSTAD - STREET - CAFE – DAY",
+        "sourcePage": 3,
+        "preparedSentence": "Lasse repairs Ibsy's white toy car by firmly replacing its wheel. The repaired car rolls normally.",
+        "adaptedSentence": "Lasse repairs Ibsy's white toy car by firmly replacing its wheel. The repaired car rolls normally."
+      }
+    },
+    {
+      "errorId": "N02",
+      "kind": "negative-control",
+      "object": "amber drinking bottle",
+      "owner": "Leila",
+      "objectAliases": [
+        "amber drinking bottle"
+      ],
+      "expectedAlert": false,
+      "expectedStates": {
+        "before": "empty",
+        "after": "full"
+      },
+      "reason": "La réparation ou le remplissage est explicitement raconté ; aucune alerte attendue.",
+      "before": {
+        "sceneId": "S004",
+        "sourcePages": [
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "quote": "Leila drinks the last water in her amber drinking bottle. It is completely empty."
+      },
+      "after": {
+        "sceneId": "S005",
+        "sourcePages": [
+          10,
+          11
+        ],
+        "quote": "Leila refills her amber drinking bottle with water from the tap. The bottle is now completely full."
+      },
+      "edit": {
+        "operation": "unchanged-negative-control",
+        "originalScriptPassage": "5) INT. GOTHENBURG - HOTEL - ROOM – NIGHT\nMagnus, Leila\nMagnus and Leila are lying together in bed. Magnus stares\nat the ceiling. After a while he gets up and takes the now\nalmost empty bottle.\nHe drinks a sip and goes s",
+        "originalScriptContainsAddedProp": false,
+        "insertionAnchor": "5) INT. GOTHENBURG - HOTEL - ROOM – NIGHT",
+        "sourcePage": 10,
+        "preparedSentence": "Leila refills her amber drinking bottle with water from the tap. The bottle is now completely full.",
+        "adaptedSentence": "Leila refills her amber drinking bottle with water from the tap. The bottle is now completely full."
+      }
+    },
+    {
+      "errorId": "N03",
+      "kind": "negative-control",
+      "object": "small silver compass",
+      "owner": "Runa",
+      "objectAliases": [
+        "small silver compass"
+      ],
+      "expectedAlert": false,
+      "expectedStates": {
+        "before": "broken",
+        "after": "intact"
+      },
+      "reason": "La réparation ou le remplissage est explicitement raconté ; aucune alerte attendue.",
+      "before": {
+        "sceneId": "S007",
+        "sourcePages": [
+          13,
+          14,
+          15,
+          16
+        ],
+        "quote": "Runa's small silver compass falls onto the kitchen floor. Its glass cracks."
+      },
+      "after": {
+        "sceneId": "S011",
+        "sourcePages": [
+          21,
+          22,
+          23
+        ],
+        "quote": "Runa repairs her small silver compass by fitting a spare glass. The compass is now intact."
+      },
+      "edit": {
+        "operation": "unchanged-negative-control",
+        "originalScriptPassage": "11) INT. HALMSTAD - RUNA’S HOME – DAY\nRuna, Lasse\nLasse is packing his bag. Runa leans at the wall. She seems\nto be tense.\nRUNA\nSo you are going to visit one of\nyour girls?\nLASSE\nWhat makes you think that?\nRUNA\n... with ",
+        "originalScriptContainsAddedProp": false,
+        "insertionAnchor": "11) INT. HALMSTAD - RUNA’S HOME – DAY",
+        "sourcePage": 21,
+        "preparedSentence": "Runa repairs her small silver compass by fitting a spare glass. The compass is now intact.",
+        "adaptedSentence": "Runa repairs her small silver compass by fitting a spare glass. The compass is now intact."
+      }
+    },
+    {
+      "errorId": "N04",
+      "kind": "negative-control",
+      "object": "white water bottle",
+      "owner": "Magnus",
+      "objectAliases": [
+        "white water bottle"
+      ],
+      "expectedAlert": false,
+      "expectedStates": {
+        "before": "empty",
+        "after": "full"
+      },
+      "reason": "La réparation ou le remplissage est explicitement raconté ; aucune alerte attendue.",
+      "before": {
+        "sceneId": "S008",
+        "sourcePages": [
+          16,
+          17
+        ],
+        "quote": "Magnus empties his white water bottle completely."
+      },
+      "after": {
+        "sceneId": "S009",
+        "sourcePages": [
+          17,
+          18
+        ],
+        "quote": "Magnus refills his white water bottle at the kitchen tap. The bottle is now full."
+      },
+      "edit": {
+        "operation": "unchanged-negative-control",
+        "originalScriptPassage": "9) INT. GOTHENBURG - MAGNUS’ FLAT – MORNING\nMagnus, Svenja\nMagnus takes a sip from the bottle while looking through\nthe topics in an internet suicide forum. His alias is\nLAZARUS.\nHe is just reading a post when his instan",
+        "originalScriptContainsAddedProp": false,
+        "insertionAnchor": "9) INT. GOTHENBURG - MAGNUS’ FLAT – MORNING",
+        "sourcePage": 17,
+        "preparedSentence": "Magnus refills his white water bottle at the kitchen tap. The bottle is now full.",
+        "adaptedSentence": "Magnus refills his white water bottle at the kitchen tap. The bottle is now full."
+      }
+    }
+  ]
+}

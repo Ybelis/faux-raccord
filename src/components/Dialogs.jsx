@@ -2,7 +2,6 @@ import React from 'react';
 import {
   ArrowDownToLine,
   ArrowRight,
-  BookOpen,
   Check,
   FileText,
   FolderOpen,
@@ -34,7 +33,6 @@ export function Dialogs(props) {
     onExportReport,
     onWelcomeClose,
     onTour,
-    onEvaluation,
   } = props;
   const close = () => onModal(null);
   if (modal === 'welcome')
@@ -104,7 +102,11 @@ export function Dialogs(props) {
               <strong>
                 {sample.title}
                 <Badge tone={sample.synthetic ? 'amber' : ''}>
-                  {sample.synthetic ? 'Fiction synthétique' : 'Scénario réel'}
+                  {sample.controlled
+                    ? `${sample.controlledInjectionCount} erreurs injectées`
+                    : sample.synthetic
+                      ? 'Fiction synthétique'
+                      : 'Scénario réel'}
                 </Badge>
               </strong>
               <small>
@@ -191,57 +193,6 @@ export function Dialogs(props) {
           L’export contient le texte du scénario. Ses conditions de redistribution restent
           applicables.
         </p>
-      </Modal>
-    );
-  if (modal === 'documentation')
-    return (
-      <Modal
-        title="Méthode et limites"
-        subtitle="Faux Raccord examine le texte d’un scénario. Il ne vérifie pas les images d’un film."
-        onClose={close}
-        wide
-      >
-        <div className="documentation-copy">
-          <h3>Une application d’IA générative avec RAG</h3>
-          <p>
-            Le modèle génère des fiches d’accessoires, des explications et des réponses à partir des
-            passages du scénario. Le code suit un parcours défini et contrôle les sources ; vous
-            prenez la décision de relecture.
-          </p>
-          <h3>Comment lire un résultat</h3>
-          <p>
-            Un point signalé est une hypothèse à relire. Les citations existent dans le texte, mais
-            cela ne garantit pas que leur interprétation est correcte. Confirmer ou écarter un point
-            enregistre la décision de votre équipe.
-          </p>
-          <h3>Ce qui est couvert</h3>
-          <p>
-            Les états et la possession d’accessoires explicitement mentionnés, dans les scènes
-            sélectionnées. Les accessoires non extraits, les ellipses et les changements de
-            chronologie peuvent produire des erreurs.
-          </p>
-          <h3>Conservation et confidentialité</h3>
-          <p>
-            Les projets sont conservés sur cet appareil, sans synchronisation entre membres. Groq
-            reçoit les scènes de l’analyse et les passages recherchés pour une question. Ollama
-            permet un traitement local lorsque le projet tourne sur votre ordinateur.
-          </p>
-          <h3>Pour préparer la soutenance</h3>
-          <p>
-            Le dépôt contient le README, les diagrammes d’architecture, le parcours du code, la
-            matrice des exigences du cours et les réponses aux principales limites. Un test interne
-            entre les trois membres est proposé pour vérifier la prise en main. Il ne constitue pas
-            une validation métier auprès d’une équipe de tournage.
-          </p>
-        </div>
-        <button className="button secondary full" onClick={onEvaluation}>
-          Consulter les résultats d’évaluation
-          <ArrowRight size={17} />
-        </button>
-        <button className="text-button welcome-skip" onClick={onTour} disabled={busy || tutorial}>
-          <Play size={16} />
-          Revoir le guide interactif
-        </button>
       </Modal>
     );
   return null;

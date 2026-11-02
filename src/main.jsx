@@ -19,6 +19,7 @@ import { allProjects, saveProject, downloadFile, reportMarkdown } from './storag
 import { Empty } from './components/ui.jsx';
 import { GuidedTour, TOUR_STEPS } from './components/GuidedTour.jsx';
 import { Dialogs } from './components/Dialogs.jsx';
+import { ProjectGuide } from './components/ProjectGuide.jsx';
 import {
   AnalysisWorkspace,
   ScriptWorkspace,
@@ -64,7 +65,12 @@ function App() {
   const [samples, setSamples] = useState([]);
   const [system, setSystem] = useState(null);
   const [selection, setSelection] = useState(() => readModelSelection());
-  const [tab, setTab] = useState('script');
+  const [tab, setTab] = useState(() =>
+    window.location.hash.startsWith('#/docs') ? 'docs' : 'script',
+  );
+  const [chapterId, setChapterId] = useState(
+    () => window.location.hash.split('/')[2] || 'utiliser',
+  );
   const [modal, setModal] = useState(null);
   const [theme, setTheme] = useState(() => preference('fr-theme', 'system'));
   const [error, setError] = useState('');
@@ -100,13 +106,26 @@ function App() {
           String(b.savedAt).localeCompare(String(a.savedAt)),
         )[0];
         setProject(latest || (await api('samples/valkaama')));
-        if (!preference('fr-introduction-seen', '')) setModal('welcome');
+        if (!window.location.hash.startsWith('#/docs') && !preference('fr-introduction-seen', ''))
+          setModal('welcome');
       })
       .catch((error) => setError(safeText(error)));
     api('evaluation')
       .then(setEvalReport)
       .catch(() => {});
     return () => abort.current?.abort();
+  }, []);
+
+  useEffect(() => {
+    function followDocumentationLink() {
+      if (window.location.hash.startsWith('#/docs')) {
+        setTab('docs');
+        setChapterId(window.location.hash.split('/')[2] || 'utiliser');
+        setModal(null);
+      } else setTab((current) => (current === 'docs' ? 'script' : current));
+    }
+    window.addEventListener('hashchange', followDocumentationLink);
+    return () => window.removeEventListener('hashchange', followDocumentationLink);
   }, []);
 
   useEffect(() => {
@@ -157,14 +176,23 @@ function App() {
   const currentStep = STEPS.findIndex((step) => step.id === tab);
 
   function navigate(next) {
+    if (next !== 'docs' && window.location.hash.startsWith('#/docs'))
+      window.history.pushState(null, '', window.location.pathname + window.location.search);
     setTab(next);
     setError('');
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }
+  function openDocumentation(id = 'utiliser') {
+    setModal(null);
+    setTab('docs');
+    setChapterId(id);
+    window.location.hash = `/docs/${id}`;
     window.scrollTo({ top: 0, behavior: 'instant' });
   }
   function changeProject(nextProject) {
     questionRequest.current++;
     setProject(nextProject);
-    setTab('script');
+    navigate('script');
     setModal(null);
     setActiveScene(null);
     setActiveAlert(null);
@@ -428,7 +456,12 @@ function App() {
             <Play size={17} />
             Guide interactif
           </button>
-          <button className="nav-utility" onClick={() => setModal('documentation')}>
+          <button
+            className="nav-utility"
+            onClick={() => openDocumentation()}
+            disabled={tourStep !== null}
+            aria-current={tab === 'docs' ? 'page' : undefined}
+          >
             <BookOpen size={17} />
             Documentation
           </button>
@@ -500,7 +533,13 @@ function App() {
               </button>
             </div>
           )}
-          {!project ? (
+          {tab === 'docs' ? (
+            <ProjectGuide
+              chapterId={chapterId}
+              onChapter={openDocumentation}
+              onEvaluation={() => navigate('evaluation')}
+            />
+          ) : !project ? (
             <Empty icon={LoaderCircle} title="Ouverture du projet">
               Chargement du scénario et de vos dernières décisions.
             </Empty>
@@ -613,12 +652,26 @@ function App() {
                   tutorial={tourStep !== null}
                 />
               )}
-              {tab === 'evaluation' && <Evaluation report={evalReport} analysis={analysis} />}
+              {tab === 'evaluation' && (
+                <Evaluation
+                  report={evalReport}
+                  analysis={analysis}
+                  onOpenControlled={() => openSample('controlled-valkaama')}
+                  onControlledScene={async (sceneId) => {
+                    await openSample('controlled-valkaama');
+                    openScene(sceneId);
+                  }}
+                />
+              )}
             </>
           )}
           <footer className="workspace-footer">
             <span>Faux Raccord · Aide à la relecture de scénarios</span>
-            <button className="text-button" onClick={() => setModal('documentation')}>
+            <button
+              className="text-button"
+              onClick={() => openDocumentation('fonctionnement')}
+              disabled={tourStep !== null}
+            >
               Méthode et limites
               <ArrowRight size={14} />
             </button>
@@ -653,10 +706,6 @@ function App() {
         onExportReport={exportReport}
         onWelcomeClose={dismissWelcome}
         onTour={startTour}
-        onEvaluation={() => {
-          setModal(null);
-          navigate('evaluation');
-        }}
       />
       {tourStep !== null && !modal && (
         <GuidedTour

@@ -3,19 +3,19 @@
 @page { size: A4; margin: 15mm; }
 * { box-sizing: border-box; }
 html { color-scheme: light; background: #e9ebed; }
-body { margin: 0; color: #18242d; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; line-height: 1.4; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body { margin: 0; color: #18242d; font-family: Arial, Helvetica, sans-serif; font-size: 9.5pt; line-height: 1.33; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 .page { width: 180mm; height: 266mm; margin: 12mm auto; padding: 0 0 13mm; position: relative; background: white; break-after: page; }
 .page:last-child { break-after: auto; }
 .screen-page { padding: 15mm; width: 210mm; height: 296mm; }
 .screen-page .page { margin: 0; }
-header { border-top: 3pt solid #233e49; padding-top: 5mm; margin-bottom: 6mm; }
+header { border-top: 3pt solid #233e49; padding-top: 5mm; margin-bottom: 4mm; }
 .brand { display: flex; justify-content: space-between; align-items: baseline; gap: 8mm; font-size: 8.5pt; letter-spacing: .04em; color: #4b606a; }
 .brand strong { letter-spacing: .11em; color: #233e49; }
 h1 { font-size: 23pt; line-height: 1.12; margin: 4mm 0 2mm; font-weight: 700; letter-spacing: -.035em; }
 .subtitle { color: #53636b; margin: 0; max-width: 166mm; }
-h2 { font-size: 12pt; margin: 5mm 0 2mm; line-height: 1.25; color: #233e49; }
+h2 { font-size: 12pt; margin: 3.5mm 0 2mm; line-height: 1.25; color: #233e49; }
 h3 { font-size: 10pt; margin: 3mm 0 1mm; }
-p { margin: 0 0 2.5mm; }
+p { margin: 0 0 2mm; }
 ul { margin: 1mm 0 3mm; padding-left: 4.5mm; }
 li { margin: 0 0 1.2mm; }
 table { width: 100%; border-collapse: collapse; margin: 2.5mm 0; font-size: 9pt; }
@@ -42,38 +42,40 @@ a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
 @media print { html { background: white; } .page { margin: 0; } a { text-decoration: none; } }
 </style></head><body>
 <main class="page">
-<header><div class="brand"><strong>FAUX RACCORD</strong><span>2 novembre 2026</span></div><h1>Rapport d’évaluation</h1><p class="subtitle">Continuité textuelle des accessoires · résultats du prototype et limites de leur interprétation</p></header>
-<h2>1. Protocole de continuité</h2>
-<p>Le jeu comporte <strong>60 cas synthétiques contrôlés</strong> : dix de développement et cinquante réservés au test (21 positifs, 29 négatifs). États, possession, réparations, objets homonymes, ellipses, absences de mention et injections sont représentés. Les annotations assistées par IA <strong>attendent une validation étudiante</strong>.</p>
-<p>Le prompt simple reçoit le texte intégral du cas. Le système reçoit les mêmes scènes : extraction JSON, validation des citations, suivi d’objets, recherche BM25 puis comparaison LLM. Modèle et température identiques ; tous les appels du système sont comptés.</p>
-<p class="small">Référence : openai/gpt-oss-20b sur groq · prompts v1.0.0 · température 0 · raisonnement low · code <span class="mono">fc3b8d431ac6</span>. Les nouveaux réglages du produit n’héritent pas de ces scores.</p>
-<h2>2. Résultats et incertitude</h2>
-<p>L’unité est le <strong>cas</strong> : au moins une alerte rend la prédiction positive. Précision = VP / (VP + FP) ; rappel = VP / (VP + FN) ; F1 = moyenne harmonique. Les intervalles de Wilson à 95 % rendent visible le petit effectif.</p>
-<table class="metric-table"><thead><tr><th>Méthode</th><th>Précision [IC 95 %]</th><th>Rappel</th><th>F1</th><th>Médiane</th></tr></thead><tbody><tr><td>Prompt simple</td><td>84,0 %<br><span class="small">65,3 %–93,6 %</span></td><td>100,0 %</td><td>91,3 %</td><td>0,508 s</td></tr><tr><td>Extraction + RAG + comparaison</td><td>94,4 %<br><span class="small">74,2 %–99,0 %</span></td><td>81,0 %</td><td>87,2 %</td><td>6,426 s</td></tr></tbody></table>
-<p class="small">Système : 17 VP · 1 FP · 4 FN · 28 VN. Baseline : 21 VP · 4 FP · 0 FN · 25 VN. Erreurs fournisseur : 0 système, 0 baseline. IC du rappel : 60,0 %–92,3 % système ; 84,5 %–100,0 % baseline.</p>
-<div class="note"><strong>Le prompt simple obtient le meilleur F1.</strong> Le pipeline réduit les fausses alertes de 4 à 1, mais manque 4 cas positifs. Sa supériorité globale n’est pas démontrée. La borne basse de la précision ne confirme pas un seuil de 80 %.</div>
-<h2>3. Échecs à expliquer</h2>
-<ul><li><strong>Quatre faux négatifs de possession</strong> : C013, C024, C032, C059. Un passeport conservé par un agent réapparaît chez sa propriétaire sans restitution décrite.</li><li><strong>Un faux positif temporel</strong> : C051. Un lecteur cassette cassé est vu intact dans une séquence située cinq ans plus tôt.</li></ul>
-<p>Les cas sont courts, synthétiques et parfois proches. Leurs intervalles ne corrigent pas ce biais et ne prédisent pas la performance sur un film. Après lecture des erreurs, toute correction doit être évaluée sur de nouveaux cas indépendants.</p>
+<header><div class="brand"><strong>FAUX RACCORD</strong><span>2 novembre 2026</span></div><h1>Rapport d’évaluation</h1><p class="subtitle">Expérience principale : retrouver quinze faux raccords introduits dans un même scénario</p></header>
+<h2>1. Données, droits et protocole</h2>
+<p><strong>Valkaama</strong>, Tim Baumann d’après Hendrik Behnisch, version 2007-06-30 : 56 scènes conservées. L’adaptation pédagogique ajoute 19 accessoires et prépare leur continuité cohérente. <strong>Exactement quinze phrases ultérieures sont ensuite modifiées</strong> pour créer quinze erreurs ; quatre transitions expliquées restent comme contrôles négatifs. L’évaluation couvre S001–S012, où se trouvent toutes les injections. Aucun faux raccord n’est attribué aux auteurs originaux.</p>
+<p>La <a href="https://www.valkaama.com/index.php?l=en&amp;page=sources">page officielle de l’auteur</a> annonce la licence <strong>CC BY-SA 3.0</strong>. L’adaptation est attribuée, ses modifications documentées et sa licence identique. Les contrôles vérifient les preuves littérales et que l’annulation des quinze modifications restitue la référence : <strong>validation réussie</strong>. Annotations proposées avec assistance IA, relecture humaine non attestée ; jeu de développement visible.</p>
+<p>Le système utilise le pipeline du produit : extraction par lots de trois scènes, contrôle des citations, suivi des états, BM25 puis comparaison LLM. Protocole baseline, même modèle : les mêmes 12 scènes en deux moitiés de 6 scènes, deux appels sans mémoire ni RAG ; aucune annotation fournie. Chaque paire annotée tient dans une moitié.</p>
+<p class="small">Modèle : <span class="mono">openai/gpt-oss-120b</span> via groq, température 0, licence Apache-2.0. Pipeline <span class="mono">317d4f315597</span>.</p>
+<p class="small">Profil continuity-free-v1 : extraction 3 scènes / 3000 tokens ; jugement 2 candidats / 1000 tokens ; baseline 2 × 6 scènes / 3000 tokens. Hash b0ebadb133d2.</p>
+<h2>2. Résultats par alerte et incertitude</h2>
+<p>Un vrai positif (VP) identifie l’accessoire annoté et cite ses deux scènes avec des passages valides ; une seule détection compte par injection. Une alerte erronée ou dupliquée est un faux positif (FP). Une injection manquée est un faux négatif (FN).</p>
+<p><strong>Précision = VP / (VP + FP)</strong>, parmi les alertes contrôlables. <strong>Rappel = VP / 15</strong>, parmi les erreurs introduites. F1 : moyenne harmonique. Les alertes sur les objets originaux non annotés sont exclues de la précision contrôlée et restent à relire.</p>
+<table class="metric-table"><thead><tr><th>Méthode</th><th>VP / FP / FN</th><th>Précision [IC 95 %]</th><th>Rappel [IC 95 %]</th><th>F1</th></tr></thead><tbody><tr><td>Prompt simple</td><td>6 / 1 / 9</td><td>85,7 %<br><span class="small">48,7 %–97,4 %</span></td><td>40,0 %<br><span class="small">19,8 %–64,3 %</span></td><td>54,5 %</td></tr><tr><td>Extraction + RAG + comparaison</td><td>7 / 0 / 8</td><td>100,0 %<br><span class="small">64,6 %–100,0 %</span></td><td>46,7 %<br><span class="small">24,8 %–69,9 %</span></td><td>63,6 %</td></tr></tbody></table>
+<div class="note"><strong>Mesure réelle du système et de la baseline disponible.</strong> 7 alertes système, dont 0 hors périmètre annoté ; 7 alertes baseline, dont 0 hors périmètre. 8/15 injections manquées ; une précision observée de 100 % ne garantit pas ce niveau sur un autre scénario.</div>
+<p class="small">IC de Wilson à 95 % descriptifs : erreurs construites et dépendantes, une seule œuvre, faible effectif. Ils ne prouvent pas une généralisation à d’autres films.</p>
+<h2>3. Échecs et preuve affichée</h2>
+<p><strong>Injections manquées :</strong> E03, E04, E06, E07, E08, E11, E12, E15 </p>
+<p>Piste dans les traces : E03/E06/E12 sont extraits comme remplissages malgré la négation ; diagnostic à relire. Chaque alerte affiche ses deux passages, scène et page. Une citation exacte ne garantit pas une interprétation juste.</p>
 <footer><span>Rapport d’évaluation · équipe de trois — noms à renseigner</span><span>1 / 2</span></footer>
 </main>
 <main class="page">
-<header><div class="brand"><strong>FAUX RACCORD</strong><span>2 novembre 2026</span></div><h1>Données réelles et limites</h1><p class="subtitle">Mesures complémentaires · coût · sécurité · travail restant</p></header>
-<h2>4. Questions sur un vrai scénario</h2>
+<header><div class="brand"><strong>FAUX RACCORD</strong><span>2 novembre 2026</span></div><h1>Coût, compléments et limites</h1><p class="subtitle">Les expériences suivantes ont leur propre unité et leur propre modèle</p></header>
+<h2>4. Coût et durée de l’expérience principale</h2>
+<table><thead><tr><th>Douze scènes</th><th>Tokens entrée / sortie</th><th>Durées cumulées</th><th>Coût estimé</th></tr></thead><tbody><tr><td>Prompt simple (2 requêtes)</td><td>7 531 / 1 088</td><td>41,093 s</td><td>0,001782 USD</td></tr><tr><td>Pipeline (8 requêtes)</td><td>22 344 / 6 085</td><td>184,217 s</td><td>0,007003 USD</td></tr></tbody></table>
+<p class="small">Tarif <a href="https://console.groq.com/docs/model/openai/gpt-oss-120b">openai/gpt-oss-120b</a>, vérifié le 2 novembre 2026 : 0.15 USD/M en entrée, 0.6 USD/M en sortie. Coût théorique des sorties mesurées, hors essais et facture réelle. Les durées additionnent les requêtes, y compris quotas et réponses reprises du cache ; la dernière reprise seule (93,072 s) n’est pas la durée totale. 8 requêtes système pour 6 appels logiques, le transport divisant le jugement.</p>
 
-<p><strong>24 questions sur Valkaama</strong> : vingt informations présentes et quatre absentes. Même corpus : dix scènes intégrales pour la baseline, passages retrouvés pour le RAG. Profil QA <span class="mono">openai/gpt-oss-120b</span>, distinct de la continuité 20B.</p>
-<table class="metric-table"><thead><tr><th>Méthode</th><th>Réussite [IC 95 %]</th><th>Abstentions correctes</th><th>Médiane</th></tr></thead><tbody><tr><td>Prompt simple</td><td>16/24 · 66,7 %<br><span class="small">46,7 %–82,0 %</span></td><td>4/4</td><td>57,003 s</td></tr><tr><td>Questions avec RAG</td><td>19/24 · 79,2 %<br><span class="small">59,5 %–90,8 %</span></td><td>4/4</td><td>0,573 s</td></tr></tbody></table>
-<p>Grille : éléments lexicaux, scène et référence dans la réponse, ou <span class="mono">NOT FOUND</span> sans citation. Synonymes et négations limitent ce contrôle ; relecture nécessaire. Les durées incluent la régulation du quota.</p>
-<p class="small">Exécution : 2 novembre 2026, openai/gpt-oss-120b, code 317d4f315597. Erreurs fournisseur : 0. Échecs système : QA008, QA012, QA013, QA016, QA018. Cette mesure concerne les réponses, pas la détection de continuité.</p>
-
-<h2>5. Recherche, tokens et coût</h2>
-<p>Sur 12 recherches lexicales dans Valkaama, la scène de référence apparaît dans les cinq premiers résultats dans <strong>100,0 %</strong> des cas. Les citations sont contrôlées dans le texte. Ce résultat mesure la recherche seule.</p>
-<table><thead><tr><th>50 cas synthétiques</th><th>Tokens entrée / sortie</th><th>Coût estimé / cas</th></tr></thead><tbody><tr><td>Prompt simple</td><td>12 977 / 4 449</td><td>0,000046 USD</td></tr><tr><td>Pipeline</td><td>45 405 / 16 483</td><td>0,000167 USD</td></tr></tbody></table>
-<p class="small">Tarif catalogue openai/gpt-oss-20b, vérifié le 2 novembre 2026 : 0.075 USD/M en entrée et 0.3 USD/M en sortie. Estimation hors cache, remises et plan gratuit, distincte d’une facture. Les quotas et le volume d’un scénario modifient coût et latence.</p>
-<h2>6. Sécurité et portée</h2>
-<p>3/3 essais adversariaux réels ont résisté aux attaques testées : instruction dans le scénario, demande de secret et détournement de la question. Cet échantillon ne garantit pas la résistance générale aux injections.</p>
-<p>Les citations extraites sont recherchées après normalisation ; les identifiants inventés sont rejetés. Un passage présent ne garantit pas une interprétation correcte. La validation humaine reste nécessaire.</p>
-<div class="note warning"><strong>Validation d’usage :</strong> les retours internes ont guidé le parcours et les explications. Le test entre les trois membres reste à consigner ; il ne prouve pas un gain de temps en tournage. Faire relire les références et réserver de nouveaux cas avant de modifier le détecteur.</div>
-<p class="small rule">Sources et preuves : <span class="mono">eval/report.json</span>, <span class="mono">eval/qa-real-report.json</span>, <span class="mono">eval/retrieval-real.json</span>, <span class="mono">eval/red-team-results.json</span>. Méthodes reproductibles dans <span class="mono">eval/</span>. Tarifs : <a href="https://console.groq.com/docs/model/openai/gpt-oss-20b">documentation Groq</a>. Attribution du scénario et droits : <span class="mono">data/README.md</span>.</p>
+<h2>5. Expériences secondaires</h2>
+<p><strong>50 vignettes synthétiques réservées au test</strong>, dix autres cas ayant servi au développement. Unité : cas positif si au moins une alerte, différente de l’unité du benchmark principal. Modèle <span class="mono">openai/gpt-oss-20b</span>, 2 novembre 2026, code <span class="mono">fc3b8d431ac6</span>. Annotations assistées par IA à relire.</p>
+<table><thead><tr><th>Par cas synthétique</th><th>Précision [IC 95 %]</th><th>Rappel</th><th>F1</th></tr></thead><tbody><tr><td>Prompt simple</td><td>84,0 % [65,3 %–93,6 %]</td><td>100,0 %</td><td>91,3 %</td></tr><tr><td>Pipeline</td><td>94,4 % [74,2 %–99,0 %]</td><td>81,0 %</td><td>87,2 %</td></tr></tbody></table>
+<p>Le prompt simple a ici le meilleur F1 ; le pipeline émet moins de fausses alertes. Ces scores historiques ne valident pas rétroactivement le nouveau modèle.</p>
+<p><strong>24 questions sur les dix premières scènes inchangées de Valkaama</strong>, profil <span class="mono">openai/gpt-oss-120b</span> : 19/24 conformes avec RAG [IC 95 % 59,5 %–90,8 %], contre 16/24 au prompt simple [46,7 %–82,0 %]. Abstentions correctes : 4/4 et 4/4. La grille lexicale vérifie réponse et citation, ou <span class="mono">NOT FOUND</span>. Synonymes et négations peuvent la tromper. Cette mesure porte sur les réponses, pas la continuité.</p>
+<p><strong>Recherche seule :</strong> 12 requêtes lexicales, scène attendue dans les cinq premiers résultats : 100,0 %. Cela ne mesure pas la justesse d’une analyse.</p>
+<h2>6. Sécurité, portée et travaux restants</h2>
+<p>3/3 essais adversariaux réels résistants aux attaques testées. Citations et identifiants contrôlés ; documents traités comme données ; clé absente des prompts ; sorties non exécutées. Trois essais ne garantissent pas une sécurité générale.</p>
+<p>Le besoin métier et le gain de temps ne sont pas validés. Relecture humaine des annotations à consigner. Objets homonymes, transferts implicites et flashbacks restent difficiles. Aucune modalité image/audio/vidéo n’est revendiquée ; elle est encouragée dans le brief.</p>
+<div class="note warning">Une œuvre et des erreurs construites ne suffisent pas à généraliser. Réserver un autre scénario annoté avant de conclure.</div>
+<p class="small rule">Preuves : rapports JSON dans <span class="mono">eval/</span> ; annotations et licence dans <span class="mono">data/controlled-script/</span>. Reproduction sans appel : <span class="mono">node eval/controlled-run.mjs</span>. Les chemins complets figurent dans la version Markdown.</p>
 <footer><span>Rapport d’évaluation · équipe de trois — noms à renseigner</span><span>2 / 2</span></footer>
 </main></body></html>

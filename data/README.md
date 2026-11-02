@@ -14,6 +14,13 @@ d'après le roman de Hendrik Behnisch, version du 30 juin 2007.
   entre scénario et film ne constituent pas des erreurs de continuité.
 - Aucune liste d'accessoires ni aucun planning authentique n'est supposé exister.
 
+La préparation historique utilise `scripts/fetch_corpus.py` avec Python et
+`pdfplumber==0.9.0` (`python -m pip install pdfplumber==0.9.0`). `npm run data:fetch`
+régénère `valkaama.json` et `valkaama.fountain` depuis le PDF de l’auteur ; les
+différences de texte doivent être relues avant de remplacer des références.
+Cette dépendance Python n’est pas nécessaire pour lancer l’application, importer
+un PDF dans l’interface ou reproduire les évaluations déjà fournies.
+
 Le projet de démonstration français et les variations d'évaluation sont des
 **fictions synthétiques contrôlées**, distinctes du corpus réel. Ils servent
 à montrer le traitement d'erreurs connues et ne sont jamais présentés comme
@@ -24,6 +31,40 @@ Les imports de l'utilisateur restent sur son appareil, sauf les passages envoyé
 au fournisseur de modèle qu'il choisit pour l'analyse. La clé du fournisseur est
 conservée côté serveur. Ne pas importer de scénario confidentiel dans une API
 externe sans autorisation ; choisir le mode local dans ce cas.
+
+## Expérience contrôlée : 15 erreurs dans un seul scénario
+
+Le dossier `controlled-script/` applique la consigne spécifique du professeur :
+construire une référence en insérant 10 à 20 incohérences dans un scénario,
+mesurer précision et rappel, et montrer les passages sources de chaque alerte.
+Le scénario publié et son PDF ne sont pas modifiés.
+
+| Fichier                                                      | Rôle                                                                                        |
+| ------------------------------------------------------------ | ------------------------------------------------------------------------------------------- |
+| `reference.json`                                             | Adaptation préparée, avec des accessoires ajoutés et des transitions cohérentes             |
+| `project.json`                                               | Même adaptation, avec 15 phrases changées pour introduire des incohérences                  |
+| `annotations.json`                                           | E01–E15, quatre contrôles négatifs, objets, passages avant/après et journal des changements |
+| `license.json`                                               | Attribution, source officielle, licence CC BY-SA 3.0 et description des modifications       |
+| `analysis.json` et `baseline.json`, lorsqu’ils sont présents | Sorties réelles enregistrées, avec modèle et provenance de l’exécution                      |
+
+Les deux adaptations gardent les 56 scènes. Les changements et l’évaluation
+portent sur les scènes 1–12 : quinze erreurs et quatre transitions expliquées.
+Ce sont des accessoires construits pour l’expérience, pas des erreurs attribuées
+à l’auteur. Les pages indiquent où se situe la scène dans l’original ; le PDF
+original ne contient pas les phrases ajoutées.
+
+La validation automatique vérifie les citations et l’empreinte de l’original.
+Revenir sur les quinze modifications déclarées doit restituer la version
+préparée, sans autre changement de texte. L’adaptation conserve l’attribution et
+CC BY-SA 3.0 ; les annotations proposées avec assistance IA restent à relire
+par les trois étudiants. Ce jeu visible est un benchmark de développement
+contrôlé, pas une évaluation aveugle indépendante.
+
+Le score porte sur les 19 accessoires annotés. Chaque injection peut être
+associée à une seule alerte avec deux preuves ; les doublons et les alertes
+injustifiées sur ce périmètre coûtent de la précision. Les alertes concernant
+d’autres accessoires sont conservées à relire, hors du score contrôlé.
+Protocole et commandes : [eval/README.md](../eval/README.md).
 
 ## Questions réelles d'évaluation
 

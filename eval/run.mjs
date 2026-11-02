@@ -147,8 +147,10 @@ const report = {
   system: metrics('system'),
   rows,
 };
-await writeFile(`eval/report-${split}.json`, JSON.stringify(report, null, 2));
-if (split === 'test') await writeFile('eval/report.json', JSON.stringify(report, null, 2));
+await writeFile(
+  split === 'test' ? 'eval/report.json' : 'eval/report-dev.json',
+  JSON.stringify(report, null, 2),
+);
 console.log(
   JSON.stringify({ n: report.n, split, baseline: report.baseline, system: report.system }, null, 2),
 );

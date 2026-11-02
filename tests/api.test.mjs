@@ -21,6 +21,19 @@ test('the sample API returns the real 56-scene corpus and accurate license metad
   assert.equal(data.synthetic, false);
   assert.equal(data.license, 'CC BY-SA 3.0');
 });
+test('the controlled adaptation is identified and never includes the answer key', async () => {
+  const response = await api(request('/api/samples/controlled-valkaama'));
+  const project = await response.json();
+  assert.equal(project.controlled, true);
+  assert.equal(project.controlledInjectionCount, 15);
+  assert.equal(project.scenes.length, 56);
+  assert.equal(project.license, 'CC BY-SA 3.0');
+  assert.equal(project.annotations, undefined);
+  assert.equal(project.entries, undefined);
+  assert.ok(project.scenes[0].text.includes('brass pocket watch'));
+  const samples = await (await api(request('/api/samples'))).json();
+  assert.equal(samples.find((sample) => sample.id === project.id).controlled, true);
+});
 test('a genuine source PDF is parsed into screenplay scenes', async () => {
   const bytes = await readFile(new URL('../data/raw/valkaama-en.pdf', import.meta.url));
   const form = new FormData();

@@ -1,0 +1,1366 @@
+{
+  "model": "openai/gpt-oss-120b",
+  "pipelineHash": "317d4f31559730367024a697ec2f66b8f3b8394c4dc55ff4ddf3dc14b1906c58",
+  "inferenceProfile": {
+    "id": "continuity-free-v1",
+    "extractionBatchSize": 3,
+    "extractionMaxOutputTokens": 3000,
+    "judgmentMaxOutputTokens": 1000,
+    "judgmentCandidatesPerRequest": 2,
+    "sha256": "b0ebadb133d265db2ec8649aba0f94674015c7c4be72bdf0d4b51f046b43211a"
+  },
+  "records": [
+    {
+      "stage": "extract",
+      "sceneIds": [
+        "S001",
+        "S002",
+        "S003"
+      ],
+      "raw": {
+        "objects": [
+          {
+            "name": "montre de Runa",
+            "aliases": [
+              "pocket watch",
+              "brass pocket watch"
+            ],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S001",
+                "quote": "Runa drops her brass pocket watch. Its glass breaks and its mechanism stops.",
+                "state": "broken",
+                "owner": "Runa",
+                "action": "break",
+                "temporal": "continuous"
+              },
+              {
+                "sceneId": "S002",
+                "quote": "Runa checks the same brass pocket watch: its glass is intact and its mechanism works.",
+                "state": "intact",
+                "owner": "Runa",
+                "action": "observe",
+                "temporal": "continuous"
+              }
+            ]
+          },
+          {
+            "name": "carnet rouge de Lasse",
+            "aliases": [
+              "red notebook"
+            ],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S001",
+                "quote": "Lasse burns his red notebook completely. Only ashes remain.",
+                "state": "destroyed",
+                "owner": "Lasse",
+                "action": "destroy",
+                "temporal": "continuous"
+              },
+              {
+                "sceneId": "S002",
+                "quote": "Lasse opens the same red notebook, intact with all its original pages.",
+                "state": "intact",
+                "owner": "Lasse",
+                "action": "observe",
+                "temporal": "continuous"
+              }
+            ]
+          },
+          {
+            "name": "flacon jaune d'Ibsy",
+            "aliases": [
+              "yellow flask"
+            ],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S001",
+                "quote": "Ibsy empties her yellow flask completely and screws its cap back on.",
+                "state": "empty",
+                "owner": "Ibsy",
+                "action": "empty",
+                "temporal": "continuous"
+              },
+              {
+                "sceneId": "S002",
+                "quote": "Ibsy pours water from her same yellow flask, now completely full.",
+                "state": "full",
+                "owner": "Ibsy",
+                "action": "fill",
+                "temporal": "continuous"
+              }
+            ]
+          },
+          {
+            "name": "carte de rue pliée de Lasse",
+            "aliases": [
+              "folded street map",
+              "street map"
+            ],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S001",
+                "quote": "A gust carries Lasse's folded street map into the river. It sinks out of reach and is lost.",
+                "state": "lost",
+                "owner": "Lasse",
+                "action": "lose",
+                "temporal": "continuous"
+              },
+              {
+                "sceneId": "S002",
+                "quote": "Lasse unfolds his same folded street map. He has neither recovered it nor obtained a replacement.",
+                "state": "lost",
+                "owner": "Lasse",
+                "action": "observe",
+                "temporal": "continuous"
+              }
+            ]
+          },
+          {
+            "name": "voiture jouet blanche d'Ibsy",
+            "aliases": [
+              "white toy car",
+              "toy car"
+            ],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S001",
+                "quote": "Ibsy's white toy car loses a wheel and cannot roll.",
+                "state": "broken",
+                "owner": "Ibsy",
+                "action": "lose",
+                "temporal": "continuous"
+              },
+              {
+                "sceneId": "S002",
+                "quote": "Lasse repairs Ibsy's white toy car by firmly replacing its wheel. The repaired car rolls normally.",
+                "state": "intact",
+                "owner": "Ibsy",
+                "action": "repair",
+                "temporal": "continuous"
+              }
+            ]
+          }
+        ]
+      },
+      "validated": {
+        "objects": [
+          {
+            "name": "montre de Runa",
+            "aliases": [
+              "pocket watch",
+              "brass pocket watch"
+            ],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S001",
+                "quote": "Runa drops her brass pocket watch. Its glass breaks and its mechanism stops.",
+                "page": 2,
+                "state": "broken",
+                "owner": "Runa",
+                "action": "break",
+                "temporal": "continuous"
+              },
+              {
+                "sceneId": "S002",
+                "quote": "Runa checks the same brass pocket watch: its glass is intact and its mechanism works.",
+                "page": 3,
+                "state": "intact",
+                "owner": "Runa",
+                "action": "observe",
+                "temporal": "continuous"
+              }
+            ]
+          },
+          {
+            "name": "carnet rouge de Lasse",
+            "aliases": [
+              "red notebook"
+            ],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S001",
+                "quote": "Lasse burns his red notebook completely. Only ashes remain.",
+                "page": 2,
+                "state": "destroyed",
+                "owner": "Lasse",
+                "action": "destroy",
+                "temporal": "continuous"
+              },
+              {
+                "sceneId": "S002",
+                "quote": "Lasse opens the same red notebook, intact with all its original pages.",
+                "page": 3,
+                "state": "intact",
+                "owner": "Lasse",
+                "action": "observe",
+                "temporal": "continuous"
+              }
+            ]
+          },
+          {
+            "name": "flacon jaune d'Ibsy",
+            "aliases": [
+              "yellow flask"
+            ],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S001",
+                "quote": "Ibsy empties her yellow flask completely and screws its cap back on.",
+                "page": 2,
+                "state": "empty",
+                "owner": "Ibsy",
+                "action": "empty",
+                "temporal": "continuous"
+              },
+              {
+                "sceneId": "S002",
+                "quote": "Ibsy pours water from her same yellow flask, now completely full.",
+                "page": 3,
+                "state": "full",
+                "owner": "Ibsy",
+                "action": "fill",
+                "temporal": "continuous"
+              }
+            ]
+          },
+          {
+            "name": "carte de rue pliée de Lasse",
+            "aliases": [
+              "folded street map",
+              "street map"
+            ],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S001",
+                "quote": "A gust carries Lasse's folded street map into the river. It sinks out of reach and is lost.",
+                "page": 2,
+                "state": "lost",
+                "owner": "Lasse",
+                "action": "lose",
+                "temporal": "continuous"
+              },
+              {
+                "sceneId": "S002",
+                "quote": "Lasse unfolds his same folded street map. He has neither recovered it nor obtained a replacement.",
+                "page": 3,
+                "state": "lost",
+                "owner": "Lasse",
+                "action": "observe",
+                "temporal": "continuous"
+              }
+            ]
+          },
+          {
+            "name": "voiture jouet blanche d'Ibsy",
+            "aliases": [
+              "white toy car",
+              "toy car"
+            ],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S001",
+                "quote": "Ibsy's white toy car loses a wheel and cannot roll.",
+                "page": 2,
+                "state": "broken",
+                "owner": "Ibsy",
+                "action": "lose",
+                "temporal": "continuous"
+              },
+              {
+                "sceneId": "S002",
+                "quote": "Lasse repairs Ibsy's white toy car by firmly replacing its wheel. The repaired car rolls normally.",
+                "page": 3,
+                "state": "intact",
+                "owner": "Ibsy",
+                "action": "repair",
+                "temporal": "continuous"
+              }
+            ]
+          }
+        ],
+        "rejected": 0
+      }
+    },
+    {
+      "stage": "extract",
+      "sceneIds": [
+        "S004",
+        "S005",
+        "S006"
+      ],
+      "raw": {
+        "objects": [
+          {
+            "name": "montre argentée de Leila",
+            "aliases": [
+              "silver wristwatch"
+            ],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S004",
+                "quote": "Leila drops her silver wristwatch. The glass shatters and the hands stop.",
+                "state": "broken",
+                "owner": "Leila",
+                "action": "break",
+                "temporal": "continuous"
+              },
+              {
+                "sceneId": "S005",
+                "quote": "Leila checks her same silver wristwatch: the glass is intact and the hands work.",
+                "state": "intact",
+                "owner": "Leila",
+                "action": "observe",
+                "temporal": "continuous"
+              }
+            ]
+          },
+          {
+            "name": "étui à cigarettes bleu de Magnus",
+            "aliases": [
+              "blue cigarette case"
+            ],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S004",
+                "quote": "Magnus takes the last cigarette from his blue cigarette case; the case is completely empty.",
+                "state": "empty",
+                "owner": "Magnus",
+                "action": "take",
+                "temporal": "continuous"
+              },
+              {
+                "sceneId": "S005",
+                "quote": "Magnus opens his same blue cigarette case; it is completely full of cigarettes.",
+                "state": "full",
+                "owner": "Magnus",
+                "action": "fill",
+                "temporal": "continuous"
+              }
+            ]
+          },
+          {
+            "name": "flacon de médecine vert de Magnus",
+            "aliases": [
+              "green medicine vial"
+            ],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S004",
+                "quote": "Magnus crushes his green medicine vial under his heel. The vial is destroyed into tiny fragments.",
+                "state": "destroyed",
+                "owner": "Magnus",
+                "action": "destroy",
+                "temporal": "continuous"
+              }
+            ]
+          },
+          {
+            "name": "bourse rouge à pièces de Leila",
+            "aliases": [
+              "red coin purse"
+            ],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S004",
+                "quote": "Leila accidentally drops her red coin purse down the sealed ventilation shaft. It is lost and unreachable.",
+                "state": "lost",
+                "owner": "Leila",
+                "action": "lose",
+                "temporal": "continuous"
+              },
+              {
+                "sceneId": "S005",
+                "quote": "Leila holds her same red coin purse. She has neither recovered it from the shaft nor obtained a replacement.",
+                "state": "lost",
+                "owner": "Leila",
+                "action": "lose",
+                "temporal": "continuous"
+              }
+            ]
+          },
+          {
+            "name": "bouteille d'amber de Leila",
+            "aliases": [
+              "amber drinking bottle"
+            ],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S004",
+                "quote": "Leila drinks the last water in her amber drinking bottle. It is completely empty.",
+                "state": "empty",
+                "owner": "Leila",
+                "action": "empty",
+                "temporal": "continuous"
+              },
+              {
+                "sceneId": "S005",
+                "quote": "Leila refills her amber drinking bottle with water from the tap. The bottle is now completely full.",
+                "state": "full",
+                "owner": "Leila",
+                "action": "fill",
+                "temporal": "continuous"
+              }
+            ]
+          },
+          {
+            "name": "verre de Scotch de Magnus",
+            "aliases": [
+              "glass of Scotch"
+            ],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S004",
+                "quote": "MAGNUS is standing with an almost empty glass of Scotch at the window.",
+                "state": "present",
+                "owner": "Magnus",
+                "action": "observe",
+                "temporal": "continuous"
+              },
+              {
+                "sceneId": "S005",
+                "quote": "Magnus grabs the glass and downs it in one swig.",
+                "state": "empty",
+                "owner": "Magnus",
+                "action": "unknown",
+                "temporal": "continuous"
+              }
+            ]
+          },
+          {
+            "name": "cierge presque consumé",
+            "aliases": [
+              "candle"
+            ],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S006",
+                "quote": "Next to it an almost burnt down candle is flickering.",
+                "state": "unknown",
+                "owner": "unknown",
+                "action": "observe",
+                "temporal": "continuous"
+              }
+            ]
+          },
+          {
+            "name": "ordinateur portable de Runa",
+            "aliases": [
+              "laptop"
+            ],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S006",
+                "quote": "she spots her laptop which is still turned on.",
+                "state": "present",
+                "owner": "Runa",
+                "action": "observe",
+                "temporal": "continuous"
+              }
+            ]
+          },
+          {
+            "name": "papier avec le mot HOMECOMING",
+            "aliases": [
+              "paper"
+            ],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S006",
+                "quote": "Suddenly she notices a piece of paper on the table. On it the word HOMECOMING is written.",
+                "state": "present",
+                "owner": "unknown",
+                "action": "observe",
+                "temporal": "continuous"
+              }
+            ]
+          },
+          {
+            "name": "peluche de Runa",
+            "aliases": [
+              "cuddly toy"
+            ],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S006",
+                "quote": "Back in bed Runa grabs one of her cuddly toys and holds it tight while staring at the ceiling.",
+                "state": "present",
+                "owner": "Runa",
+                "action": "observe",
+                "temporal": "continuous"
+              }
+            ]
+          }
+        ]
+      },
+      "validated": {
+        "objects": [
+          {
+            "name": "montre argentée de Leila",
+            "aliases": [
+              "silver wristwatch"
+            ],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S004",
+                "quote": "Leila drops her silver wristwatch. The glass shatters and the hands stop.",
+                "page": 5,
+                "state": "broken",
+                "owner": "Leila",
+                "action": "break",
+                "temporal": "continuous"
+              },
+              {
+                "sceneId": "S005",
+                "quote": "Leila checks her same silver wristwatch: the glass is intact and the hands work.",
+                "page": 10,
+                "state": "intact",
+                "owner": "Leila",
+                "action": "observe",
+                "temporal": "continuous"
+              }
+            ]
+          },
+          {
+            "name": "étui à cigarettes bleu de Magnus",
+            "aliases": [
+              "blue cigarette case"
+            ],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S004",
+                "quote": "Magnus takes the last cigarette from his blue cigarette case; the case is completely empty.",
+                "page": 5,
+                "state": "empty",
+                "owner": "Magnus",
+                "action": "take",
+                "temporal": "continuous"
+              },
+              {
+                "sceneId": "S005",
+                "quote": "Magnus opens his same blue cigarette case; it is completely full of cigarettes.",
+                "page": 10,
+                "state": "full",
+                "owner": "Magnus",
+                "action": "fill",
+                "temporal": "continuous"
+              }
+            ]
+          },
+          {
+            "name": "flacon de médecine vert de Magnus",
+            "aliases": [
+              "green medicine vial"
+            ],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S004",
+                "quote": "Magnus crushes his green medicine vial under his heel. The vial is destroyed into tiny fragments.",
+                "page": 5,
+                "state": "destroyed",
+                "owner": "Magnus",
+                "action": "destroy",
+                "temporal": "continuous"
+              }
+            ]
+          },
+          {
+            "name": "bourse rouge à pièces de Leila",
+            "aliases": [
+              "red coin purse"
+            ],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S004",
+                "quote": "Leila accidentally drops her red coin purse down the sealed ventilation shaft. It is lost and unreachable.",
+                "page": 5,
+                "state": "lost",
+                "owner": "Leila",
+                "action": "lose",
+                "temporal": "continuous"
+              },
+              {
+                "sceneId": "S005",
+                "quote": "Leila holds her same red coin purse. She has neither recovered it from the shaft nor obtained a replacement.",
+                "page": 10,
+                "state": "lost",
+                "owner": "Leila",
+                "action": "lose",
+                "temporal": "continuous"
+              }
+            ]
+          },
+          {
+            "name": "bouteille d'amber de Leila",
+            "aliases": [
+              "amber drinking bottle"
+            ],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S004",
+                "quote": "Leila drinks the last water in her amber drinking bottle. It is completely empty.",
+                "page": 5,
+                "state": "empty",
+                "owner": "Leila",
+                "action": "empty",
+                "temporal": "continuous"
+              },
+              {
+                "sceneId": "S005",
+                "quote": "Leila refills her amber drinking bottle with water from the tap. The bottle is now completely full.",
+                "page": 10,
+                "state": "full",
+                "owner": "Leila",
+                "action": "fill",
+                "temporal": "continuous"
+              }
+            ]
+          },
+          {
+            "name": "verre de Scotch de Magnus",
+            "aliases": [
+              "glass of Scotch"
+            ],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S004",
+                "quote": "MAGNUS is standing with an almost empty glass of Scotch at the window.",
+                "page": 5,
+                "state": "present",
+                "owner": "Magnus",
+                "action": "observe",
+                "temporal": "continuous"
+              },
+              {
+                "sceneId": "S005",
+                "quote": "Magnus grabs the glass and downs it in one swig.",
+                "page": 11,
+                "state": "empty",
+                "owner": "Magnus",
+                "action": "unknown",
+                "temporal": "continuous"
+              }
+            ]
+          },
+          {
+            "name": "cierge presque consumé",
+            "aliases": [
+              "candle"
+            ],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S006",
+                "quote": "Next to it an almost burnt down candle is flickering.",
+                "page": 12,
+                "state": "unknown",
+                "owner": "unknown",
+                "action": "observe",
+                "temporal": "continuous"
+              }
+            ]
+          },
+          {
+            "name": "ordinateur portable de Runa",
+            "aliases": [
+              "laptop"
+            ],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S006",
+                "quote": "she spots her laptop which is still turned on.",
+                "page": 12,
+                "state": "present",
+                "owner": "Runa",
+                "action": "observe",
+                "temporal": "continuous"
+              }
+            ]
+          },
+          {
+            "name": "papier avec le mot HOMECOMING",
+            "aliases": [
+              "paper"
+            ],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S006",
+                "quote": "Suddenly she notices a piece of paper on the table. On it the word HOMECOMING is written.",
+                "page": 13,
+                "state": "present",
+                "owner": "unknown",
+                "action": "observe",
+                "temporal": "continuous"
+              }
+            ]
+          },
+          {
+            "name": "peluche de Runa",
+            "aliases": [
+              "cuddly toy"
+            ],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S006",
+                "quote": "Back in bed Runa grabs one of her cuddly toys and holds it tight while staring at the ceiling.",
+                "page": 13,
+                "state": "present",
+                "owner": "Runa",
+                "action": "observe",
+                "temporal": "continuous"
+              }
+            ]
+          }
+        ],
+        "rejected": 0
+      }
+    },
+    {
+      "stage": "extract",
+      "sceneIds": [
+        "S007",
+        "S008",
+        "S009"
+      ],
+      "raw": {
+        "objects": [
+          {
+            "name": "thermos noir de Runa",
+            "aliases": [],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S007",
+                "quote": "Runa pours out every last drop from her black coffee thermos. It is completely empty.",
+                "state": "empty",
+                "owner": "Runa",
+                "action": "empty",
+                "temporal": "continuous"
+              }
+            ]
+          },
+          {
+            "name": "lunettes de lecture vertes de Lasse",
+            "aliases": [],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S007",
+                "quote": "Lasse snaps both arms off his green reading glasses and cracks both lenses.",
+                "state": "broken",
+                "owner": "Lasse",
+                "action": "break",
+                "temporal": "continuous"
+              }
+            ]
+          },
+          {
+            "name": "boussole argentée de Runa",
+            "aliases": [],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S007",
+                "quote": "Runa's small silver compass falls onto the kitchen floor. Its glass cracks.",
+                "state": "broken",
+                "owner": "Runa",
+                "action": "break",
+                "temporal": "continuous"
+              }
+            ]
+          },
+          {
+            "name": "papier avec le mot HOMECOMING",
+            "aliases": [
+              "paper"
+            ],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S007",
+                "quote": "Piece of paper on the table: HOMECOMING",
+                "state": "present",
+                "owner": "unknown",
+                "action": "observe",
+                "temporal": "continuous"
+              }
+            ]
+          },
+          {
+            "name": "flacon en cuir brun de Magnus",
+            "aliases": [],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S008",
+                "quote": "Magnus drains his brown hip flask completely. Not a drop remains inside.",
+                "state": "empty",
+                "owner": "Magnus",
+                "action": "empty",
+                "temporal": "continuous"
+              },
+              {
+                "sceneId": "S009",
+                "quote": "Magnus drinks from his same brown hip flask, now completely full. Nobody has refilled it.",
+                "state": "full",
+                "owner": "Magnus",
+                "action": "fill",
+                "temporal": "continuous"
+              }
+            ]
+          },
+          {
+            "name": "stylo à bille cuivre de Magnus",
+            "aliases": [],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S008",
+                "quote": "Magnus drops his copper fountain pen. Its nib breaks off and it can no longer write.",
+                "state": "broken",
+                "owner": "Magnus",
+                "action": "break",
+                "temporal": "continuous"
+              },
+              {
+                "sceneId": "S009",
+                "quote": "Magnus writes with his same copper fountain pen; its nib is intact. Nobody has repaired or replaced it.",
+                "state": "intact",
+                "owner": "Magnus",
+                "action": "observe",
+                "temporal": "continuous"
+              }
+            ]
+          },
+          {
+            "name": "clé mémoire en acier de Magnus",
+            "aliases": [],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S008",
+                "quote": "Magnus crushes his steel memory key with a hammer until its casing and circuit are destroyed.",
+                "state": "destroyed",
+                "owner": "Magnus",
+                "action": "destroy",
+                "temporal": "continuous"
+              },
+              {
+                "sceneId": "S009",
+                "quote": "Magnus plugs in his same steel memory key, its casing and circuit intact and working. No replacement has been obtained.",
+                "state": "intact",
+                "owner": "Magnus",
+                "action": "observe",
+                "temporal": "continuous"
+              }
+            ]
+          },
+          {
+            "name": "porte-clés de porte arrière de Magnus",
+            "aliases": [],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S008",
+                "quote": "Magnus drops his rear-door keyring through a drain grate. It falls out of reach and is lost.",
+                "state": "lost",
+                "owner": "Magnus",
+                "action": "lose",
+                "temporal": "continuous"
+              },
+              {
+                "sceneId": "S009",
+                "quote": "Magnus takes his same rear-door keyring from his pocket. He has neither recovered it nor obtained a replacement.",
+                "state": "lost",
+                "owner": "Magnus",
+                "action": "lose",
+                "temporal": "continuous"
+              }
+            ]
+          },
+          {
+            "name": "bouteille d'eau blanche de Magnus",
+            "aliases": [],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S008",
+                "quote": "Magnus empties his white water bottle completely.",
+                "state": "empty",
+                "owner": "Magnus",
+                "action": "empty",
+                "temporal": "continuous"
+              },
+              {
+                "sceneId": "S009",
+                "quote": "Magnus refills his white water bottle at the kitchen tap. The bottle is now full.",
+                "state": "full",
+                "owner": "Magnus",
+                "action": "fill",
+                "temporal": "continuous"
+              }
+            ]
+          }
+        ]
+      },
+      "validated": {
+        "objects": [
+          {
+            "name": "thermos noir de Runa",
+            "aliases": [],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S007",
+                "quote": "Runa pours out every last drop from her black coffee thermos. It is completely empty.",
+                "page": 13,
+                "state": "empty",
+                "owner": "Runa",
+                "action": "empty",
+                "temporal": "continuous"
+              }
+            ]
+          },
+          {
+            "name": "lunettes de lecture vertes de Lasse",
+            "aliases": [],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S007",
+                "quote": "Lasse snaps both arms off his green reading glasses and cracks both lenses.",
+                "page": 13,
+                "state": "broken",
+                "owner": "Lasse",
+                "action": "break",
+                "temporal": "continuous"
+              }
+            ]
+          },
+          {
+            "name": "boussole argentée de Runa",
+            "aliases": [],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S007",
+                "quote": "Runa's small silver compass falls onto the kitchen floor. Its glass cracks.",
+                "page": 13,
+                "state": "broken",
+                "owner": "Runa",
+                "action": "break",
+                "temporal": "continuous"
+              }
+            ]
+          },
+          {
+            "name": "papier avec le mot HOMECOMING",
+            "aliases": [
+              "paper"
+            ],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S007",
+                "quote": "Piece of paper on the table: HOMECOMING",
+                "page": 13,
+                "state": "present",
+                "owner": "unknown",
+                "action": "observe",
+                "temporal": "continuous"
+              }
+            ]
+          },
+          {
+            "name": "flacon en cuir brun de Magnus",
+            "aliases": [],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S008",
+                "quote": "Magnus drains his brown hip flask completely. Not a drop remains inside.",
+                "page": 16,
+                "state": "empty",
+                "owner": "Magnus",
+                "action": "empty",
+                "temporal": "continuous"
+              },
+              {
+                "sceneId": "S009",
+                "quote": "Magnus drinks from his same brown hip flask, now completely full. Nobody has refilled it.",
+                "page": 17,
+                "state": "full",
+                "owner": "Magnus",
+                "action": "fill",
+                "temporal": "continuous"
+              }
+            ]
+          },
+          {
+            "name": "stylo à bille cuivre de Magnus",
+            "aliases": [],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S008",
+                "quote": "Magnus drops his copper fountain pen. Its nib breaks off and it can no longer write.",
+                "page": 16,
+                "state": "broken",
+                "owner": "Magnus",
+                "action": "break",
+                "temporal": "continuous"
+              },
+              {
+                "sceneId": "S009",
+                "quote": "Magnus writes with his same copper fountain pen; its nib is intact. Nobody has repaired or replaced it.",
+                "page": 17,
+                "state": "intact",
+                "owner": "Magnus",
+                "action": "observe",
+                "temporal": "continuous"
+              }
+            ]
+          },
+          {
+            "name": "clé mémoire en acier de Magnus",
+            "aliases": [],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S008",
+                "quote": "Magnus crushes his steel memory key with a hammer until its casing and circuit are destroyed.",
+                "page": 16,
+                "state": "destroyed",
+                "owner": "Magnus",
+                "action": "destroy",
+                "temporal": "continuous"
+              },
+              {
+                "sceneId": "S009",
+                "quote": "Magnus plugs in his same steel memory key, its casing and circuit intact and working. No replacement has been obtained.",
+                "page": 17,
+                "state": "intact",
+                "owner": "Magnus",
+                "action": "observe",
+                "temporal": "continuous"
+              }
+            ]
+          },
+          {
+            "name": "porte-clés de porte arrière de Magnus",
+            "aliases": [],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S008",
+                "quote": "Magnus drops his rear-door keyring through a drain grate. It falls out of reach and is lost.",
+                "page": 16,
+                "state": "lost",
+                "owner": "Magnus",
+                "action": "lose",
+                "temporal": "continuous"
+              },
+              {
+                "sceneId": "S009",
+                "quote": "Magnus takes his same rear-door keyring from his pocket. He has neither recovered it nor obtained a replacement.",
+                "page": 17,
+                "state": "lost",
+                "owner": "Magnus",
+                "action": "lose",
+                "temporal": "continuous"
+              }
+            ]
+          },
+          {
+            "name": "bouteille d'eau blanche de Magnus",
+            "aliases": [],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S008",
+                "quote": "Magnus empties his white water bottle completely.",
+                "page": 16,
+                "state": "empty",
+                "owner": "Magnus",
+                "action": "empty",
+                "temporal": "continuous"
+              },
+              {
+                "sceneId": "S009",
+                "quote": "Magnus refills his white water bottle at the kitchen tap. The bottle is now full.",
+                "page": 17,
+                "state": "full",
+                "owner": "Magnus",
+                "action": "fill",
+                "temporal": "continuous"
+              }
+            ]
+          }
+        ],
+        "rejected": 0
+      }
+    },
+    {
+      "stage": "extract",
+      "sceneIds": [
+        "S010",
+        "S011",
+        "S012"
+      ],
+      "raw": {
+        "objects": [
+          {
+            "name": "paquet de cigarettes",
+            "aliases": [],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S010",
+                "quote": "two packages of cigarettes. They are empty.",
+                "state": "empty",
+                "owner": "unknown",
+                "action": "unknown",
+                "temporal": "continuous"
+              }
+            ]
+          },
+          {
+            "name": "thermos noir de Runa",
+            "aliases": [
+              "black coffee thermos"
+            ],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S011",
+                "quote": "Runa pours coffee from her same black coffee thermos, now completely full.",
+                "state": "full",
+                "owner": "Runa",
+                "action": "unknown",
+                "temporal": "continuous"
+              }
+            ]
+          },
+          {
+            "name": "lunettes de lecture vertes de Lasse",
+            "aliases": [
+              "green reading glasses"
+            ],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S011",
+                "quote": "Lasse wears his same green reading glasses, with intact arms and lenses.",
+                "state": "intact",
+                "owner": "Lasse",
+                "action": "unknown",
+                "temporal": "continuous"
+              }
+            ]
+          },
+          {
+            "name": "porte-passeport navy",
+            "aliases": [],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S011",
+                "quote": "Runa opens her same navy passport holder, completely intact.",
+                "state": "intact",
+                "owner": "Runa",
+                "action": "unknown",
+                "temporal": "continuous"
+              }
+            ]
+          },
+          {
+            "name": "boussole argentée de Runa",
+            "aliases": [
+              "silver compass"
+            ],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S011",
+                "quote": "Runa repairs her small silver compass by fitting a spare glass. The compass is now intact.",
+                "state": "intact",
+                "owner": "Runa",
+                "action": "repair",
+                "temporal": "continuous"
+              }
+            ]
+          },
+          {
+            "name": "puppet doux \"Mr. Petri Smödhelm\"",
+            "aliases": [],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S011",
+                "quote": "In his hands he is holding a sweet puppet.",
+                "state": "present",
+                "owner": "unknown",
+                "action": "unknown",
+                "temporal": "continuous"
+              },
+              {
+                "sceneId": "S011",
+                "quote": "please give that to Ibsy from me.",
+                "state": "present",
+                "owner": "Ibsy",
+                "action": "give",
+                "temporal": "continuous"
+              }
+            ]
+          }
+        ]
+      },
+      "validated": {
+        "objects": [
+          {
+            "name": "paquet de cigarettes",
+            "aliases": [],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S010",
+                "quote": "two packages of cigarettes. They are empty.",
+                "page": 19,
+                "state": "empty",
+                "owner": "unknown",
+                "action": "unknown",
+                "temporal": "continuous"
+              }
+            ]
+          },
+          {
+            "name": "thermos noir de Runa",
+            "aliases": [
+              "black coffee thermos"
+            ],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S011",
+                "quote": "Runa pours coffee from her same black coffee thermos, now completely full.",
+                "page": 21,
+                "state": "full",
+                "owner": "Runa",
+                "action": "unknown",
+                "temporal": "continuous"
+              }
+            ]
+          },
+          {
+            "name": "lunettes de lecture vertes de Lasse",
+            "aliases": [
+              "green reading glasses"
+            ],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S011",
+                "quote": "Lasse wears his same green reading glasses, with intact arms and lenses.",
+                "page": 21,
+                "state": "intact",
+                "owner": "Lasse",
+                "action": "unknown",
+                "temporal": "continuous"
+              }
+            ]
+          },
+          {
+            "name": "porte-passeport navy",
+            "aliases": [],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S011",
+                "quote": "Runa opens her same navy passport holder, completely intact.",
+                "page": 21,
+                "state": "intact",
+                "owner": "Runa",
+                "action": "unknown",
+                "temporal": "continuous"
+              }
+            ]
+          },
+          {
+            "name": "boussole argentée de Runa",
+            "aliases": [
+              "silver compass"
+            ],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S011",
+                "quote": "Runa repairs her small silver compass by fitting a spare glass. The compass is now intact.",
+                "page": 21,
+                "state": "intact",
+                "owner": "Runa",
+                "action": "repair",
+                "temporal": "continuous"
+              }
+            ]
+          },
+          {
+            "name": "puppet doux \"Mr. Petri Smödhelm\"",
+            "aliases": [],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S011",
+                "quote": "In his hands he is holding a sweet puppet.",
+                "page": 22,
+                "state": "present",
+                "owner": "unknown",
+                "action": "unknown",
+                "temporal": "continuous"
+              },
+              {
+                "sceneId": "S011",
+                "quote": "please give that to Ibsy from me.",
+                "page": 22,
+                "state": "present",
+                "owner": "Ibsy",
+                "action": "give",
+                "temporal": "continuous"
+              }
+            ]
+          }
+        ],
+        "rejected": 0
+      }
+    }
+  ]
+}

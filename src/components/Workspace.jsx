@@ -84,7 +84,11 @@ export function ScriptWorkspace({ project, activeScene, onScene, onReview }) {
             <p>{project.author}</p>
           </div>
           <Badge tone={project.synthetic ? 'amber' : 'mint'}>
-            {project.synthetic ? 'Fiction synthétique' : 'Scénario réel'}
+            {project.controlled
+              ? `${project.controlledInjectionCount} erreurs injectées`
+              : project.synthetic
+                ? 'Fiction synthétique'
+                : 'Scénario réel'}
           </Badge>
         </div>
         <div className="document-facts">
@@ -111,6 +115,12 @@ export function ScriptWorkspace({ project, activeScene, onScene, onReview }) {
             Attribution : {project.author}. Licence : {project.license || 'à documenter'}.
           </p>
           {project.provenance?.rightsNotice && <p>{project.provenance.rightsNotice}</p>}
+          {project.controlled && (
+            <p>
+              Adaptation de test : les passages ajoutés et modifiés sont artificiels. Les pages
+              situent les scènes dans l’original ; le PDF original ne contient pas ces ajouts.
+            </p>
+          )}
           {project.scenes.some((scene) => scene.pageIsSceneReference) && (
             <p>
               Les repères proviennent des scènes XML de MovieSum. Ils ne correspondent pas aux pages

@@ -245,15 +245,16 @@ export default function ModelSettings({ system = {}, value, onChange }) {
               value={settings.maxOutputTokens}
               onChange={(event) => changeSetting('maxOutputTokens', Number(event.target.value))}
             >
-              {[1024, 2500, 5000, 8000, 12000, 16000].map((count) => (
+              {[1024, 2500, 3000, 5000, 8000, 12000, 16000].map((count) => (
                 <option key={count} value={count}>
                   {count.toLocaleString('fr-FR')} tokens{count === 5000 ? ' · par défaut' : ''}
                 </option>
               ))}
             </select>
             <span className="field-help">
-              Une limite basse peut couper le JSON. La comparaison et les questions gardent des
-              plafonds plus courts.
+              {provider === 'groq'
+                ? 'L’analyse Groq borne l’extraction à 3 000 tokens et la comparaison à 1 000, par groupes de deux candidats. Une limite plus basse reste appliquée.'
+                : 'Une limite basse peut couper le JSON. La comparaison et les questions gardent des plafonds plus courts.'}
             </span>
           </label>
           {supportsReasoning && (

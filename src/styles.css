@@ -1,4 +1,118 @@
 /* Design tokens are shared by every workspace, dialog and source browser. */
+.guide-layout {
+  display: grid;
+  grid-template-columns: 225px minmax(0, 1fr);
+  gap: 28px;
+  align-items: start;
+}
+.guide-nav {
+  position: sticky;
+  top: 20px;
+  display: grid;
+  gap: 5px;
+}
+.guide-nav > a {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--muted);
+  padding: 10px 12px;
+  border-radius: 5px;
+  text-decoration: none;
+}
+.guide-nav > a[aria-current='page'] {
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 650;
+}
+.guide-nav > .text-button {
+  margin: 18px 10px;
+  text-align: left;
+}
+.guide-content {
+  min-width: 0;
+  display: grid;
+  gap: 20px;
+}
+.guide-section {
+  padding: 26px;
+}
+.guide-section h2 {
+  margin: 0 0 16px;
+  font-size: 1.2rem;
+}
+.guide-section p {
+  max-width: 80ch;
+}
+.guide-section ul {
+  padding-left: 22px;
+}
+.guide-section li + li {
+  margin-top: 8px;
+}
+.guide-section pre {
+  overflow-x: auto;
+  max-width: 100%;
+  padding: 18px;
+  background: var(--surface-soft);
+  font-size: 0.86rem;
+  border-radius: 5px;
+}
+.guide-links a {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  color: var(--accent);
+  overflow-wrap: anywhere;
+}
+.table-hint {
+  display: none;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+.historical-evaluation > summary {
+  cursor: pointer;
+  padding: 20px 0;
+  font-weight: 650;
+}
+.controlled-gold {
+  display: grid;
+  gap: 14px;
+}
+.controlled-gold blockquote {
+  margin: 8px 0;
+  padding: 10px 15px;
+  border-left: 2px solid var(--strong-line);
+  background: var(--surface-soft);
+}
+@media (max-width: 1000px) {
+  .guide-layout {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .guide-nav {
+    position: static;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  }
+  .guide-nav > .text-button {
+    margin: 8px 10px;
+  }
+}
+@media (max-width: 500px) {
+  .table-hint {
+    display: block;
+  }
+  .guide-section {
+    padding: 18px;
+  }
+  .guide-nav {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .guide-nav > a {
+    padding: 8px;
+  }
+}
 :root {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   color: var(--text);

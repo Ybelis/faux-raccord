@@ -1,0 +1,256 @@
+{
+  "model": "openai/gpt-oss-120b",
+  "provider": "groq",
+  "settings": {
+    "temperature": 0,
+    "maxOutputTokens": 3000,
+    "reasoningEffort": "low",
+    "contextWindow": 131072
+  },
+  "alerts": [
+    {
+      "entityName": "brass pocket watch",
+      "title": "État du porte‑montre incohérent",
+      "description": "Le porte‑montre est brisé puis apparaît intact sans réparation ni remplacement.",
+      "evidence": [
+        {
+          "sceneId": "S001",
+          "quote": "Runa drops her brass pocket watch. Its glass breaks and its mechanism stops."
+        },
+        {
+          "sceneId": "S002",
+          "quote": "Runa checks the same brass pocket watch: its glass is intact and the mechanism works."
+        }
+      ],
+      "id": "BASE001"
+    },
+    {
+      "entityName": "red notebook",
+      "title": "Cahier rouge intact après combustion",
+      "description": "Le cahier est réduit en cendres puis réapparaît complet sans explication.",
+      "evidence": [
+        {
+          "sceneId": "S001",
+          "quote": "Lasse burns his red notebook completely. Only ashes remain."
+        },
+        {
+          "sceneId": "S002",
+          "quote": "Lasse opens the same red notebook, intact with all its original pages."
+        }
+      ],
+      "id": "BASE002"
+    },
+    {
+      "entityName": "yellow flask",
+      "title": "Flacon jaune plein sans remplissage indiqué",
+      "description": "Le flacon est vidé puis plein sans mention de remplissage.",
+      "evidence": [
+        {
+          "sceneId": "S001",
+          "quote": "Ibsy empties her yellow flask completely and screws its cap back on."
+        },
+        {
+          "sceneId": "S002",
+          "quote": "Ibsy pours water from her same yellow flask, now completely full. It has not been refilled."
+        }
+      ],
+      "id": "BASE003"
+    },
+    {
+      "entityName": "folded street map",
+      "title": "Carte perdue puis réapparition inexpliquée",
+      "description": "La carte est perdue dans la rivière puis retrouvée sans récupération ni remplacement.",
+      "evidence": [
+        {
+          "sceneId": "S001",
+          "quote": "A gust carries Lasse's folded street map into the river. It sinks out of reach and is lost."
+        },
+        {
+          "sceneId": "S002",
+          "quote": "Lasse unfolds his same folded street map. He has neither recovered it nor obtained a replacement."
+        }
+      ],
+      "id": "BASE004"
+    },
+    {
+      "entityName": "black coffee thermos",
+      "title": "Thermos inexplicably refilled",
+      "description": "Le thermos est vide dans S007 et apparaît plein dans S011 sans aucune indication de remplissage ou de remplacement.",
+      "evidence": [
+        {
+          "sceneId": "S007",
+          "quote": "Runa pours out every last drop from her black coffee thermos. It is completely empty."
+        },
+        {
+          "sceneId": "S011",
+          "quote": "Runa pours coffee from her same black coffee thermos, now completely full. Nobody has refilled it since breakfast."
+        }
+      ],
+      "id": "BASE005"
+    },
+    {
+      "entityName": "green reading glasses",
+      "title": "Lunettes réparées sans explication",
+      "description": "Les lunettes sont cassées dans S007 alors qu'elles sont intactes dans S011 sans mention de réparation ou de remplacement.",
+      "evidence": [
+        {
+          "sceneId": "S007",
+          "quote": "Lasse snaps both arms off his green reading glasses and cracks both lenses."
+        },
+        {
+          "sceneId": "S011",
+          "quote": "Lasse wears his same green reading glasses, with intact arms and lenses. They have not been repaired or replaced since breakfast."
+        }
+      ],
+      "id": "BASE006"
+    },
+    {
+      "entityName": "navy passport holder",
+      "title": "Portefeuille de passeport réapparaît intact",
+      "description": "Le porte‑passeport est détruit en morceaux dans S007 mais réapparaît complet et intact dans S011 sans justification.",
+      "evidence": [
+        {
+          "sceneId": "S007",
+          "quote": "Runa cuts her navy passport holder into tiny pieces and burns the pieces to ash."
+        },
+        {
+          "sceneId": "S011",
+          "quote": "Runa opens her same navy passport holder, completely intact. No replacement has been obtained since breakfast."
+        }
+      ],
+      "id": "BASE007"
+    }
+  ],
+  "raw": [
+    {
+      "alerts": [
+        {
+          "entityName": "brass pocket watch",
+          "title": "État du porte‑montre incohérent",
+          "description": "Le porte‑montre est brisé puis apparaît intact sans réparation ni remplacement.",
+          "evidence": [
+            {
+              "sceneId": "S001",
+              "quote": "Runa drops her brass pocket watch. Its glass breaks and its mechanism stops."
+            },
+            {
+              "sceneId": "S002",
+              "quote": "Runa checks the same brass pocket watch: its glass is intact and the mechanism works."
+            }
+          ]
+        },
+        {
+          "entityName": "red notebook",
+          "title": "Cahier rouge intact après combustion",
+          "description": "Le cahier est réduit en cendres puis réapparaît complet sans explication.",
+          "evidence": [
+            {
+              "sceneId": "S001",
+              "quote": "Lasse burns his red notebook completely. Only ashes remain."
+            },
+            {
+              "sceneId": "S002",
+              "quote": "Lasse opens the same red notebook, intact with all its original pages."
+            }
+          ]
+        },
+        {
+          "entityName": "yellow flask",
+          "title": "Flacon jaune plein sans remplissage indiqué",
+          "description": "Le flacon est vidé puis plein sans mention de remplissage.",
+          "evidence": [
+            {
+              "sceneId": "S001",
+              "quote": "Ibsy empties her yellow flask completely and screws its cap back on."
+            },
+            {
+              "sceneId": "S002",
+              "quote": "Ibsy pours water from her same yellow flask, now completely full. It has not been refilled."
+            }
+          ]
+        },
+        {
+          "entityName": "folded street map",
+          "title": "Carte perdue puis réapparition inexpliquée",
+          "description": "La carte est perdue dans la rivière puis retrouvée sans récupération ni remplacement.",
+          "evidence": [
+            {
+              "sceneId": "S001",
+              "quote": "A gust carries Lasse's folded street map into the river. It sinks out of reach and is lost."
+            },
+            {
+              "sceneId": "S002",
+              "quote": "Lasse unfolds his same folded street map. He has neither recovered it nor obtained a replacement."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "alerts": [
+        {
+          "entityName": "black coffee thermos",
+          "title": "Thermos inexplicably refilled",
+          "description": "Le thermos est vide dans S007 et apparaît plein dans S011 sans aucune indication de remplissage ou de remplacement.",
+          "evidence": [
+            {
+              "sceneId": "S007",
+              "quote": "Runa pours out every last drop from her black coffee thermos. It is completely empty."
+            },
+            {
+              "sceneId": "S011",
+              "quote": "Runa pours coffee from her same black coffee thermos, now completely full. Nobody has refilled it since breakfast."
+            }
+          ]
+        },
+        {
+          "entityName": "green reading glasses",
+          "title": "Lunettes réparées sans explication",
+          "description": "Les lunettes sont cassées dans S007 alors qu'elles sont intactes dans S011 sans mention de réparation ou de remplacement.",
+          "evidence": [
+            {
+              "sceneId": "S007",
+              "quote": "Lasse snaps both arms off his green reading glasses and cracks both lenses."
+            },
+            {
+              "sceneId": "S011",
+              "quote": "Lasse wears his same green reading glasses, with intact arms and lenses. They have not been repaired or replaced since breakfast."
+            }
+          ]
+        },
+        {
+          "entityName": "navy passport holder",
+          "title": "Portefeuille de passeport réapparaît intact",
+          "description": "Le porte‑passeport est détruit en morceaux dans S007 mais réapparaît complet et intact dans S011 sans justification.",
+          "evidence": [
+            {
+              "sceneId": "S007",
+              "quote": "Runa cuts her navy passport holder into tiny pieces and burns the pieces to ash."
+            },
+            {
+              "sceneId": "S011",
+              "quote": "Runa opens her same navy passport holder, completely intact. No replacement has been obtained since breakfast."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "usage": {
+    "calls": 2,
+    "inputTokens": 7531,
+    "outputTokens": 1088,
+    "milliseconds": 41093
+  },
+  "completedAt": "2026-11-02T14:19:38.222Z",
+  "inputHash": "18af4f08996ada575185f27513c3d1984f592fa3ab0c0c1888e85706fa672974",
+  "pipelineHash": "317d4f31559730367024a697ec2f66b8f3b8394c4dc55ff4ddf3dc14b1906c58",
+  "inferenceProfile": {
+    "id": "continuity-free-v1",
+    "extractionBatchSize": 3,
+    "extractionMaxOutputTokens": 3000,
+    "judgmentMaxOutputTokens": 1000,
+    "judgmentCandidatesPerRequest": 2,
+    "sha256": "b0ebadb133d265db2ec8649aba0f94674015c7c4be72bdf0d4b51f046b43211a"
+  }
+}

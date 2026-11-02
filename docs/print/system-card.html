@@ -3,19 +3,19 @@
 @page { size: A4; margin: 15mm; }
 * { box-sizing: border-box; }
 html { color-scheme: light; background: #e9ebed; }
-body { margin: 0; color: #18242d; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; line-height: 1.4; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body { margin: 0; color: #18242d; font-family: Arial, Helvetica, sans-serif; font-size: 9.5pt; line-height: 1.33; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 .page { width: 180mm; height: 266mm; margin: 12mm auto; padding: 0 0 13mm; position: relative; background: white; break-after: page; }
 .page:last-child { break-after: auto; }
 .screen-page { padding: 15mm; width: 210mm; height: 296mm; }
 .screen-page .page { margin: 0; }
-header { border-top: 3pt solid #233e49; padding-top: 5mm; margin-bottom: 6mm; }
+header { border-top: 3pt solid #233e49; padding-top: 5mm; margin-bottom: 4mm; }
 .brand { display: flex; justify-content: space-between; align-items: baseline; gap: 8mm; font-size: 8.5pt; letter-spacing: .04em; color: #4b606a; }
 .brand strong { letter-spacing: .11em; color: #233e49; }
 h1 { font-size: 23pt; line-height: 1.12; margin: 4mm 0 2mm; font-weight: 700; letter-spacing: -.035em; }
 .subtitle { color: #53636b; margin: 0; max-width: 166mm; }
-h2 { font-size: 12pt; margin: 5mm 0 2mm; line-height: 1.25; color: #233e49; }
+h2 { font-size: 12pt; margin: 3.5mm 0 2mm; line-height: 1.25; color: #233e49; }
 h3 { font-size: 10pt; margin: 3mm 0 1mm; }
-p { margin: 0 0 2.5mm; }
+p { margin: 0 0 2mm; }
 ul { margin: 1mm 0 3mm; padding-left: 4.5mm; }
 li { margin: 0 0 1.2mm; }
 table { width: 100%; border-collapse: collapse; margin: 2.5mm 0; font-size: 9pt; }
@@ -42,29 +42,30 @@ a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
 @media print { html { background: white; } .page { margin: 0; } a { text-decoration: none; } }
 </style></head><body>
 <main class="page card">
-<header><div class="brand"><strong>FAUX RACCORD</strong><span>2 novembre 2026</span></div><h1>Fiche système</h1><p class="subtitle">Aide à la relecture de continuité des accessoires d’un scénario</p></header>
+<header><div class="brand"><strong>FAUX RACCORD</strong><span>2 novembre 2026</span></div><h1>Fiche système</h1><p class="subtitle">IA générative avec RAG pour relire la continuité textuelle d’accessoires</p></header>
 <div class="two-columns"><section>
 <h2>Usage prévu</h2>
-<p>Scriptes et petites équipes de court métrage préparant le suivi des accessoires. Le produit rassemble des mentions et propose des points sourcés à examiner. Le besoin et le gain de temps restent à valider avec une personne réelle.</p>
+<p>Scriptes et petites équipes de court métrage préparant le suivi des accessoires. Le produit rassemble des mentions et génère des alertes sourcées à examiner. L’utilité et le gain de temps métier ne sont pas validés.</p>
 <h2>Entrées et sorties</h2>
-<p>PDF avec texte, TXT, Fountain, Markdown. Scènes et pages, accessoires, mentions, deux passages par point signalé, décision et note de revue. Export du projet JSON et du rapport Markdown.</p>
-<h2>Modèle de référence</h2>
-<p><span class="mono">openai/gpt-oss-20b</span> via Groq : MoE 20B, 3,6B actifs, licence Apache 2.0 ; température 0 et raisonnement low. Précision d’infrastructure TruePoint gérée par Groq, pas par l’équipe. L’API ne propose pas de snapshot immuable.</p>
-<p>Ollama et autres modèles en option. Licence, mémoire et compatibilité à vérifier pour chaque choix. Les nouveaux paramètres sont conservés avec l’analyse ; changer la configuration impose une nouvelle évaluation.</p>
+<p>PDF avec texte, TXT, Fountain, Markdown. Scènes et pages, objets, mentions, deux passages par alerte, décision et note de revue. Export projet JSON et rapport Markdown.</p>
 <h2>Fonctionnement</h2>
-<p>Segmentation déterministe ; extraction JSON par lots ; contrôle des citations ; suivi des objets ; candidats d’état ou de possession ; BM25 puis comparaison LLM ; revue humaine. Les questions utilisent recherche, réponse citée ou abstention.</p>
+<p>Segmentation ; extraction JSON par lots de trois scènes ; contrôle des citations ; suivi des états et de la possession ; recherche BM25 ; comparaison LLM ; revue humaine. Questions : recherche puis réponse citée ou abstention. Déclenché par l’utilisateur, sans choix autonome d’outils ni action extérieure.</p>
+<h2>Modèles et reproductibilité</h2>
+<p>Profil historique : <span class="mono">openai/gpt-oss-20b</span> via Groq, température 0, raisonnement low, Apache 2.0. Expérience contrôlée : <span class="mono">openai/gpt-oss-120b</span>, Apache-2.0, identique pour système et baseline. QA : profil 120B séparé.</p>
+<p>Ollama en option locale ; petits modèles non validés pour une extraction fiable. Identifiants API sans snapshot immuable. Les analyses conservent modèle, réglages et prompts ; changer la configuration impose une nouvelle mesure.</p>
+<p class="small">Profil continuity-free-v1 : extraction 3 scènes / 3000 tokens ; jugement 2 candidats / 1000 tokens ; baseline 2 × 6 scènes / 3000 tokens. Hash b0ebadb133d2.</p>
 </section><section>
 <h2>Données et droits</h2>
-<p>Valkaama, Tim Baumann d’après Hendrik Behnisch, version 2007-06-30 : 56 scènes, CC BY-SA 3.0, pages conservées. Les Heures Creuses et le benchmark de continuité sont synthétiques.</p>
-<p>MovieSum : index local de titres, import en ligne, hors benchmark. Sa licence de jeu déclarée CC BY-NC 4.0 ne garantit pas les droits des œuvres sous-jacentes. Provenance et portée conservées.</p>
+<p>Valkaama, Tim Baumann d’après Hendrik Behnisch, 2007-06-30, 56 scènes, <strong>CC BY-SA 3.0</strong> selon la <a href="https://www.valkaama.com/index.php?l=en&amp;page=sources">page de l’auteur</a>. Adaptation attribuée sous la même licence : 15 erreurs délibérées et quatre contrôles sur 19 accessoires ajoutés ; mesure S001–S012. Les faux raccords ne sont pas attribués aux auteurs originaux.</p>
+<p>Les Heures Creuses et les vignettes sont synthétiques. MovieSum facultatif, hors benchmark ; la licence déclarée du dataset ne garantit pas les droits des œuvres sous-jacentes. Importer des textes autorisés.</p>
 <h2>Protections et confidentialité</h2>
-<p>Clés côté serveur ; limites de fichier, pages et texte ; citations et identifiants contrôlés ; documents traités comme données ; sorties non exécutées. Groq reçoit les scènes ou extraits utiles ; Ollama permet l’inférence locale. Les projets restent sur l’appareil, sans synchronisation d’équipe.</p>
+<p>Clés serveur ; limites de taille et de pages ; citations et identifiants vérifiés ; documents traités comme données ; sorties non exécutées. Groq reçoit les scènes ou extraits après confirmation d’envoi ; Ollama traite localement. Projets sur l’appareil, sans synchronisation d’équipe.</p>
 <h2>Hors périmètre et limites</h2>
-<p>Pas de vidéo, d’OCR ni de planning de tournage. L’ordre narratif n’est pas reconstruit. Identité des objets, flashbacks et transferts implicites difficiles ; RAG lexical limité sur les paraphrases et les langues croisées. Les citations ne prouvent pas la justesse d’une conclusion.</p>
+<p>Pas de vision, d’audio, de vidéo, d’OCR ni de planning de tournage. Ordre narratif non reconstruit. Homonymes, flashbacks et transferts implicites difficiles ; RAG lexical limité sur les paraphrases et langues croisées. Citation exacte ≠ interprétation correcte. Aucune détection exhaustive promise.</p>
 </section></div>
 <h2>Évaluation disponible</h2>
-<p>50 cas synthétiques réservés, annotations assistées par IA à relire. <strong>Précision par cas signalé 94,4 % [74,2 %–99,0 %], rappel 81,0 %, F1 87,2 %.</strong> Baseline : précision 84,0 %, rappel 100,0 %, F1 91,3 %. Le pipeline réduit les fausses alertes mais n’est pas globalement supérieur.</p>
-<p>QA openai/gpt-oss-120b : 19/24 questions conformes selon la grille [59,5 %–90,8 %], contre 16/24 pour la baseline ; relecture humaine en attente. Recherche seule : 12 requêtes, rappel de scène à 5 de 100,0 %. Red team : 3/3 essais réussis ; portée limitée.</p>
-<p class="small rule">Responsables et contact : <strong>équipe de trois — à renseigner</strong>. Détails : <span class="mono">docs/evaluation_report.md</span>, <span class="mono">docs/use_policy.md</span>, <span class="mono">docs/red_team_log.md</span>, <span class="mono">data/README.md</span>. Les rapports bruts conservent leurs dates, modèles et références de code.</p>
+<p><strong>Mesure réelle du système et de la baseline disponible.</strong> Précision sur les alertes des accessoires contrôlés : 100,0 % [IC 95 % 64,6 %–100,0 %] ; rappel des quinze injections : 46,7 % [24,8 %–69,9 %] ; F1 63,6 %. 0 alertes hors périmètre exclues du score et à relire.</p>
+<p>Annotations proposées avec assistance IA, relecture humaine non attestée ; jeu visible, œuvre unique, intervalles descriptifs. Les 50 vignettes, 24 questions et 12 recherches sont des expériences distinctes. Sécurité : 3/3 essais adversariaux réels, portée limitée. Décision finale humaine.</p>
+<p class="small rule">Responsables et contact : <strong>équipe de trois — à renseigner</strong>. Politique : <span class="mono">docs/use_policy.md</span>. Évaluation et red team : <span class="mono">docs/evaluation_report.md</span>, <span class="mono">docs/red_team_log.md</span>. Guide dans l’application, rubrique « Documentation ». Source et adaptation : <span class="mono">data/controlled-script/license.json</span>.</p>
 <footer><span>Fiche système · équipe de trois — noms à renseigner</span><span>1 / 1</span></footer>
 </main></body></html>

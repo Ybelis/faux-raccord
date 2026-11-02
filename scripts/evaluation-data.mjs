@@ -11,16 +11,28 @@ async function readReport(filename) {
 // Le développement et la compilation présentent les mêmes rapports mesurés.
 // Un fichier absent reste absent : on ne remplace jamais une mesure par un score fictif.
 export async function loadEvaluation() {
-  const [benchmark, qa, retrieval, redTeam] = await Promise.all([
+  const [benchmark, qa, retrieval, redTeam, controlled] = await Promise.all([
     readReport('report.json'),
     readReport('qa-real-report.json'),
     readReport('retrieval-real.json'),
     readReport('red-team-results.json'),
+    readReport('controlled-report.json'),
   ]);
+  let controlledAnnotations = null;
+  try {
+    controlledAnnotations = JSON.parse(
+      await readFile(
+        new URL('../data/controlled-script/annotations.json', import.meta.url),
+        'utf8',
+      ),
+    );
+  } catch {}
   return {
     ...(benchmark || { status: 'not_run', message: 'Évaluation non exécutée.' }),
     qa,
     retrieval,
     redTeam,
+    controlled,
+    controlledAnnotations,
   };
 }

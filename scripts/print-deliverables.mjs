@@ -1,20 +1,13 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { loadEvaluationReports, evaluationSummary, format } from './write-evaluation-docs.mjs';
 
 // Les chiffres viennent des rapports mesurés. Ce script ne lance aucun appel
 // au modèle et n'inclut ni variables d'environnement ni contenu de scénario.
-const readJSON = async (file) => JSON.parse(await readFile(file, 'utf8'));
-const [report, retrieval, red, pricing] = await Promise.all([
-  readJSON('eval/report.json'),
-  readJSON('eval/retrieval-real.json'),
-  readJSON('eval/red-team-results.json'),
-  readJSON('eval/pricing.json'),
-]);
-let qa = null;
-try {
-  qa = await readJSON('eval/qa-real-report.json');
-} catch {}
+const data = await loadEvaluationReports();
+const { controlled: c, license, report, retrieval, red, qa } = data;
+const summary = evaluationSummary(data);
 
 const html = (value) =>
   String(value ?? '')
@@ -23,46 +16,28 @@ const html = (value) =>
     .replaceAll('>', '&gt;')
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&#39;');
-const percentage = (value) =>
-  typeof value === 'number' ? `${(value * 100).toFixed(1).replace('.', ',')} %` : '—';
-const interval = (value) => (Array.isArray(value) ? value.map(percentage).join('–') : '—');
-const number = (value) => (typeof value === 'number' ? value.toLocaleString('fr-FR') : '—');
-const seconds = (value) =>
-  typeof value === 'number' ? `${value.toFixed(3).replace('.', ',')} s` : '—';
-const money = (value) =>
-  typeof value === 'number' ? `${value.toFixed(6).replace('.', ',')} USD` : '—';
-const date = (value) =>
-  new Intl.DateTimeFormat('fr-FR', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-    timeZone: 'Europe/Paris',
-  }).format(new Date(value));
-const cost = (row) =>
-  (row.inputTokens * pricing.inputPerMillion + row.outputTokens * pricing.outputPerMillion) / 1e6;
-const referenceDate = date(report.completedAt);
-const errors = qa ? (qa.baseline.errors || 0) + (qa.system.errors || 0) : 0;
-const qaMeasured =
-  qa && qa.status === 'completed' && qa.qualityComparable !== false && errors === 0;
+const { percentage, interval, number, seconds, money, date } = format;
+const referenceDate = summary.date;
+const qaMeasured = summary.qaMeasured;
 const redPassed = red.rows.filter((row) => row.passed).length;
 
 const css = `
 @page { size: A4; margin: 15mm; }
 * { box-sizing: border-box; }
 html { color-scheme: light; background: #e9ebed; }
-body { margin: 0; color: #18242d; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; line-height: 1.4; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body { margin: 0; color: #18242d; font-family: Arial, Helvetica, sans-serif; font-size: 9.5pt; line-height: 1.33; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 .page { width: 180mm; height: 266mm; margin: 12mm auto; padding: 0 0 13mm; position: relative; background: white; break-after: page; }
 .page:last-child { break-after: auto; }
 .screen-page { padding: 15mm; width: 210mm; height: 296mm; }
 .screen-page .page { margin: 0; }
-header { border-top: 3pt solid #233e49; padding-top: 5mm; margin-bottom: 6mm; }
+header { border-top: 3pt solid #233e49; padding-top: 5mm; margin-bottom: 4mm; }
 .brand { display: flex; justify-content: space-between; align-items: baseline; gap: 8mm; font-size: 8.5pt; letter-spacing: .04em; color: #4b606a; }
 .brand strong { letter-spacing: .11em; color: #233e49; }
 h1 { font-size: 23pt; line-height: 1.12; margin: 4mm 0 2mm; font-weight: 700; letter-spacing: -.035em; }
 .subtitle { color: #53636b; margin: 0; max-width: 166mm; }
-h2 { font-size: 12pt; margin: 5mm 0 2mm; line-height: 1.25; color: #233e49; }
+h2 { font-size: 12pt; margin: 3.5mm 0 2mm; line-height: 1.25; color: #233e49; }
 h3 { font-size: 10pt; margin: 3mm 0 1mm; }
-p { margin: 0 0 2.5mm; }
+p { margin: 0 0 2mm; }
 ul { margin: 1mm 0 3mm; padding-left: 4.5mm; }
 li { margin: 0 0 1.2mm; }
 table { width: 100%; border-collapse: collapse; margin: 2.5mm 0; font-size: 9pt; }
@@ -96,62 +71,67 @@ const header = (title, subtitle) =>
 const footer = (label, page) =>
   `<footer><span>${html(label)} · équipe de trois — noms à renseigner</span><span>${page}</span></footer>`;
 const metricRow = (label, row) =>
-  `<tr><td>${html(label)}</td><td>${percentage(row.precision)}<br><span class="small">${interval(row.precisionCI)}</span></td><td>${percentage(row.recall)}</td><td>${percentage(row.f1)}</td><td>${seconds(row.medianSeconds)}</td></tr>`;
-const confusion = (row) => `${row.tp} VP · ${row.fp} FP · ${row.fn} FN · ${row.tn} VN`;
-const qaRows = qaMeasured
-  ? ['baseline', 'system']
-      .map((method) => {
-        const row = qa[method];
-        return `<tr><td>${method === 'baseline' ? 'Prompt simple' : 'Questions avec RAG'}</td><td>${row.passed}/${qa.n} · ${percentage(row.correctAndCitedOrCorrectAbstention)}<br><span class="small">${interval(row.confidence95)}</span></td><td>${row.correctAbstentions}/${row.unanswerableTotal}</td><td>${seconds(row.medianSeconds)}</td></tr>`;
-      })
-      .join('')
-  : '';
+  `<tr><td>${html(label)}</td><td>${row ? `${row.tp} / ${row.fp} / ${row.fn}` : '—'}</td><td>${percentage(row?.precision)}<br><span class="small">${interval(row?.precisionCI95)}</span></td><td>${percentage(row?.recall)}<br><span class="small">${interval(row?.recallCI95)}</span></td><td>${percentage(row?.f1)}</td></tr>`;
+const missed = c?.system?.missedErrorIds || [];
+const missedText = missed.length
+  ? missed.join(', ')
+  : c?.system
+    ? 'Aucune injection manquée sur cet essai.'
+    : 'Système non mesuré.';
+const falseAlerts =
+  c?.system?.ledger.filter((entry) => entry.status === 'false-positive-controlled-scope') || [];
 const qaSection = qaMeasured
-  ? `
-<p><strong>${qa.n} questions sur Valkaama</strong> : vingt informations présentes et quatre absentes. Même corpus : dix scènes intégrales pour la baseline, passages retrouvés pour le RAG. Profil QA <span class="mono">${html(qa.model)}</span>, distinct de la continuité 20B.</p>
-<table class="metric-table"><thead><tr><th>Méthode</th><th>Réussite [IC 95 %]</th><th>Abstentions correctes</th><th>Médiane</th></tr></thead><tbody>${qaRows}</tbody></table>
-<p>Grille : éléments lexicaux, scène et référence dans la réponse, ou <span class="mono">NOT FOUND</span> sans citation. Synonymes et négations limitent ce contrôle ; relecture nécessaire. Les durées incluent la régulation du quota.</p>
-<p class="small">Exécution : ${html(date(qa.completedAt))}, ${html(qa.model)}, code ${html(qa.codeHash)}. Erreurs fournisseur : 0. Échecs système : ${html(
-      qa.rows
-        .filter((row) => !row.system.passed)
-        .map((row) => row.id)
-        .join(', ') || 'aucun sur ce jeu',
-    )}. Cette mesure concerne les réponses, pas la détection de continuité.</p>
-`
-  : `<div class="note warning"><strong>Mesure QA réelle à terminer.</strong> ${qa ? `${errors} erreurs fournisseur ont empêché une comparaison complète. Les échecs réseau ne permettent pas de conclure sur la qualité du modèle.` : 'Le jeu de 24 questions sourcées existe, mais aucun rapport d’inférence n’est encore disponible.'}</div>`;
+  ? `<p><strong>${qa.n} questions sur les dix premières scènes inchangées de Valkaama</strong>, profil <span class="mono">${html(qa.model)}</span> : ${qa.system.passed}/${qa.n} conformes avec RAG [IC 95 % ${interval(qa.system.confidence95)}], contre ${qa.baseline.passed}/${qa.n} au prompt simple [${interval(qa.baseline.confidence95)}]. Abstentions correctes : ${qa.system.correctAbstentions}/${qa.system.unanswerableTotal} et ${qa.baseline.correctAbstentions}/${qa.baseline.unanswerableTotal}. La grille lexicale vérifie réponse et citation, ou <span class="mono">NOT FOUND</span>. Synonymes et négations peuvent la tromper. Cette mesure porte sur les réponses, pas la continuité.</p>`
+  : `<p>Questions réelles : comparaison incomplète ou absente (${qa?.nCompleted || 0}/${qa?.nPlanned || 24} questions complètes), aucun score global de qualité revendiqué. Les erreurs fournisseur sont distinctes des réponses incorrectes.</p>`;
 
 const evaluation = document(
   'Faux Raccord — rapport d’évaluation',
   `
 <main class="page">
-${header('Rapport d’évaluation', 'Continuité textuelle des accessoires · résultats du prototype et limites de leur interprétation')}
-<h2>1. Protocole de continuité</h2>
-<p>Le jeu comporte <strong>60 cas synthétiques contrôlés</strong> : dix de développement et cinquante réservés au test (${report.rows.filter((row) => row.expected).length} positifs, ${report.n - report.rows.filter((row) => row.expected).length} négatifs). États, possession, réparations, objets homonymes, ellipses, absences de mention et injections sont représentés. Les annotations assistées par IA <strong>attendent une validation étudiante</strong>.</p>
-<p>Le prompt simple reçoit le texte intégral du cas. Le système reçoit les mêmes scènes : extraction JSON, validation des citations, suivi d’objets, recherche BM25 puis comparaison LLM. Modèle et température identiques ; tous les appels du système sont comptés.</p>
-<p class="small">Référence : ${html(report.model)} sur ${html(report.provider)} · prompts v1.0.0 · température 0 · raisonnement low · code <span class="mono">${html(report.codeHash)}</span>. Les nouveaux réglages du produit n’héritent pas de ces scores.</p>
-<h2>2. Résultats et incertitude</h2>
-<p>L’unité est le <strong>cas</strong> : au moins une alerte rend la prédiction positive. Précision = VP / (VP + FP) ; rappel = VP / (VP + FN) ; F1 = moyenne harmonique. Les intervalles de Wilson à 95 % rendent visible le petit effectif.</p>
-<table class="metric-table"><thead><tr><th>Méthode</th><th>Précision [IC 95 %]</th><th>Rappel</th><th>F1</th><th>Médiane</th></tr></thead><tbody>${metricRow('Prompt simple', report.baseline)}${metricRow('Extraction + RAG + comparaison', report.system)}</tbody></table>
-<p class="small">Système : ${html(confusion(report.system))}. Baseline : ${html(confusion(report.baseline))}. Erreurs fournisseur : ${report.system.errors} système, ${report.baseline.errors} baseline. IC du rappel : ${interval(report.system.recallCI)} système ; ${interval(report.baseline.recallCI)} baseline.</p>
-<div class="note"><strong>Le prompt simple obtient le meilleur F1.</strong> Le pipeline réduit les fausses alertes de ${report.baseline.fp} à ${report.system.fp}, mais manque ${report.system.fn} cas positifs. Sa supériorité globale n’est pas démontrée. La borne basse de la précision ne confirme pas un seuil de 80 %.</div>
-<h2>3. Échecs à expliquer</h2>
-<ul><li><strong>Quatre faux négatifs de possession</strong> : C013, C024, C032, C059. Un passeport conservé par un agent réapparaît chez sa propriétaire sans restitution décrite.</li><li><strong>Un faux positif temporel</strong> : C051. Un lecteur cassette cassé est vu intact dans une séquence située cinq ans plus tôt.</li></ul>
-<p>Les cas sont courts, synthétiques et parfois proches. Leurs intervalles ne corrigent pas ce biais et ne prédisent pas la performance sur un film. Après lecture des erreurs, toute correction doit être évaluée sur de nouveaux cas indépendants.</p>
+${header('Rapport d’évaluation', 'Expérience principale : retrouver quinze faux raccords introduits dans un même scénario')}
+<h2>1. Données, droits et protocole</h2>
+<p><strong>Valkaama</strong>, Tim Baumann d’après Hendrik Behnisch, version ${html(license.originalVersion)} : 56 scènes conservées. L’adaptation pédagogique ajoute 19 accessoires et prépare leur continuité cohérente. <strong>Exactement quinze phrases ultérieures sont ensuite modifiées</strong> pour créer quinze erreurs ; quatre transitions expliquées restent comme contrôles négatifs. L’évaluation couvre S001–S012, où se trouvent toutes les injections. Aucun faux raccord n’est attribué aux auteurs originaux.</p>
+<p>La <a href="${html(license.originalSourceUrl)}">page officielle de l’auteur</a> annonce la licence <strong>${html(license.license)}</strong>. L’adaptation est attribuée, ses modifications documentées et sa licence identique. Les contrôles vérifient les preuves littérales et que l’annulation des quinze modifications restitue la référence : <strong>${c?.validation?.valid ? 'validation réussie' : 'validation à exécuter ou corriger'}</strong>. Annotations proposées avec assistance IA, relecture humaine non attestée ; jeu de développement visible.</p>
+<p>Le système utilise le pipeline du produit : extraction par lots de trois scènes, contrôle des citations, suivi des états, BM25 puis comparaison LLM. Protocole baseline, même modèle : ${html(summary.baselineProtocolText)}.</p>
+<p class="small">Modèle : <span class="mono">${html(c?.model?.id || 'non mesuré')}</span> via ${html(c?.model?.provider || '—')}, température 0, licence ${html(c?.model?.license || 'à confirmer')}. Pipeline <span class="mono">${html(c?.dataset?.pipelineHash?.slice(0, 12) || 'absent')}</span>.</p>
+<p class="small">${html(summary.inferenceProfileShort)}</p>
+<h2>2. Résultats par alerte et incertitude</h2>
+<p>Un vrai positif (VP) identifie l’accessoire annoté et cite ses deux scènes avec des passages valides ; une seule détection compte par injection. Une alerte erronée ou dupliquée est un faux positif (FP). Une injection manquée est un faux négatif (FN).</p>
+<p><strong>Précision = VP / (VP + FP)</strong>, parmi les alertes contrôlables. <strong>Rappel = VP / 15</strong>, parmi les erreurs introduites. F1 : moyenne harmonique. Les alertes sur les objets originaux non annotés sont exclues de la précision contrôlée et restent à relire.</p>
+<table class="metric-table"><thead><tr><th>Méthode</th><th>VP / FP / FN</th><th>Précision [IC 95 %]</th><th>Rappel [IC 95 %]</th><th>F1</th></tr></thead><tbody>${metricRow('Prompt simple', c?.baseline)}${metricRow('Extraction + RAG + comparaison', c?.system)}</tbody></table>
+<div class="note"><strong>${html(summary.primaryStatus)}</strong> ${c?.system ? `${c.system.alertCount} alertes système, dont ${c.system.unannotatedAlertCount} hors périmètre annoté ; ${c.baseline?.alertCount ?? '—'} alertes baseline, dont ${c.baseline?.unannotatedAlertCount ?? '—'} hors périmètre. ${c.system.fn}/15 injections manquées ; une précision observée de 100 % ne garantit pas ce niveau sur un autre scénario.` : ''}</div>
+<p class="small">IC de Wilson à 95 % descriptifs : erreurs construites et dépendantes, une seule œuvre, faible effectif. Ils ne prouvent pas une généralisation à d’autres films.</p>
+<h2>3. Échecs et preuve affichée</h2>
+<p><strong>Injections manquées :</strong> ${html(missedText)} ${
+    falseAlerts.length
+      ? `<strong>Fausses alertes contrôlées :</strong> ${falseAlerts.length} (${html(
+          falseAlerts
+            .slice(0, 3)
+            .map((item) => item.alertId)
+            .join(', '),
+        )}${falseAlerts.length > 3 ? ', détails dans le rapport brut' : ''}).`
+      : ''
+  }</p>
+<p>${c?.failureAnalysis?.length ? 'Piste dans les traces : E03/E06/E12 sont extraits comme remplissages malgré la négation ; diagnostic à relire. ' : ''}Chaque alerte affiche ses deux passages, scène et page. Une citation exacte ne garantit pas une interprétation juste.</p>
 ${footer('Rapport d’évaluation', '1 / 2')}
 </main>
 <main class="page">
-${header('Données réelles et limites', 'Mesures complémentaires · coût · sécurité · travail restant')}
-<h2>4. Questions sur un vrai scénario</h2>
+${header('Coût, compléments et limites', 'Les expériences suivantes ont leur propre unité et leur propre modèle')}
+<h2>4. Coût et durée de l’expérience principale</h2>
+<table><thead><tr><th>Douze scènes</th><th>Tokens entrée / sortie</th><th>Durées cumulées</th><th>Coût estimé</th></tr></thead><tbody>${['baseline', 'system'].map((key) => `<tr><td>${key === 'baseline' ? 'Prompt simple' : 'Pipeline'} (${c?.[key]?.usage?.physicalCalls ?? '—'} requêtes)</td><td>${number(c?.[key]?.usage?.inputTokens)} / ${number(c?.[key]?.usage?.outputTokens)}</td><td>${seconds(c?.[key]?.seconds)}</td><td>${money(c?.[key]?.indicativeCostUSD)}</td></tr>`).join('')}</tbody></table>
+<p class="small">${c?.costBasis ? `Tarif <a href="${html(c.costBasis.source)}">${html(c.model.id)}</a>, vérifié le ${html(date(c.costBasis.checkedAt))} : ${c.costBasis.inputUSDPerMillion} USD/M en entrée, ${c.costBasis.outputUSDPerMillion} USD/M en sortie. Coût théorique des sorties mesurées, hors essais et facture réelle.` : 'Aucun tarif associé.'} Les durées additionnent les requêtes, y compris quotas et réponses reprises du cache ; la dernière reprise seule (${seconds(c?.system?.resumedWallSeconds)}) n’est pas la durée totale. ${c?.system?.usage?.physicalCalls ?? '—'} requêtes système pour ${c?.system?.usage?.logicalCalls ?? '—'} appels logiques, le transport divisant le jugement.</p>
+${c?.errors?.system || c?.errors?.baseline ? '<p class="small">Comparaison incomplète : erreurs d’infrastructure conservées dans le rapport brut, aucun score global revendiqué.</p>' : ''}
+<h2>5. Expériences secondaires</h2>
+<p><strong>${report.n} vignettes synthétiques réservées au test</strong>, dix autres cas ayant servi au développement. Unité : cas positif si au moins une alerte, différente de l’unité du benchmark principal. Modèle <span class="mono">${html(report.model)}</span>, ${html(date(report.completedAt))}, code <span class="mono">${html(report.codeHash)}</span>. Annotations assistées par IA à relire.</p>
+<table><thead><tr><th>Par cas synthétique</th><th>Précision [IC 95 %]</th><th>Rappel</th><th>F1</th></tr></thead><tbody>${['baseline', 'system'].map((key) => `<tr><td>${key === 'baseline' ? 'Prompt simple' : 'Pipeline'}</td><td>${percentage(report[key].precision)} [${interval(report[key].precisionCI)}]</td><td>${percentage(report[key].recall)}</td><td>${percentage(report[key].f1)}</td></tr>`).join('')}</tbody></table>
+<p>Le prompt simple a ici le meilleur F1 ; le pipeline émet moins de fausses alertes. Ces scores historiques ne valident pas rétroactivement le nouveau modèle.</p>
 ${qaSection}
-<h2>5. Recherche, tokens et coût</h2>
-<p>Sur ${retrieval.n} recherches lexicales dans Valkaama, la scène de référence apparaît dans les cinq premiers résultats dans <strong>${percentage(retrieval.value)}</strong> des cas. Les citations sont contrôlées dans le texte. Ce résultat mesure la recherche seule.</p>
-<table><thead><tr><th>50 cas synthétiques</th><th>Tokens entrée / sortie</th><th>Coût estimé / cas</th></tr></thead><tbody><tr><td>Prompt simple</td><td>${number(report.baseline.inputTokens)} / ${number(report.baseline.outputTokens)}</td><td>${report.model === pricing.model ? money(cost(report.baseline) / report.n) : 'Tarif non associé'}</td></tr><tr><td>Pipeline</td><td>${number(report.system.inputTokens)} / ${number(report.system.outputTokens)}</td><td>${report.model === pricing.model ? money(cost(report.system) / report.n) : 'Tarif non associé'}</td></tr></tbody></table>
-<p class="small">Tarif catalogue ${html(pricing.model)}, vérifié le ${html(date(pricing.checkedAt))} : ${pricing.inputPerMillion} USD/M en entrée et ${pricing.outputPerMillion} USD/M en sortie. Estimation hors cache, remises et plan gratuit, distincte d’une facture. Les quotas et le volume d’un scénario modifient coût et latence.${qaMeasured && qa.model === pricing.model ? ` QA réel : ${number(qa.system.inputTokens)} / ${number(qa.system.outputTokens)} tokens système, ${money(cost(qa.system))} au total ; baseline ${money(cost(qa.baseline))}.` : ''}</p>
-<h2>6. Sécurité et portée</h2>
-<p>${redPassed}/${red.rows.length} essais adversariaux réels ont résisté aux attaques testées : instruction dans le scénario, demande de secret et détournement de la question. Cet échantillon ne garantit pas la résistance générale aux injections.</p>
-<p>Les citations extraites sont recherchées après normalisation ; les identifiants inventés sont rejetés. Un passage présent ne garantit pas une interprétation correcte. La validation humaine reste nécessaire.</p>
-<div class="note warning"><strong>Validation d’usage :</strong> les retours internes ont guidé le parcours et les explications. Le test entre les trois membres reste à consigner ; il ne prouve pas un gain de temps en tournage. Faire relire les références et réserver de nouveaux cas avant de modifier le détecteur.</div>
-<p class="small rule">Sources et preuves : <span class="mono">eval/report.json</span>, <span class="mono">eval/qa-real-report.json</span>, <span class="mono">eval/retrieval-real.json</span>, <span class="mono">eval/red-team-results.json</span>. Méthodes reproductibles dans <span class="mono">eval/</span>. Tarifs : <a href="${html(pricing.source)}">documentation Groq</a>. Attribution du scénario et droits : <span class="mono">data/README.md</span>.</p>
+<p><strong>Recherche seule :</strong> ${retrieval.n} requêtes lexicales, scène attendue dans les cinq premiers résultats : ${percentage(retrieval.value)}. Cela ne mesure pas la justesse d’une analyse.</p>
+<h2>6. Sécurité, portée et travaux restants</h2>
+<p>${redPassed}/${red.rows.length} essais adversariaux réels résistants aux attaques testées. Citations et identifiants contrôlés ; documents traités comme données ; clé absente des prompts ; sorties non exécutées. Trois essais ne garantissent pas une sécurité générale.</p>
+<p>Le besoin métier et le gain de temps ne sont pas validés. Relecture humaine des annotations à consigner. Objets homonymes, transferts implicites et flashbacks restent difficiles. Aucune modalité image/audio/vidéo n’est revendiquée ; elle est encouragée dans le brief.</p>
+<div class="note warning">Une œuvre et des erreurs construites ne suffisent pas à généraliser. Réserver un autre scénario annoté avant de conclure.</div>
+<p class="small rule">Preuves : rapports JSON dans <span class="mono">eval/</span> ; annotations et licence dans <span class="mono">data/controlled-script/</span>. Reproduction sans appel : <span class="mono">node eval/controlled-run.mjs</span>. Les chemins complets figurent dans la version Markdown.</p>
 ${footer('Rapport d’évaluation', '2 / 2')}
 </main>`,
 );
@@ -160,30 +140,31 @@ const card = document(
   'Faux Raccord — fiche système',
   `
 <main class="page card">
-${header('Fiche système', 'Aide à la relecture de continuité des accessoires d’un scénario')}
+${header('Fiche système', 'IA générative avec RAG pour relire la continuité textuelle d’accessoires')}
 <div class="two-columns"><section>
 <h2>Usage prévu</h2>
-<p>Scriptes et petites équipes de court métrage préparant le suivi des accessoires. Le produit rassemble des mentions et propose des points sourcés à examiner. Le besoin et le gain de temps restent à valider avec une personne réelle.</p>
+<p>Scriptes et petites équipes de court métrage préparant le suivi des accessoires. Le produit rassemble des mentions et génère des alertes sourcées à examiner. L’utilité et le gain de temps métier ne sont pas validés.</p>
 <h2>Entrées et sorties</h2>
-<p>PDF avec texte, TXT, Fountain, Markdown. Scènes et pages, accessoires, mentions, deux passages par point signalé, décision et note de revue. Export du projet JSON et du rapport Markdown.</p>
-<h2>Modèle de référence</h2>
-<p><span class="mono">openai/gpt-oss-20b</span> via Groq : MoE 20B, 3,6B actifs, licence Apache 2.0 ; température 0 et raisonnement low. Précision d’infrastructure TruePoint gérée par Groq, pas par l’équipe. L’API ne propose pas de snapshot immuable.</p>
-<p>Ollama et autres modèles en option. Licence, mémoire et compatibilité à vérifier pour chaque choix. Les nouveaux paramètres sont conservés avec l’analyse ; changer la configuration impose une nouvelle évaluation.</p>
+<p>PDF avec texte, TXT, Fountain, Markdown. Scènes et pages, objets, mentions, deux passages par alerte, décision et note de revue. Export projet JSON et rapport Markdown.</p>
 <h2>Fonctionnement</h2>
-<p>Segmentation déterministe ; extraction JSON par lots ; contrôle des citations ; suivi des objets ; candidats d’état ou de possession ; BM25 puis comparaison LLM ; revue humaine. Les questions utilisent recherche, réponse citée ou abstention.</p>
+<p>Segmentation ; extraction JSON par lots de trois scènes ; contrôle des citations ; suivi des états et de la possession ; recherche BM25 ; comparaison LLM ; revue humaine. Questions : recherche puis réponse citée ou abstention. Déclenché par l’utilisateur, sans choix autonome d’outils ni action extérieure.</p>
+<h2>Modèles et reproductibilité</h2>
+<p>Profil historique : <span class="mono">openai/gpt-oss-20b</span> via Groq, température 0, raisonnement low, Apache 2.0. Expérience contrôlée : <span class="mono">${html(c?.model?.id || 'non mesurée')}</span>, ${html(c?.model?.license || 'licence à confirmer')}, identique pour système et baseline. QA : profil 120B séparé.</p>
+<p>Ollama en option locale ; petits modèles non validés pour une extraction fiable. Identifiants API sans snapshot immuable. Les analyses conservent modèle, réglages et prompts ; changer la configuration impose une nouvelle mesure.</p>
+<p class="small">${html(summary.inferenceProfileShort)}</p>
 </section><section>
 <h2>Données et droits</h2>
-<p>Valkaama, Tim Baumann d’après Hendrik Behnisch, version 2007-06-30 : 56 scènes, CC BY-SA 3.0, pages conservées. Les Heures Creuses et le benchmark de continuité sont synthétiques.</p>
-<p>MovieSum : index local de titres, import en ligne, hors benchmark. Sa licence de jeu déclarée CC BY-NC 4.0 ne garantit pas les droits des œuvres sous-jacentes. Provenance et portée conservées.</p>
+<p>Valkaama, Tim Baumann d’après Hendrik Behnisch, ${html(license.originalVersion)}, 56 scènes, <strong>${html(license.license)}</strong> selon la <a href="${html(license.originalSourceUrl)}">page de l’auteur</a>. Adaptation attribuée sous la même licence : 15 erreurs délibérées et quatre contrôles sur 19 accessoires ajoutés ; mesure S001–S012. Les faux raccords ne sont pas attribués aux auteurs originaux.</p>
+<p>Les Heures Creuses et les vignettes sont synthétiques. MovieSum facultatif, hors benchmark ; la licence déclarée du dataset ne garantit pas les droits des œuvres sous-jacentes. Importer des textes autorisés.</p>
 <h2>Protections et confidentialité</h2>
-<p>Clés côté serveur ; limites de fichier, pages et texte ; citations et identifiants contrôlés ; documents traités comme données ; sorties non exécutées. Groq reçoit les scènes ou extraits utiles ; Ollama permet l’inférence locale. Les projets restent sur l’appareil, sans synchronisation d’équipe.</p>
+<p>Clés serveur ; limites de taille et de pages ; citations et identifiants vérifiés ; documents traités comme données ; sorties non exécutées. Groq reçoit les scènes ou extraits après confirmation d’envoi ; Ollama traite localement. Projets sur l’appareil, sans synchronisation d’équipe.</p>
 <h2>Hors périmètre et limites</h2>
-<p>Pas de vidéo, d’OCR ni de planning de tournage. L’ordre narratif n’est pas reconstruit. Identité des objets, flashbacks et transferts implicites difficiles ; RAG lexical limité sur les paraphrases et les langues croisées. Les citations ne prouvent pas la justesse d’une conclusion.</p>
+<p>Pas de vision, d’audio, de vidéo, d’OCR ni de planning de tournage. Ordre narratif non reconstruit. Homonymes, flashbacks et transferts implicites difficiles ; RAG lexical limité sur les paraphrases et langues croisées. Citation exacte ≠ interprétation correcte. Aucune détection exhaustive promise.</p>
 </section></div>
 <h2>Évaluation disponible</h2>
-<p>50 cas synthétiques réservés, annotations assistées par IA à relire. <strong>Précision par cas signalé ${percentage(report.system.precision)} [${interval(report.system.precisionCI)}], rappel ${percentage(report.system.recall)}, F1 ${percentage(report.system.f1)}.</strong> Baseline : précision ${percentage(report.baseline.precision)}, rappel ${percentage(report.baseline.recall)}, F1 ${percentage(report.baseline.f1)}. Le pipeline réduit les fausses alertes mais n’est pas globalement supérieur.</p>
-<p>${qaMeasured ? `QA ${html(qa.model)} : ${qa.system.passed}/${qa.n} questions conformes selon la grille [${interval(qa.system.confidence95)}], contre ${qa.baseline.passed}/${qa.n} pour la baseline ; relecture humaine en attente.` : 'Le jeu de 24 questions réelles existe ; sa comparaison complète reste à vérifier.'} Recherche seule : ${retrieval.n} requêtes, rappel de scène à 5 de ${percentage(retrieval.value)}. Red team : ${redPassed}/${red.rows.length} essais réussis ; portée limitée.</p>
-<p class="small rule">Responsables et contact : <strong>équipe de trois — à renseigner</strong>. Détails : <span class="mono">docs/evaluation_report.md</span>, <span class="mono">docs/use_policy.md</span>, <span class="mono">docs/red_team_log.md</span>, <span class="mono">data/README.md</span>. Les rapports bruts conservent leurs dates, modèles et références de code.</p>
+<p><strong>${html(summary.primaryStatus)}</strong> ${c?.system ? `Précision sur les alertes des accessoires contrôlés : ${percentage(c.system.precision)} [IC 95 % ${interval(c.system.precisionCI95)}] ; rappel des quinze injections : ${percentage(c.system.recall)} [${interval(c.system.recallCI95)}] ; F1 ${percentage(c.system.f1)}. ${c.system.unannotatedAlertCount} alertes hors périmètre exclues du score et à relire.` : ''}</p>
+<p>Annotations proposées avec assistance IA, relecture humaine non attestée ; jeu visible, œuvre unique, intervalles descriptifs. Les 50 vignettes, 24 questions et 12 recherches sont des expériences distinctes. Sécurité : ${redPassed}/${red.rows.length} essais adversariaux réels, portée limitée. Décision finale humaine.</p>
+<p class="small rule">Responsables et contact : <strong>équipe de trois — à renseigner</strong>. Politique : <span class="mono">docs/use_policy.md</span>. Évaluation et red team : <span class="mono">docs/evaluation_report.md</span>, <span class="mono">docs/red_team_log.md</span>. Guide dans l’application, rubrique « Documentation ». Source et adaptation : <span class="mono">data/controlled-script/license.json</span>.</p>
 ${footer('Fiche système', '1 / 1')}
 </main>`,
 );
