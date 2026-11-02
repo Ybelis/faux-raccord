@@ -39,7 +39,10 @@ export function readProjectExport(raw) {
       !scene.pages.every((page) => Number.isInteger(page) && page > 0)
     )
       invalid();
-    if (!/^\d{1,4}$/.test(String(scene.number)) || Number(scene.number) < 1) invalid();
+    // Une longue scène MovieSum peut être divisée en parties « 1.1 », « 1.2 ».
+    // Le numéro affiché est un repère source ; l'identifiant S001 reste unique.
+    if (!/^\d{1,4}(?:\.\d{1,3})?$/.test(String(scene.number)) || Number(scene.number) <= 0)
+      invalid();
     ids.add(scene.id);
     total += scene.text.length;
   }
@@ -51,6 +54,7 @@ export function readProjectExport(raw) {
 }
 
 function validateAnalysis(analysis, scenes) {
+  if (analysis.warnings != null && !strings(analysis.warnings)) invalid();
   const byId = new Map(scenes.map((scene) => [scene.id, scene]));
   const validEvidence = (mention) =>
     mention &&

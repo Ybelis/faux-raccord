@@ -1,15 +1,16 @@
 import http from 'node:http';
 import { readFile } from 'node:fs/promises';
 import { api, setRecorded, setEvaluation } from '../worker/api.js';
+import { loadEvaluation } from './evaluation-data.mjs';
 const port = Number(process.env.PORT || 4173);
-for (const [file, setter] of [
-  ['data/recorded.json', setRecorded],
-  ['eval/report.json', setEvaluation],
-]) {
-  try {
-    setter(JSON.parse(await readFile(new URL('../' + file, import.meta.url), 'utf8')));
-  } catch {}
+try {
+  setRecorded(
+    JSON.parse(await readFile(new URL('../data/recorded.json', import.meta.url), 'utf8')),
+  );
+} catch {
+  // Sans analyses enregistrées, l'import et une nouvelle analyse restent disponibles.
 }
+setEvaluation(await loadEvaluation());
 const production = process.argv.includes('--production');
 const { createServer } = production ? {} : await import('vite');
 const vite = production
@@ -29,9 +30,7 @@ const server = http.createServer(async (req, res) => {
   try {
     if (req.url.startsWith('/api/evaluation')) {
       try {
-        setEvaluation(
-          JSON.parse(await readFile(new URL('../eval/report.json', import.meta.url), 'utf8')),
-        );
+        setEvaluation(await loadEvaluation());
       } catch {}
     }
     if (req.url.startsWith('/api/samples/')) {

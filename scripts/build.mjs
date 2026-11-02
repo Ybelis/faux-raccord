@@ -2,15 +2,13 @@ import { build as viteBuild } from 'vite';
 import { build as bundle } from 'esbuild';
 import { mkdir, readFile, writeFile, readdir, copyFile } from 'node:fs/promises';
 import path from 'node:path';
+import { loadEvaluation } from './evaluation-data.mjs';
 const root = process.cwd();
 await viteBuild({ root, build: { outDir: 'dist/client', emptyOutDir: true, sourcemap: false } });
-let recorded = {},
-  evaluation = { status: 'not_run', message: 'Évaluation non exécutée.' };
+let recorded = {};
+const evaluation = await loadEvaluation();
 try {
   recorded = JSON.parse(await readFile('data/recorded.json', 'utf8'));
-} catch {}
-try {
-  evaluation = JSON.parse(await readFile('eval/report.json', 'utf8'));
 } catch {}
 const mime = {
   '.html': 'text/html; charset=utf-8',

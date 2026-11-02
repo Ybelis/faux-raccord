@@ -202,6 +202,12 @@ export function Dialogs(props) {
         wide
       >
         <div className="documentation-copy">
+          <h3>Une application d’IA générative avec RAG</h3>
+          <p>
+            Le modèle génère des fiches d’accessoires, des explications et des réponses à partir des
+            passages du scénario. Le code suit un parcours défini et contrôle les sources ; vous
+            prenez la décision de relecture.
+          </p>
           <h3>Comment lire un résultat</h3>
           <p>
             Un point signalé est une hypothèse à relire. Les citations existent dans le texte, mais
@@ -223,8 +229,9 @@ export function Dialogs(props) {
           <h3>Pour préparer la soutenance</h3>
           <p>
             Le dépôt contient le README, les diagrammes d’architecture, le parcours du code, la
-            matrice des exigences du cours et les réponses aux principales limites. Les entretiens
-            utilisateur et la relecture des annotations restent à réaliser par le groupe.
+            matrice des exigences du cours et les réponses aux principales limites. Un test interne
+            entre les trois membres est proposé pour vérifier la prise en main. Il ne constitue pas
+            une validation métier auprès d’une équipe de tournage.
           </p>
         </div>
         <button className="button secondary full" onClick={onEvaluation}>

@@ -86,4 +86,4 @@ Le RAG est lexical, sans embeddings ni entraînement des poids. Il privilégie l
 | Catalogue et provenance des imports externes | `worker/sources.js` |
 | Exécution locale et compilation | `scripts/dev.mjs`, `scripts/build.mjs` |
 
-La séparation de ces fonctions prépare une éventuelle extension agentique. Aucun agent autonome, outil d'envoi ou planificateur n'est annoncé comme déjà réalisé.
+La séparation de ces fonctions permet de tester et d’expliquer chaque étape. Le rendu actuel est une application d’IA générative avec RAG : le code fixe l’ordre des traitements et l’utilisateur conserve la décision de relecture. Le [positionnement du projet](positionnement-generatif.md) détaille les sorties réellement générées.

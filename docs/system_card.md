@@ -1,7 +1,8 @@
 # Fiche système — Faux Raccord
 
-**Objet.** Atelier de continuité textuelle pour scriptes et équipes de courts
-métrages. Le besoin auprès d'un utilisateur réel reste à valider par le groupe.
+**Objet.** Application d’IA générative avec RAG pour relire la continuité textuelle
+d’un scénario. Les retours internes ont guidé la prise en main ; l’utilité en
+tournage n’est pas encore une mesure validée.
 
 **Entrées / sorties.** Scénarios PDF avec texte, TXT, Fountain ou Markdown.
 Sorties : scènes, accessoires, mentions, points de continuité sourcés et décisions
@@ -15,7 +16,9 @@ date et version des prompts accompagnent les nouvelles analyses.
 Le modèle ouvert est sous [Apache 2.0](https://huggingface.co/openai/gpt-oss-20b).
 Groq décrit un modèle MoE de 20B paramètres, dont 3,6B actifs, avec sa précision
 TruePoint ; l'infrastructure et cette précision ne sont pas contrôlées par le groupe.
-Les scores de référence ne s'appliquent pas aux autres configurations.
+Les scores de référence ne s'appliquent pas aux autres configurations. Le profil
+QA 120B est identifié séparément. Les petits modèles Ollama testés répondent en
+JSON et à une question, mais ont échoué à l’extraction : les preuves ont été rejetées.
 
 **Données.** Valkaama : Tim Baumann d'après Hendrik Behnisch, version 2007-06-30,
 CC BY-SA 3.0 ; 56 scènes extraites avec leurs pages. Fiction synthétique

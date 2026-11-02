@@ -1,0 +1,144 @@
+{
+  "kind": "local-operational-validation",
+  "synthetic": true,
+  "notQualityBenchmark": true,
+  "note": "Contrôles réels sur deux scènes synthétiques, sans généralisation aux autres scénarios. Connexion et QA réussissent ; extraction échoue et reste signalée.",
+  "models": [
+    {
+      "provider": "ollama",
+      "model": "qwen3:1.7b",
+      "settings": {
+        "temperature": 0,
+        "maxOutputTokens": 5000,
+        "reasoningEffort": "low",
+        "contextWindow": 16384
+      },
+      "completedAt": "2026-11-02T11:49:50.325Z",
+      "connection": {
+        "passed": true,
+        "milliseconds": 1429,
+        "usage": {
+          "inputTokens": 60,
+          "outputTokens": 6,
+          "milliseconds": 1425,
+          "provider": "ollama",
+          "model": "qwen3:1.7b",
+          "promptVersion": "1.0.0",
+          "settings": {
+            "temperature": 0,
+            "maxOutputTokens": 5000,
+            "contextWindow": 16384,
+            "thinking": false
+          },
+          "outputLimit": 512
+        }
+      },
+      "question": {
+        "passed": true,
+        "answer": "Le verre de la montre est brisé dans la scène 1. [S001-C1]",
+        "citations": [
+          "S001-C1"
+        ],
+        "milliseconds": 696,
+        "usage": {
+          "inputTokens": 363,
+          "outputTokens": 39,
+          "milliseconds": 694,
+          "provider": "ollama",
+          "model": "qwen3:1.7b",
+          "promptVersion": "1.0.0",
+          "settings": {
+            "temperature": 0,
+            "maxOutputTokens": 5000,
+            "contextWindow": 16384,
+            "thinking": false
+          },
+          "outputLimit": 1200
+        }
+      },
+      "extraction": {
+        "passed": false,
+        "expected": "Une montre, deux mentions vérifiables et un changement brisé vers intact.",
+        "objects": 0,
+        "alerts": 0,
+        "rejectedEvidence": 1,
+        "milliseconds": 1802,
+        "usage": {
+          "calls": 1,
+          "inputTokens": 645,
+          "outputTokens": 102,
+          "milliseconds": 1799
+        },
+        "failure": "Le modèle recopie la citation exemple au lieu du scénario ; la validation la rejette."
+      }
+    },
+    {
+      "provider": "ollama",
+      "model": "llama3.2:latest",
+      "settings": {
+        "temperature": 0,
+        "maxOutputTokens": 5000,
+        "reasoningEffort": "low",
+        "contextWindow": 16384
+      },
+      "completedAt": "2026-11-02T11:52:04.702Z",
+      "connection": {
+        "passed": true,
+        "milliseconds": 15662,
+        "usage": {
+          "inputTokens": 65,
+          "outputTokens": 6,
+          "milliseconds": 15649,
+          "provider": "ollama",
+          "model": "llama3.2:latest",
+          "promptVersion": "1.0.0",
+          "settings": {
+            "temperature": 0,
+            "maxOutputTokens": 5000,
+            "contextWindow": 16384,
+            "thinking": false
+          },
+          "outputLimit": 512
+        }
+      },
+      "question": {
+        "passed": true,
+        "answer": "brisé",
+        "citations": [
+          "S001-C1"
+        ],
+        "milliseconds": 599,
+        "usage": {
+          "inputTokens": 354,
+          "outputTokens": 15,
+          "milliseconds": 597,
+          "provider": "ollama",
+          "model": "llama3.2:latest",
+          "promptVersion": "1.0.0",
+          "settings": {
+            "temperature": 0,
+            "maxOutputTokens": 5000,
+            "contextWindow": 16384,
+            "thinking": false
+          },
+          "outputLimit": 1200
+        }
+      },
+      "extraction": {
+        "passed": false,
+        "expected": "Une montre, deux mentions vérifiables et un changement brisé vers intact.",
+        "objects": 0,
+        "alerts": 0,
+        "rejectedEvidence": 1,
+        "milliseconds": 1863,
+        "usage": {
+          "calls": 1,
+          "inputTokens": 643,
+          "outputTokens": 56,
+          "milliseconds": 1858
+        },
+        "failure": "Le modèle recopie la citation exemple au lieu du scénario ; la validation la rejette."
+      }
+    }
+  ]
+}

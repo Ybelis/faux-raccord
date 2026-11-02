@@ -57,5 +57,19 @@ pour les scores de référence actuels.
 L'import télécharge le XML à la demande, conserve source, partition, titre,
 identifiant disponible et SHA-256. Les textes longs sont bornés à 60 scènes
 et 180 000 caractères, avec une portée signalée. Les repères XML ne sont pas
-des pages du PDF original. Le catalogue dépend de la disponibilité du service
-externe ; Valkaama reste embarqué pour une utilisation sans ce catalogue.
+des pages du PDF original. L’aperçu et l’import dépendent du service externe ;
+la recherche de titres et Valkaama restent disponibles hors ligne.
+
+### Index des titres
+
+`data/moviesum-index.json` contient uniquement les 2 200 titres, identifiants
+IMDb et repères de ligne/partition. Aucun scénario ni résumé n’y figure.
+La recherche par titre ou IMDb s’effectue sur ces métadonnées locales et ne
+dépend pas du service de recherche plein texte de Hugging Face.
+
+Le script `scripts/fetch-moviesum-index.mjs` lit seulement les colonnes utiles
+des fichiers Parquet par requêtes HTTP Range, avec un plafond de transfert.
+L’index conserve la révision du dataset, sa date de préparation, l’attribution
+et un condensat d’intégrité. Avant un aperçu ou un import, l’identifiant IMDb
+attendu est comparé à la ligne distante pour éviter de sélectionner une autre
+œuvre si le dataset a changé.

@@ -26,14 +26,19 @@ page.on('request', (request) => {
 });
 const startedAt = Date.now();
 
-async function pause(label, milliseconds = 2000) {
+async function pause(label, milliseconds = 1800) {
   scenes.push({ label, seconds: Number(((Date.now() - startedAt) / 1000).toFixed(1)) });
   // Deliberate presentation pauses make the video readable without narration.
   await page.waitForTimeout(milliseconds);
 }
 
 async function show(locator) {
-  await locator.scrollIntoViewIfNeeded();
+  await locator.waitFor({ state: 'visible' });
+  // Les panneaux longs dépassent parfois le viewport : placer leur début
+  // explicitement évite une attente de stabilité inutile pendant la capture.
+  await locator.evaluate((element) =>
+    element.scrollIntoView({ block: 'start', behavior: 'instant' }),
+  );
   await page.mouse.move(1380, 850);
 }
 
@@ -54,6 +59,19 @@ try {
     .click();
   await show(page.locator('.script-page-tools'));
   await pause('Lecture d’une scène et repères du PDF');
+
+  await page.getByRole('button', { name: 'Bibliothèque', exact: true }).click();
+  const library = page.getByRole('dialog', { name: 'Bibliothèque de scénarios' });
+  await library.getByRole('textbox', { name: 'Rechercher dans MovieSum' }).fill('Napoléon 2023');
+  await library.getByRole('button', { name: 'Rechercher', exact: true }).click();
+  await expect(
+    library.getByRole('heading', { name: 'Napoleon (2023)', exact: true }),
+  ).toBeVisible();
+  await pause(
+    'Recherche dans les 2 200 titres MovieSum : index local, aucun appel au modèle',
+    2500,
+  );
+  await library.getByRole('button', { name: 'Fermer', exact: true }).click();
 
   await navigate(page, 'Analyse');
   await pause('Périmètre et moteur de l’analyse');
@@ -107,18 +125,42 @@ try {
   await page.getByRole('button', { name: 'Fermer', exact: true }).click();
   await pause('Décisions conservées dans le navigateur');
   await page.getByRole('button', { name: 'Documentation', exact: true }).click();
-  await pause('Méthode, confidentialité et limites');
+  await expect(
+    page.getByRole('heading', { name: 'Une application d’IA générative avec RAG', exact: true }),
+  ).toBeVisible();
+  await pause('IA générative et RAG : rôle du modèle, contrôles du code et décision humaine');
   await page
     .getByRole('button', { name: 'Consulter les résultats d’évaluation', exact: true })
     .click();
   await pause('Mesures sur 50 cas synthétiques réservés');
-  await show(page.locator('.evaluation-panel'));
-  await pause('Comparaison au prompt simple et limites des scores', 4000);
+  await show(page.locator('.evaluation-panel').first());
+  await pause('Comparaison au prompt simple et limites des scores', 2500);
+  await show(page.locator('.metric-explainer'));
+  await expect(page.locator('.confusion-grid > div > strong')).toHaveText(['17', '1', '4', '28']);
+  await pause(
+    'Système : 17 cas positifs signalés, une fausse alerte, quatre cas manqués et 28 négatifs',
+    3000,
+  );
+  await page
+    .getByRole('group', { name: 'Méthode à expliquer' })
+    .getByRole('button', { name: 'Prompt simple', exact: true })
+    .click();
+  await expect(page.locator('.confusion-grid > div > strong')).toHaveText(['21', '4', '0', '25']);
+  await pause(
+    'Prompt simple : 21 vrais positifs, quatre fausses alertes, aucun cas manqué et 25 négatifs',
+    3000,
+  );
+  await page
+    .getByRole('group', { name: 'Méthode à expliquer' })
+    .getByRole('button', { name: 'Système', exact: true })
+    .click();
+  await pause('Les formules relient précision, rappel et F1 aux nombres de cas', 2500);
   await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
   await pause('Faux Raccord : relecture assistée, décision de l’équipe');
 
   expect(errors).toEqual([]);
   expect(inferenceRequests).toEqual([]);
+  expect((Date.now() - startedAt) / 1000).toBeLessThanOrEqual(90);
   await page.close();
   await context.close();
   const artifactPath = resolve('artifacts/faux-raccord-demo.webm');

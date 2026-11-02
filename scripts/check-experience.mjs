@@ -10,6 +10,7 @@ const pageErrors = [];
 const checks = [];
 const verificationRequests = [];
 const sourceImports = [];
+const sourcePreviews = [];
 page.on('pageerror', (error) => pageErrors.push(error.message));
 
 // Catalog and compatibility responses are fixtures; no remote service is called.
@@ -51,7 +52,7 @@ await page.route('**/api/library?*', async (route) => {
   await route.fulfill({
     json: {
       source: MOVIESUM,
-      split: 'train',
+      split: 'all',
       query: '',
       offset: 0,
       pageSize: 6,
@@ -64,12 +65,29 @@ await page.route('**/api/library?*', async (route) => {
           rowIndex: 0,
           title: 'Fixture source (2024)',
           imdbId: 'tt1234567',
-          summary: libraryEntry.row.summary,
-          preview: 'INT. ATELIER - DAY\nUne boussole gravée est posée sur la table.',
+          summary: '',
+          preview: '',
+          hasPreview: false,
           language: 'Anglais',
           truncatedBySource: false,
         },
       ],
+    },
+  });
+});
+await page.route('**/api/library/preview?*', async (route) => {
+  const params = new URL(route.request().url()).searchParams;
+  sourcePreviews.push(Object.fromEntries(params));
+  await route.fulfill({
+    json: {
+      source: 'moviesum',
+      split: 'train',
+      rowIndex: 0,
+      title: 'Fixture source (2024)',
+      imdbId: 'tt1234567',
+      summary: libraryEntry.row.summary,
+      preview: 'INT. ATELIER - DAY\nUne boussole gravée est posée sur la table.',
+      truncatedBySource: false,
     },
   });
 });
@@ -304,8 +322,19 @@ try {
     'repère XML',
   );
   expect(sourceImports).toEqual([
-    { source: 'moviesum', split: 'train', rowIndex: 0, acknowledgeRights: true },
+    {
+      source: 'moviesum',
+      split: 'train',
+      rowIndex: 0,
+      expectedImdbId: 'tt1234567',
+      acknowledgeRights: true,
+    },
   ]);
+  expect(sourcePreviews).toContainEqual({
+    split: 'train',
+    rowIndex: '0',
+    expectedImdbId: 'tt1234567',
+  });
   await page.getByText('Provenance et conditions d’utilisation', { exact: true }).click();
   await expect(page.locator('.provenance')).toContainText(
     'Ils ne correspondent pas aux pages d’un PDF original',
@@ -323,6 +352,7 @@ try {
         pageErrors,
         verificationRequests,
         sourceImports,
+        sourcePreviews,
         checks,
         inference: 'Mocked model catalog, compatibility and library responses; no live inference',
       },

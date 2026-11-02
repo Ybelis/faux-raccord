@@ -193,6 +193,13 @@ export async function api(request, env = {}) {
             onProgress: (progress) => emit({ type: 'progress', ...progress }),
           })
             .then((result) => {
+              // Aucun objet n'est différent d'une extraction dont toutes les
+              // citations ont été rejetées. Rendre cet échec visible à la revue.
+              if (!result.objects.length && result.rejectedEvidence > 0) {
+                result.warnings = [
+                  'Les citations produites par le modèle ont été rejetées. Aucun accessoire exploitable n’a été extrait ; ce résultat ne permet pas de conclure à l’absence d’incohérence. Essayez un autre modèle.',
+                ];
+              }
               emit({ type: 'result', result });
               if (!cancelled) controller.close();
             })

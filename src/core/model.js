@@ -220,11 +220,18 @@ function providerError(status, result) {
   const code = String(result.error?.code || result.error?.type || 'inconnu')
     .replace(/gsk_[A-Za-z0-9]+/g, '[REDACTED]')
     .slice(0, 80);
+  const dailyQuota =
+    status === 429 &&
+    /\b(?:TPD|RPD)\b|tokens?\s+per\s+day|requests?\s+per\s+day/i.test(
+      String(result.error?.message || ''),
+    );
   const message =
     status === 401
       ? 'La clé Groq est refusée.'
       : status === 429
-        ? 'Limite Groq atteinte. Réessayez dans une minute ou utilisez Ollama.'
+        ? dailyQuota
+          ? 'Quota quotidien Groq atteint. Attendez son renouvellement ou choisissez un autre moteur.'
+          : 'Limite temporaire Groq atteinte. Patientez puis réessayez.'
         : `Le fournisseur a refusé la requête (${status}, ${code}).`;
   const error = new ModelError(
     message,
@@ -233,7 +240,9 @@ function providerError(status, result) {
   );
   error.details = String(result.error?.message || '')
     .replace(/gsk_[A-Za-z0-9]+/g, '[REDACTED]')
+    .replace(/org_[A-Za-z0-9]+/g, '[REDACTED_ORG]')
     .slice(0, 450);
+  error.dailyQuota = dailyQuota;
   return error;
 }
 
@@ -310,11 +319,19 @@ export async function callModel(
     } catch (error) {
       throw connectionError(error, requestSignal);
     }
+    // Un quota journalier ne se résout pas avec deux pauses de quelques secondes.
+    // Lire l'erreur avant de retenter évite les appels inutiles et un faux conseil
+    // « réessayez dans une minute ». Les limites temporaires gardent leur reprise.
+    const failure = response.ok ? null : await response.json().catch(() => ({}));
+    if (response.status === 429) {
+      const error = providerError(response.status, failure);
+      if (error.dailyQuota) throw error;
+    }
     if ([429, 500, 502, 503].includes(response.status) && attempt < retries) {
       await waitForRetry(response, attempt, signal);
       continue;
     }
-    const result = await response.json().catch(() => ({}));
+    const result = failure || (await response.json().catch(() => ({})));
     if (
       response.status === 400 &&
       result.error?.code === 'json_validate_failed' &&

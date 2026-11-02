@@ -4,7 +4,9 @@ Les réponses ci-dessous décrivent le prototype et ses preuves actuelles. Elles
 
 ## Questions sur le besoin
 
-**Qui utilise le produit ?** Un scripte ou une petite équipe de court métrage préparant le suivi des accessoires d'un scénario. Le prototype rassemble les mentions et les passages à comparer. Une personne réelle à nommer et un test de son besoin restent à obtenir ; aucun entretien n'est revendiqué.
+**Qui utilise le produit ?** Le public visé est un scripte ou une petite équipe préparant le suivi des accessoires d’un scénario. Les premiers retours internes du groupe ont porté sur la prise en main et ont conduit à simplifier le parcours. Le test interne permet d’observer cet usage ; il ne prouve pas un gain de temps en tournage. Aucun entretien métier n’est revendiqué.
+
+**Pourquoi avez-vous parlé d’un agent ?** Le mot avait été employé trop largement. Le rendu actuel est une application d’IA générative avec RAG : le LLM produit des fiches, des explications et des réponses sourcées dans un parcours fixé par le code. Le calendrier p.2 sépare ce rendu du cours suivant. Voir [le positionnement du projet](positionnement-generatif.md).
 
 **Quel gain apportez-vous face à une relecture manuelle ?** Une chronologie consultable, deux passages réunis pour chaque point signalé et une trace de la décision. Le gain de temps n'a pas encore été mesuré. Pour le démontrer, nous devons comparer une tâche réelle avec et sans outil, et compter le temps ainsi que les oublis et fausses alertes.
 
@@ -50,7 +52,7 @@ Les réponses ci-dessous décrivent le prototype et ses preuves actuelles. Elles
 
 **Comment gérez-vous une information absente ?** Le prompt QA demande `NOT FOUND`. Le code s'abstient aussi en l'absence de passages, de citations ou avec des identifiants inventés. Une source existante peut pourtant être mal interprétée : nous montrons les passages et incluons des questions sans réponse dans l'évaluation réelle.
 
-**Une réponse correcte peut-elle être notée fausse ?** Oui : la grille QA est stricte et approximative. Elle exige les éléments lexicaux attendus, la scène correcte dans le champ `citations` et un repère entre crochets dans le texte de réponse. Par exemple, QA006 donne un état correct et une référence séparée, mais omet le repère dans le texte : cela constitue un échec de format dans ce protocole. Il faut distinguer contenu, source et format, puis faire valider une grille indépendante avant une nouvelle mesure. Nous ne changeons pas la grille après coup pour relever le score. L’essai actuel est aussi incomplet en raison des quotas.
+**Une réponse correcte peut-elle être notée fausse ?** Oui : la grille QA est stricte et approximative. Elle exige les éléments lexicaux attendus, la scène correcte dans le champ `citations` et un repère entre crochets dans le texte de réponse. Dans l’essai historique 20B, QA006 donne un état correct et une référence séparée, mais omet le repère dans le texte : cela constitue un échec de format dans ce protocole. Il faut distinguer contenu, source et format, puis faire valider une grille indépendante avant une nouvelle mesure. Nous ne changeons pas la grille après coup pour relever le score. Le profil 120B possède son propre rapport ; il ne remplace pas les observations du profil 20B.
 
 **Quel coût pour un scénario ?** Les rapports enregistrent les tokens et les durées réels. Le coût catalogue se calcule séparément entrée/sortie et reste une estimation, pas une facture. Un petit cas n'est pas extrapolable directement à 56 scènes : nombre d'objets, candidats et quotas modifient le coût et la latence.
 

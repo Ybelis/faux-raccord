@@ -1,6 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 import { handleSources, movieSumProject, MOVIESUM } from '../worker/sources.js';
+import sourceIndex from '../data/moviesum-index.json' with { type: 'json' };
 
 const xml =
   '<script><scene><stage_direction>INT. ATELIER - DAY</stage_direction><character>CLARA</character><dialogue>La montre &quot;argentée&quot; est intacte &amp; propre.</dialogue></scene><scene><stage_direction>EXT. COUR - NIGHT</stage_direction><scene_description>La montre de Clara est brisée sur les pavés.</scene_description></scene></script>';
@@ -29,6 +31,13 @@ const request = (path, body) =>
         }
       : undefined,
   );
+const indexedEntry = (split, rowIndex) => {
+  const index = sourceIndex.items.find(
+    (item) => item.split === split && item.rowIndex === rowIndex,
+  );
+  const item = entry(rowIndex);
+  return { ...item, row: { ...item.row, imdb_id: index.imdbId } };
+};
 
 test('MovieSum preserves XML scene references, attribution and honest page provenance', () => {
   const project = movieSumProject(entry(12), 'train', new Date('2026-11-02T12:00:00Z'));
@@ -98,29 +107,93 @@ test('malformed and source-truncated screenplays are rejected', () => {
   );
 });
 
-test('catalogue returns bounded metadata instead of the full screenplay', async () => {
-  let remote;
+test('title and IMDb search uses the real metadata index without a remote search service', async () => {
+  let requests = 0;
   const result = await handleSources(
-    request('/api/library?q=catalog-test'),
+    request('/api/library?split=all&q=Napol%C3%A9on%202023'),
     {},
     {
-      fetcher: async (url, options) => {
-        remote = { url, options };
-        return response([entry(9)]);
+      fetcher: async () => {
+        requests++;
+        throw new Error('The title index is offline.');
       },
     },
   );
   const data = await result.json();
   assert.equal(result.status, 200);
-  assert.equal(remote.url.origin, 'https://datasets-server.huggingface.co');
-  assert.equal(remote.url.pathname, '/search');
-  assert.equal(remote.url.searchParams.get('dataset'), MOVIESUM.id);
-  assert.equal(remote.url.searchParams.get('query'), 'catalog-test');
-  assert.equal(remote.options.redirect, 'error');
-  assert.equal(data.items[0].rowIndex, 9);
+  assert.equal(requests, 0);
+  assert.equal(data.source.id, MOVIESUM.id);
+  assert.equal(data.total, 1);
+  assert.equal(data.items[0].title, 'Napoleon (2023)');
+  assert.equal(data.items[0].rowIndex, 3);
+  assert.equal(data.items[0].split, 'train');
+  assert.equal(data.catalogMode, 'local-metadata-index');
   assert.equal(data.items[0].script, undefined);
-  assert.ok(data.items[0].preview.length <= 650);
-  assert.ok(data.items[0].summary.length <= 700);
+  assert.equal(data.items[0].preview, '');
+  const imdbResult = await handleSources(request('/api/library?split=all&q=tt13287846'));
+  assert.equal((await imdbResult.json()).items[0].title, 'Napoleon (2023)');
+});
+
+test('all 2200 source metadata rows have unique locators, integrity and no screenplay text', async () => {
+  assert.equal(sourceIndex.count, 2200);
+  assert.equal(sourceIndex.items.length, 2200);
+  assert.equal(
+    new Set(sourceIndex.items.map((item) => `${item.split}:${item.rowIndex}`)).size,
+    2200,
+  );
+  assert.equal(
+    createHash('sha256').update(JSON.stringify(sourceIndex.items)).digest('hex'),
+    sourceIndex.itemsSha256,
+  );
+  assert.ok(
+    sourceIndex.items.every(
+      (item) => Object.keys(item).sort().join(',') === 'imdbId,rowIndex,split,title',
+    ),
+  );
+  const first = await (await handleSources(request('/api/library?split=all'))).json();
+  const second = await (await handleSources(request('/api/library?split=all&offset=6'))).json();
+  assert.equal(first.total, 2200);
+  assert.equal(first.items.length, 6);
+  assert.equal(second.items[0].rowIndex, 6);
+  assert.notEqual(first.items[0].imdbId, second.items[0].imdbId);
+});
+
+test('a selected preview reads one bounded row from the known dataset', async () => {
+  let remote;
+  const result = await handleSources(
+    request('/api/library/preview?split=train&rowIndex=9'),
+    {},
+    {
+      fetcher: async (url, options) => {
+        remote = { url, options };
+        return response([indexedEntry('train', 9)]);
+      },
+    },
+  );
+  const item = await result.json();
+  assert.equal(result.status, 200);
+  assert.equal(remote.url.origin, 'https://datasets-server.huggingface.co');
+  assert.equal(remote.url.pathname, '/rows');
+  assert.equal(remote.url.searchParams.get('length'), '1');
+  assert.equal(remote.options.redirect, 'error');
+  assert.equal(item.script, undefined);
+  assert.ok(item.preview.length <= 650);
+  assert.ok(item.summary.length <= 700);
+});
+
+test('a changed remote row cannot silently import another film from a stale index', async () => {
+  const result = await handleSources(
+    request('/api/library/import', {
+      source: 'moviesum',
+      split: 'train',
+      rowIndex: 0,
+      acknowledgeRights: true,
+    }),
+    {},
+    { fetcher: async () => response([entry(0)]) },
+  );
+  assert.equal(result.status, 409);
+  assert.match((await result.json()).error, /catalogue source a changé/);
 });
 
 test('library imports only an explicit known row and records its origin', async () => {
@@ -136,7 +209,7 @@ test('library imports only an explicit known row and records its origin', async 
     {
       fetcher: async (url) => {
         remote = url;
-        return response([entry(15)]);
+        return response([indexedEntry('test', 15)]);
       },
     },
   );
@@ -225,7 +298,7 @@ test('cross-origin import is rejected before any remote request', async () => {
 test('large or invalid upstream responses fail safely and other API routes pass through', async () => {
   assert.equal(await handleSources(request('/api/status')), null);
   const oversized = await handleSources(
-    request('/api/library?q=large-response-test'),
+    request('/api/library/preview?split=train&rowIndex=2'),
     {},
     {
       fetcher: async () =>
@@ -234,13 +307,13 @@ test('large or invalid upstream responses fail safely and other API routes pass 
   );
   assert.equal(oversized.status, 502);
   const malformed = await handleSources(
-    request('/api/library?q=malformed-test'),
+    request('/api/library/preview?split=train&rowIndex=3'),
     {},
     { fetcher: async () => new Response('not JSON') },
   );
   assert.equal(malformed.status, 502);
   const unavailable = await handleSources(
-    request('/api/library?q=unavailable-test'),
+    request('/api/library/preview?split=train&rowIndex=4'),
     {},
     { fetcher: async () => new Response('{}', { status: 429 }) },
   );

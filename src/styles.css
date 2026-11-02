@@ -1342,6 +1342,11 @@ summary {
   border-color: var(--error);
   color: var(--error);
 }
+.warning-notice {
+  color: var(--warning);
+  background: var(--warning-soft);
+  border-color: var(--strong-line);
+}
 .error-notice > span {
   flex: 1;
 }
@@ -1350,6 +1355,163 @@ summary {
 }
 .evaluation-panel {
   padding: 26px;
+}
+.evaluation-panel + .evaluation-panel {
+  margin-top: 22px;
+}
+.evaluation-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.evaluation-title h2 {
+  margin-top: 5px;
+}
+.metric-method {
+  flex-shrink: 0;
+}
+.metric-method > button {
+  padding-top: 9px;
+}
+.confusion-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: 24px 0;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  overflow: hidden;
+}
+.confusion-grid > div {
+  padding: 19px;
+  background: var(--canvas);
+}
+.confusion-grid > div + div {
+  border-left: 1px solid var(--line);
+}
+.confusion-grid strong {
+  display: block;
+  font-size: 32px;
+  font-weight: 500;
+  line-height: 1.2;
+  margin-bottom: 10px;
+}
+.confusion-grid span {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+}
+.confusion-grid small {
+  display: block;
+  font-size: 11px;
+  line-height: 1.8;
+  color: var(--muted);
+  margin-top: 8px;
+}
+.metric-definitions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 25px;
+  margin: 25px 0;
+}
+.metric-definitions dt {
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.metric-definitions dt > strong {
+  font-size: 17px;
+  color: var(--accent);
+  font-weight: 500;
+}
+.metric-definitions dd {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.9;
+  color: var(--muted);
+}
+.metric-definitions code {
+  display: block;
+  margin: 12px 0;
+  font-size: 11px;
+  padding: 11px;
+  border: 1px solid var(--line);
+  background: var(--canvas);
+  color: var(--text);
+}
+.metric-details {
+  padding: 17px 0;
+  border-top: 1px solid var(--line);
+  font-size: 13px;
+}
+.metric-details p {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.9;
+  margin-top: 13px;
+  max-width: 900px;
+}
+.test-scope-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 24px;
+}
+.test-scope-list article {
+  border-top: 1px solid var(--line);
+  padding-top: 18px;
+  min-width: 0;
+}
+.test-scope-list h3 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 14px;
+}
+.test-scope-list p {
+  font-size: 12px;
+  line-height: 1.9;
+  color: var(--muted);
+  margin: 11px 0;
+}
+@media (max-width: 1100px) {
+  .confusion-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .confusion-grid > div:nth-child(3) {
+    border-left: 0;
+  }
+  .confusion-grid > div:nth-child(n + 3) {
+    border-top: 1px solid var(--line);
+  }
+  .metric-definitions {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .metric-definitions > div + div {
+    border-top: 1px solid var(--line);
+    padding-top: 20px;
+  }
+}
+@media (max-width: 580px) {
+  .confusion-grid > div {
+    padding: 15px;
+  }
+  .confusion-grid strong {
+    font-size: 28px;
+  }
+  .test-scope-list {
+    grid-template-columns: 1fr;
+  }
+  .evaluation-title {
+    gap: 13px;
+  }
 }
 .evaluation-panel > p {
   font-size: 13px;

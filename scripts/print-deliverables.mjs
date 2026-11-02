@@ -108,9 +108,9 @@ const qaRows = qaMeasured
   : '';
 const qaSection = qaMeasured
   ? `
-<p><strong>${qa.n} questions sur les scènes 1–10 de Valkaama</strong> : vingt informations présentes et quatre absentes, sans modification des événements. La baseline reçoit les dix scènes intégrales ; le système recherche sur ces mêmes scènes.</p>
+<p><strong>${qa.n} questions sur les scènes 1–10 de Valkaama</strong> : vingt informations présentes et quatre absentes. Profil QA <span class="mono">${html(qa.model)}</span>, distinct du benchmark de continuité 20B. La baseline reçoit les dix scènes intégrales ; le système recherche sur ces mêmes scènes.</p>
 <table class="metric-table"><thead><tr><th>Méthode</th><th>Réussite [IC 95 %]</th><th>Abstentions correctes</th><th>Médiane</th></tr></thead><tbody>${qaRows}</tbody></table>
-<p>La réussite exige des éléments lexicaux de réponse et la citation de la scène attendue, ou <span class="mono">NOT FOUND</span> sans citation. Cette grille automatique reste approximative ; les références proposées avec IA doivent être relues.</p>
+<p>La réussite exige des éléments lexicaux, la scène attendue et une référence dans la réponse, ou <span class="mono">NOT FOUND</span> sans citation. Synonymes et négations limitent cette grille ; les références restent à relire. Les durées incluent la régulation du quota, pas seulement l’inférence.</p>
 <p class="small">Exécution : ${html(date(qa.completedAt))}, ${html(qa.model)}, code ${html(qa.codeHash)}. Erreurs fournisseur : 0. Échecs système : ${html(
       qa.rows
         .filter((row) => !row.system.passed)
@@ -150,7 +150,7 @@ ${qaSection}
 <h2>6. Sécurité et portée</h2>
 <p>${redPassed}/${red.rows.length} essais adversariaux réels ont résisté aux attaques testées : instruction dans le scénario, demande de secret et détournement de la question. Cet échantillon ne garantit pas la résistance générale aux injections.</p>
 <p>Les citations extraites sont recherchées après normalisation ; les identifiants inventés sont rejetés. Un passage présent ne garantit pas une interprétation correcte. La validation humaine reste nécessaire.</p>
-<div class="note warning"><strong>Avant le rendu :</strong> faire relire les références ; tester avec une personne concernée et convenir d’une cible utile ; vérifier la démo sur les trois machines ; réserver de nouveaux cas avant de modifier le détecteur. Aucun gain de temps utilisateur ni benchmark multi-productions n’est établi.</div>
+<div class="note warning"><strong>Validation d’usage :</strong> les retours internes ont guidé le parcours et les explications. Le test entre les trois membres reste à consigner ; il ne prouve pas un gain de temps en tournage. Faire relire les références et réserver de nouveaux cas avant de modifier le détecteur.</div>
 <p class="small rule">Sources et preuves : <span class="mono">eval/report.json</span>, <span class="mono">eval/qa-real-report.json</span>, <span class="mono">eval/retrieval-real.json</span>, <span class="mono">eval/red-team-results.json</span>. Méthodes reproductibles dans <span class="mono">eval/</span>. Tarifs : <a href="${html(pricing.source)}">documentation Groq</a>. Attribution du scénario et droits : <span class="mono">data/README.md</span>.</p>
 ${footer('Rapport d’évaluation', '2 / 2')}
 </main>`,

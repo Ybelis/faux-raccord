@@ -10,6 +10,7 @@
     "test": "node --test tests/*.test.mjs",
     "eval": "node --env-file-if-exists=.env eval/run.mjs",
     "eval:live": "node --env-file-if-exists=.env eval/run.mjs --live",
+    "explain": "node scripts/explain-example.mjs",
     "data:fetch": "python scripts/fetch_corpus.py",
     "format": "prettier --write src worker scripts tests eval/*.mjs index.html",
     "format:check": "prettier --check src worker scripts tests eval/*.mjs index.html"
@@ -23,6 +24,7 @@
   "devDependencies": {
     "@playwright/test": "1.64.1",
     "esbuild": "0.28.2",
+    "hyparquet": "1.32.0",
     "prettier": "3.6.2",
     "vite": "8.3.5"
   }

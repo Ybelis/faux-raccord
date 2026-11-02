@@ -1,0 +1,1409 @@
+{
+  "kind": "annotation-audit",
+  "version": "1.0.0",
+  "auditDate": "2026-11-02",
+  "performedBy": "AI-assisted source and annotation audit",
+  "humanValidation": false,
+  "note": "Les données, références et prédictions originales ne sont pas modifiées. Cette relecture assistée ne valide ni le besoin utilisateur ni les annotations à la place des étudiants.",
+  "sources": {
+    "synthetic": {
+      "path": "eval/testset.jsonl",
+      "sha256": "eda23abeaeae422fa280653c2b5d6744155363feb96d3a34e269d5512957b851",
+      "n": 60
+    },
+    "qa": {
+      "path": "eval/qa-real.json",
+      "sha256": "4406d338a3ab6a112a37c02b3ba2a55df75c777fc1cf48082cbccedabd7d962e",
+      "n": 24,
+      "scope": {
+        "firstScene": 1,
+        "lastScene": 10
+      }
+    }
+  },
+  "structuralChecks": {
+    "uniqueSyntheticIds": true,
+    "uniqueQAIds": true,
+    "syntheticClearlyLabeled": true,
+    "developmentCases": 10,
+    "reservedCases": 50,
+    "reservedPositiveCases": 21,
+    "qaSourceQuotesVerified": 20,
+    "qaSourceQuotesMissing": [],
+    "qaAbstentions": 4
+  },
+  "issues": [
+    {
+      "id": "AUD01",
+      "severity": "methodology",
+      "scope": "synthetic",
+      "description": "Les cas partagent des structures proches et des traductions ; le split développement/test ne garantit pas une indépendance de situations de production.",
+      "examples": [
+        [
+          "C001",
+          "C010",
+          "C049"
+        ],
+        [
+          "C002",
+          "C014",
+          "C033"
+        ],
+        [
+          "C008",
+          "C034"
+        ],
+        [
+          "C009",
+          "C035"
+        ]
+      ]
+    },
+    {
+      "id": "AUD02",
+      "severity": "annotation-policy",
+      "scope": "synthetic",
+      "description": "Une référence positive signifie un point potentiel à relire ; une transition non expliquée ne doit pas être présentée comme une incohérence certaine."
+    },
+    {
+      "id": "AUD03",
+      "severity": "scoring",
+      "scope": "real-qa",
+      "description": "La grille exige une citation inline en plus du champ citations. Une réponse correcte avec une référence séparée peut échouer pour format."
+    },
+    {
+      "id": "AUD04",
+      "severity": "scoring",
+      "scope": "real-qa",
+      "description": "Le score lexical peut rejeter un synonyme valable ou accepter une réponse contenant une négation. Il ne constitue pas une évaluation sémantique indépendante.",
+      "example": {
+        "reference": "QA008",
+        "hypotheticalAnswer": "Non, le verre n’est plus plein [S005-C2].",
+        "citations": [
+          "S005-C2"
+        ],
+        "explanation": "Contient le mot plein et la source attendue tout en contredisant le passage. Exemple de diagnostic construit, pas sortie mesurée du modèle."
+      }
+    },
+    {
+      "id": "AUD05",
+      "severity": "scope",
+      "scope": "real-qa",
+      "description": "Les 24 questions ne portent que sur les dix premières scènes d’une seule œuvre. Elles ne mesurent ni la détection de continuité ni une généralisation multi-auteurs."
+    }
+  ],
+  "rows": [
+    {
+      "id": "C001",
+      "dataset": "synthetic-continuity",
+      "split": "dev",
+      "originalExpected": true,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [
+        "L’étiquette positive reste cohérente avec « sans réparation », mais la raison « état irréversible » est trop forte : une montre brisée est réparable."
+      ],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "C002",
+      "dataset": "synthetic-continuity",
+      "split": "dev",
+      "originalExpected": false,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "C003",
+      "dataset": "synthetic-continuity",
+      "split": "dev",
+      "originalExpected": true,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "C004",
+      "dataset": "synthetic-continuity",
+      "split": "dev",
+      "originalExpected": true,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "C005",
+      "dataset": "synthetic-continuity",
+      "split": "dev",
+      "originalExpected": false,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "C006",
+      "dataset": "synthetic-continuity",
+      "split": "dev",
+      "originalExpected": false,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "C007",
+      "dataset": "synthetic-continuity",
+      "split": "dev",
+      "originalExpected": true,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [
+        "Le remplissage n’est pas expliqué ; l’étiquette positive suppose que le test vise un point à relire, pas la preuve d’une impossibilité physique."
+      ],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "C008",
+      "dataset": "synthetic-continuity",
+      "split": "dev",
+      "originalExpected": false,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "C009",
+      "dataset": "synthetic-continuity",
+      "split": "dev",
+      "originalExpected": false,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "C010",
+      "dataset": "synthetic-continuity",
+      "split": "dev",
+      "originalExpected": true,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "C011",
+      "dataset": "synthetic-continuity",
+      "split": "test",
+      "originalExpected": false,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "C012",
+      "dataset": "synthetic-continuity",
+      "split": "test",
+      "originalExpected": true,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "C013",
+      "dataset": "synthetic-continuity",
+      "split": "test",
+      "originalExpected": true,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [
+        "Restitution non décrite et possession inversée ; faire valider la convention « point à relire » plutôt qu’« erreur certaine »."
+      ],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "C014",
+      "dataset": "synthetic-continuity",
+      "split": "test",
+      "originalExpected": false,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "C015",
+      "dataset": "synthetic-continuity",
+      "split": "test",
+      "originalExpected": false,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "C016",
+      "dataset": "synthetic-continuity",
+      "split": "test",
+      "originalExpected": true,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "C017",
+      "dataset": "synthetic-continuity",
+      "split": "test",
+      "originalExpected": false,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "C018",
+      "dataset": "synthetic-continuity",
+      "split": "test",
+      "originalExpected": false,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "C019",
+      "dataset": "synthetic-continuity",
+      "split": "test",
+      "originalExpected": false,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "C020",
+      "dataset": "synthetic-continuity",
+      "split": "test",
+      "originalExpected": true,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "C021",
+      "dataset": "synthetic-continuity",
+      "split": "test",
+      "originalExpected": true,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "C022",
+      "dataset": "synthetic-continuity",
+      "split": "test",
+      "originalExpected": false,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "C023",
+      "dataset": "synthetic-continuity",
+      "split": "test",
+      "originalExpected": false,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "C024",
+      "dataset": "synthetic-continuity",
+      "split": "test",
+      "originalExpected": true,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [
+        "Même remarque sur la restitution implicite et l’identité de la bague ; le texte est conçu pour une alerte potentielle."
+      ],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "C025",
+      "dataset": "synthetic-continuity",
+      "split": "test",
+      "originalExpected": false,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "C026",
+      "dataset": "synthetic-continuity",
+      "split": "test",
+      "originalExpected": false,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "C027",
+      "dataset": "synthetic-continuity",
+      "split": "test",
+      "originalExpected": true,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "C028",
+      "dataset": "synthetic-continuity",
+      "split": "test",
+      "originalExpected": false,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "C029",
+      "dataset": "synthetic-continuity",
+      "split": "test",
+      "originalExpected": false,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "C030",
+      "dataset": "synthetic-continuity",
+      "split": "test",
+      "originalExpected": true,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [
+        "Le retour de l’objet est inexpliqué, mais une récupération par un tiers n’est pas explicitement exclue ; point à relire, pas impossibilité certifiée."
+      ],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "C031",
+      "dataset": "synthetic-continuity",
+      "split": "test",
+      "originalExpected": true,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "C032",
+      "dataset": "synthetic-continuity",
+      "split": "test",
+      "originalExpected": true,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [
+        "Cas très proche de C024 et de C004 : ne pas assimiler une variation de nom/langue à un scénario de production indépendant."
+      ],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "C033",
+      "dataset": "synthetic-continuity",
+      "split": "test",
+      "originalExpected": false,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "C034",
+      "dataset": "synthetic-continuity",
+      "split": "test",
+      "originalExpected": false,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "C035",
+      "dataset": "synthetic-continuity",
+      "split": "test",
+      "originalExpected": false,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "C036",
+      "dataset": "synthetic-continuity",
+      "split": "test",
+      "originalExpected": true,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "C037",
+      "dataset": "synthetic-continuity",
+      "split": "test",
+      "originalExpected": false,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "C038",
+      "dataset": "synthetic-continuity",
+      "split": "test",
+      "originalExpected": true,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "C039",
+      "dataset": "synthetic-continuity",
+      "split": "test",
+      "originalExpected": false,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "C040",
+      "dataset": "synthetic-continuity",
+      "split": "test",
+      "originalExpected": true,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "C041",
+      "dataset": "synthetic-continuity",
+      "split": "test",
+      "originalExpected": false,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "C042",
+      "dataset": "synthetic-continuity",
+      "split": "test",
+      "originalExpected": true,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [
+        "« The torch is unloaded / fully loaded » est une formulation inhabituelle pour une lampe à batterie ; le libellé pourrait faciliter artificiellement l’extraction des états."
+      ],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "C043",
+      "dataset": "synthetic-continuity",
+      "split": "test",
+      "originalExpected": false,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "C044",
+      "dataset": "synthetic-continuity",
+      "split": "test",
+      "originalExpected": true,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "C045",
+      "dataset": "synthetic-continuity",
+      "split": "test",
+      "originalExpected": false,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "C046",
+      "dataset": "synthetic-continuity",
+      "split": "test",
+      "originalExpected": true,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "C047",
+      "dataset": "synthetic-continuity",
+      "split": "test",
+      "originalExpected": false,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "C048",
+      "dataset": "synthetic-continuity",
+      "split": "test",
+      "originalExpected": false,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "C049",
+      "dataset": "synthetic-continuity",
+      "split": "test",
+      "originalExpected": true,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "C050",
+      "dataset": "synthetic-continuity",
+      "split": "test",
+      "originalExpected": false,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "C051",
+      "dataset": "synthetic-continuity",
+      "split": "test",
+      "originalExpected": false,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [
+        "Le carton « Cinq ans plus tôt » explique l’état intact ; la référence négative est cohérente, même si le détecteur a produit une fausse alerte."
+      ],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "C052",
+      "dataset": "synthetic-continuity",
+      "split": "test",
+      "originalExpected": true,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "C053",
+      "dataset": "synthetic-continuity",
+      "split": "test",
+      "originalExpected": true,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "C054",
+      "dataset": "synthetic-continuity",
+      "split": "test",
+      "originalExpected": false,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "C055",
+      "dataset": "synthetic-continuity",
+      "split": "test",
+      "originalExpected": false,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "C056",
+      "dataset": "synthetic-continuity",
+      "split": "test",
+      "originalExpected": true,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "C057",
+      "dataset": "synthetic-continuity",
+      "split": "test",
+      "originalExpected": false,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "C058",
+      "dataset": "synthetic-continuity",
+      "split": "test",
+      "originalExpected": false,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "C059",
+      "dataset": "synthetic-continuity",
+      "split": "test",
+      "originalExpected": true,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [
+        "Retour de possession dans une scène continue, sans rencontre ; référence plausible comme point à relire, à confirmer par les étudiants."
+      ],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "C060",
+      "dataset": "synthetic-continuity",
+      "split": "test",
+      "originalExpected": false,
+      "auditStatus": "AI-read; student-review-pending",
+      "aiAssessment": "plausible-under-potential-alert-policy",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "QA001",
+      "dataset": "real-source-qa",
+      "originalExpected": "answer",
+      "auditStatus": "AI-read; student-review-pending",
+      "sceneId": "S001",
+      "quoteVerifiedInSource": true,
+      "aiAssessment": "reference-supported-by-source-quote",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "QA002",
+      "dataset": "real-source-qa",
+      "originalExpected": "answer",
+      "auditStatus": "AI-read; student-review-pending",
+      "sceneId": "S002",
+      "quoteVerifiedInSource": true,
+      "aiAssessment": "reference-supported-by-source-quote",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "QA003",
+      "dataset": "real-source-qa",
+      "originalExpected": "answer",
+      "auditStatus": "AI-read; student-review-pending",
+      "sceneId": "S002",
+      "quoteVerifiedInSource": true,
+      "aiAssessment": "reference-supported-by-source-quote",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "QA004",
+      "dataset": "real-source-qa",
+      "originalExpected": "answer",
+      "auditStatus": "AI-read; student-review-pending",
+      "sceneId": "S002",
+      "quoteVerifiedInSource": true,
+      "aiAssessment": "reference-supported-by-source-quote",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "QA005",
+      "dataset": "real-source-qa",
+      "originalExpected": "answer",
+      "auditStatus": "AI-read; student-review-pending",
+      "sceneId": "S004",
+      "quoteVerifiedInSource": true,
+      "aiAssessment": "reference-supported-by-source-quote",
+      "concerns": [
+        "Le groupe lexical couvre poivre/pepper/lacrymogène, mais ne juge pas si la réponse associe correctement l’objet au sac."
+      ],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "QA006",
+      "dataset": "real-source-qa",
+      "originalExpected": "answer",
+      "auditStatus": "AI-read; student-review-pending",
+      "sceneId": "S004",
+      "quoteVerifiedInSource": true,
+      "aiAssessment": "reference-supported-by-source-quote",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "QA007",
+      "dataset": "real-source-qa",
+      "originalExpected": "answer",
+      "auditStatus": "AI-read; student-review-pending",
+      "sceneId": "S004",
+      "quoteVerifiedInSource": true,
+      "aiAssessment": "reference-supported-by-source-quote",
+      "concerns": [
+        "Synonyme français « table de nuit » absent des alternatives chevet/bedside ; une réponse correcte peut échouer."
+      ],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "QA008",
+      "dataset": "real-source-qa",
+      "originalExpected": "answer",
+      "auditStatus": "AI-read; student-review-pending",
+      "sceneId": "S005",
+      "quoteVerifiedInSource": true,
+      "aiAssessment": "reference-supported-by-source-quote",
+      "concerns": [
+        "La recherche du mot plein ne distingue pas « plein » de « pas plein » ; le contrôle lexical seul ne garantit pas le sens."
+      ],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "QA009",
+      "dataset": "real-source-qa",
+      "originalExpected": "answer",
+      "auditStatus": "AI-read; student-review-pending",
+      "sceneId": "S005",
+      "quoteVerifiedInSource": true,
+      "aiAssessment": "reference-supported-by-source-quote",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "QA010",
+      "dataset": "real-source-qa",
+      "originalExpected": "answer",
+      "auditStatus": "AI-read; student-review-pending",
+      "sceneId": "S006",
+      "quoteVerifiedInSource": true,
+      "aiAssessment": "reference-supported-by-source-quote",
+      "concerns": [
+        "La recherche du mot allumé ne distingue pas automatiquement affirmation et négation."
+      ],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "QA011",
+      "dataset": "real-source-qa",
+      "originalExpected": "answer",
+      "auditStatus": "AI-read; student-review-pending",
+      "sceneId": "S006",
+      "quoteVerifiedInSource": true,
+      "aiAssessment": "reference-supported-by-source-quote",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "QA012",
+      "dataset": "real-source-qa",
+      "originalExpected": "answer",
+      "auditStatus": "AI-read; student-review-pending",
+      "sceneId": "S006",
+      "quoteVerifiedInSource": true,
+      "aiAssessment": "reference-supported-by-source-quote",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "QA013",
+      "dataset": "real-source-qa",
+      "originalExpected": "answer",
+      "auditStatus": "AI-read; student-review-pending",
+      "sceneId": "S006",
+      "quoteVerifiedInSource": true,
+      "aiAssessment": "reference-supported-by-source-quote",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "QA014",
+      "dataset": "real-source-qa",
+      "originalExpected": "answer",
+      "auditStatus": "AI-read; student-review-pending",
+      "sceneId": "S007",
+      "quoteVerifiedInSource": true,
+      "aiAssessment": "reference-supported-by-source-quote",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "QA015",
+      "dataset": "real-source-qa",
+      "originalExpected": "answer",
+      "auditStatus": "AI-read; student-review-pending",
+      "sceneId": "S007",
+      "quoteVerifiedInSource": true,
+      "aiAssessment": "reference-supported-by-source-quote",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "QA016",
+      "dataset": "real-source-qa",
+      "originalExpected": "answer",
+      "auditStatus": "AI-read; student-review-pending",
+      "sceneId": "S008",
+      "quoteVerifiedInSource": true,
+      "aiAssessment": "reference-supported-by-source-quote",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "QA017",
+      "dataset": "real-source-qa",
+      "originalExpected": "answer",
+      "auditStatus": "AI-read; student-review-pending",
+      "sceneId": "S008",
+      "quoteVerifiedInSource": true,
+      "aiAssessment": "reference-supported-by-source-quote",
+      "concerns": [
+        "Synonymes « demi-pleine » ou « mi-pleine » non présents dans la grille ; une réponse correcte peut échouer."
+      ],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "QA018",
+      "dataset": "real-source-qa",
+      "originalExpected": "answer",
+      "auditStatus": "AI-read; student-review-pending",
+      "sceneId": "S009",
+      "quoteVerifiedInSource": true,
+      "aiAssessment": "reference-supported-by-source-quote",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "QA019",
+      "dataset": "real-source-qa",
+      "originalExpected": "answer",
+      "auditStatus": "AI-read; student-review-pending",
+      "sceneId": "S008",
+      "quoteVerifiedInSource": true,
+      "aiAssessment": "reference-supported-by-source-quote",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "QA020",
+      "dataset": "real-source-qa",
+      "originalExpected": "answer",
+      "auditStatus": "AI-read; student-review-pending",
+      "sceneId": "S010",
+      "quoteVerifiedInSource": true,
+      "aiAssessment": "reference-supported-by-source-quote",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "QA021",
+      "dataset": "real-source-qa",
+      "originalExpected": "abstain",
+      "auditStatus": "AI-read; student-review-pending",
+      "sceneId": null,
+      "quoteVerifiedInSource": null,
+      "aiAssessment": "requested-detail-not-found-in-first-ten-scenes-on-AI-reading",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "QA022",
+      "dataset": "real-source-qa",
+      "originalExpected": "abstain",
+      "auditStatus": "AI-read; student-review-pending",
+      "sceneId": null,
+      "quoteVerifiedInSource": null,
+      "aiAssessment": "requested-detail-not-found-in-first-ten-scenes-on-AI-reading",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "QA023",
+      "dataset": "real-source-qa",
+      "originalExpected": "abstain",
+      "auditStatus": "AI-read; student-review-pending",
+      "sceneId": null,
+      "quoteVerifiedInSource": null,
+      "aiAssessment": "requested-detail-not-found-in-first-ten-scenes-on-AI-reading",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    },
+    {
+      "id": "QA024",
+      "dataset": "real-source-qa",
+      "originalExpected": "abstain",
+      "auditStatus": "AI-read; student-review-pending",
+      "sceneId": null,
+      "quoteVerifiedInSource": null,
+      "aiAssessment": "requested-detail-not-found-in-first-ten-scenes-on-AI-reading",
+      "concerns": [],
+      "manualReview": {
+        "reviewer": null,
+        "reviewedAt": null,
+        "decision": null,
+        "justification": null
+      }
+    }
+  ]
+}

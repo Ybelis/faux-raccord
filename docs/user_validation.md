@@ -2,6 +2,10 @@
 
 Ce document est un protocole à remplir après une séance réelle. Aucun entretien, avis, gain de temps ou accord sur une cible ne doit être déduit du code ou d'une simulation par IA.
 
+Pour préparer le rendu sans personne extérieure disponible, utiliser d’abord [le protocole de test interne entre les trois membres](test-interne.md). Il permet de documenter des observations de parcours réelles, avec une cible décidée avant l’essai. Ne pas remplir la présente fiche comme si un entretien métier avait eu lieu.
+
+Le PDF parle d’un utilisateur réel avec un problème précis et d’une cible convenue avec lui ; il n’impose pas explicitement un professionnel ou une personne extérieure. Un membre du groupe peut être un utilisateur réel s’il rencontre effectivement ce problème. La simple connaissance de l’application ou une séance entre ses auteurs ne prouve pas ce besoin : dans ce cas, conserver la distinction entre test interne et validation métier.
+
 ## Personne et situation
 
 | Élément | À renseigner |

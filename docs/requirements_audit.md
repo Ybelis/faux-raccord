@@ -8,7 +8,7 @@ Le projet contient les composants techniques et les livrables documentaires dema
 
 | Exigence du PDF | État | Preuve dans le projet et limite |
 |---|---|---|
-| Problème réel pour un utilisateur précisément défini (p.3–4) | Partiel | Public et situation définis dans le README. Aucun utilisateur réel nommé ni entretien documenté. Remplir [la validation utilisateur](user_validation.md) après une séance réelle. |
+| Problème réel pour un utilisateur précisément défini (p.3–4) | Partiel | Public et situation définis. Des retours internes authentiques sur la compréhension du produit sont consignés ; aucune validation du besoin métier n’est revendiquée. Le PDF n’impose pas un professionnel extérieur. Le [test interne proposé](test-interne.md) permet d’observer la prise en main ; il ne remplace pas une preuve d’utilité en tournage. |
 | Produit exécuté de bout en bout (p.3) | Réalisé techniquement | Import → scènes → extraction → recherche/comparaison → revue → export. Les scripts de vérification de parcours contrôlent aussi l'interface ; les résultats d'analyse enregistrés sont identifiés comme tels. |
 | Au moins un LLM, API ou local, choix justifié (p.3) | Réalisé, comparaison de modèles limitée | Groq par défaut, Ollama en local ; adaptateur dans `src/core/model.js`. Le choix de référence est documenté. La personnalisation ne démontre pas que chaque modèle fonctionne aussi bien. |
 | RAG sur une collection réelle, ou LoRA, ou les deux (p.3) | Réalisé avec un corpus étroit | RAG BM25 sur les passages réels de Valkaama ; comparaison et questions sourcées. Une œuvre, 56 scènes : pas une validation multi-auteurs. Aucune LoRA annoncée. |
@@ -46,7 +46,7 @@ Le projet contient les composants techniques et les livrables documentaires dema
 
 Les intervalles ne corrigent ni les biais du jeu synthétique ni sa ressemblance entre cas. Après lecture des erreurs du jeu réservé, une correction doit être testée sur de nouveaux cas indépendants. Un modèle ou des paramètres différents n'héritent pas des scores enregistrés.
 
-L’essai QA réel a produit dix paires de sorties exploitables sur vingt-quatre questions ; des refus de quota ont empêché une comparaison complète. Le rapport brut conserve les réponses et erreurs, sans revendication de score global de qualité. La reprise par checkpoint est prête pour une nouvelle exécution à configuration identique ; elle conserve également les réponses fausses. La grille exige aussi des références dans le texte de réponse : elle mesure donc un contrat de format en plus du contenu et reste à faire valider.
+Le premier essai QA réel 20B a produit dix paires de sorties sur vingt-quatre questions avant des refus de quota ; il est conservé dans l’historique. L’évaluation sur le profil 120B est distincte : son état et ses mesures figurent dans [le rapport courant](../eval/qa-real-report.json), avec la baseline sur le même modèle. Les checkpoints conservent aussi les réponses fausses. La grille exige des références dans le texte de réponse : elle mesure un contrat de format en plus du contenu, avec des limites de synonymes et de négation à faire relire.
 
 ## Dépôt, équipe et usage de l'IA
 
@@ -57,7 +57,7 @@ L’essai QA réel a produit dix paires de sorties exploitables sur vingt-quatre
 | Chaque membre contribue du code et explique le système entier (p.6–7) | À faire vérifier aux trois membres | Contributions effectives, revue croisée et exécution individuelle. Des rôles proposés ne prouvent pas le travail accompli. |
 | Déclarer les outils IA et leurs usages (p.7) | Réalisé | Section dédiée dans le README. |
 | Vérifier le contenu généré (p.7) | Réalisé techniquement, validation métier partielle | Tests automatiques, parcours, sources et résultats inspectables. Relecture humaine des annotations et des conclusions à terminer. |
-| Fonctions séparées, données et configuration documentées pour l'extension agentique (p.2,11,17) | Réalisé techniquement | Modules distincts pour import, recherche, modèle, extraction et stockage ; prompts versionnés, configuration de moteur et exports. L'extension agentique n'est pas dans le périmètre actuel. |
+| Fonctions séparées, données et configuration documentées (p.2,11,17) | Réalisé techniquement | Modules distincts pour import, recherche, modèle, extraction et stockage ; prompts versionnés, configuration de moteur et exports. Le rendu actuel suit un pipeline d’IA générative avec RAG. Le cours suivant est distinct, selon le calendrier p.2. |
 
 ## Livrables et présentation
 

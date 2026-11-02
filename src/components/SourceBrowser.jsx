@@ -18,7 +18,7 @@ async function readJSON(response) {
 /** The parent owns the surrounding modal and receives a normal project on import. */
 export function SourceBrowser({ onImport }) {
   const [source, setSource] = useState('moviesum');
-  const [split, setSplit] = useState('train');
+  const [split, setSplit] = useState('all');
   const [queryInput, setQueryInput] = useState('');
   const [query, setQuery] = useState('');
   const [offset, setOffset] = useState(0);
@@ -27,6 +27,9 @@ export function SourceBrowser({ onImport }) {
   const [loading, setLoading] = useState(false);
   const [importing, setImporting] = useState(false);
   const [error, setError] = useState('');
+  const [preview, setPreview] = useState(null);
+  const [previewLoading, setPreviewLoading] = useState(false);
+  const [previewError, setPreviewError] = useState('');
   const [acknowledgeRights, setAcknowledgeRights] = useState(false);
 
   useEffect(() => {
@@ -40,6 +43,7 @@ export function SourceBrowser({ onImport }) {
     fetch(`/api/library?${params}`, { signal: controller.signal })
       .then(readJSON)
       .then((data) => {
+        if (controller.signal.aborted) return;
         setCatalog(data);
         setSelected(data.items[0] || null);
       })
@@ -55,6 +59,38 @@ export function SourceBrowser({ onImport }) {
     return () => controller.abort();
   }, [source, split, query, offset]);
 
+  useEffect(() => {
+    setPreview(null);
+    setPreviewError('');
+    setPreviewLoading(false);
+    if (source !== 'moviesum' || !selected) return;
+    // Un aperçu déjà fourni peut être réutilisé. Sinon une seule ligne distante
+    // est lue ; les titres du catalogue restent disponibles sans cette requête.
+    if (selected.hasPreview !== false && typeof selected.preview === 'string') {
+      setPreview(selected);
+      return;
+    }
+    const controller = new AbortController();
+    setPreviewLoading(true);
+    const params = new URLSearchParams({
+      split: selected.split,
+      rowIndex: String(selected.rowIndex),
+      expectedImdbId: selected.imdbId,
+    });
+    fetch(`/api/library/preview?${params}`, { signal: controller.signal })
+      .then(readJSON)
+      .then((data) => {
+        if (!controller.signal.aborted) setPreview(data);
+      })
+      .catch((problem) => {
+        if (!controller.signal.aborted) setPreviewError(problem.message);
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setPreviewLoading(false);
+      });
+    return () => controller.abort();
+  }, [source, selected]);
+
   async function importSelected() {
     setImporting(true);
     setError('');
@@ -67,8 +103,9 @@ export function SourceBrowser({ onImport }) {
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
                 source: 'moviesum',
-                split,
+                split: selected.split,
                 rowIndex: selected.rowIndex,
+                expectedImdbId: selected.imdbId,
                 acknowledgeRights,
               }),
             });
@@ -91,6 +128,11 @@ export function SourceBrowser({ onImport }) {
     setSelected(item);
     setAcknowledgeRights(false);
   }
+
+  // Une réponse lente concernant le film précédent ne doit jamais s'afficher
+  // sous le titre du nouveau film sélectionné.
+  const activePreview =
+    preview?.split === selected?.split && preview?.rowIndex === selected?.rowIndex ? preview : null;
 
   return (
     <div className="source-browser">
@@ -122,15 +164,15 @@ export function SourceBrowser({ onImport }) {
       {source === 'moviesum' ? (
         <>
           <p className="source-intro">
-            Cherchez un film ou un mot du scénario, consultez l’aperçu, puis importez le texte dans
-            votre projet. La recherche couvre aussi le contenu des scénarios.
+            Cherchez un titre ou un identifiant IMDb parmi les 2 200 films. Cet index est disponible
+            hors ligne ; l’aperçu et l’import du scénario nécessitent une connexion.
           </p>
           <form className="source-search" onSubmit={search}>
             <label className="search-field">
               <Search size={17} />
               <input
                 aria-label="Rechercher dans MovieSum"
-                placeholder="Titre ou mot du scénario…"
+                placeholder="Titre du film ou identifiant IMDb…"
                 value={queryInput}
                 maxLength={100}
                 onChange={(event) => setQueryInput(event.target.value)}
@@ -149,6 +191,7 @@ export function SourceBrowser({ onImport }) {
                   setOffset(0);
                 }}
               >
+                <option value="all">Tous les films · 2 200</option>
                 <option value="train">Principale · 1 800 films</option>
                 <option value="validation">Validation · 200 films</option>
                 <option value="test">Test · 200 films</option>
@@ -179,8 +222,10 @@ export function SourceBrowser({ onImport }) {
                       <button
                         type="button"
                         key={`${item.split}-${item.rowIndex}`}
-                        className={`source-item ${selected?.rowIndex === item.rowIndex ? 'selected' : ''}`}
-                        aria-pressed={selected?.rowIndex === item.rowIndex}
+                        className={`source-item ${selected?.split === item.split && selected?.rowIndex === item.rowIndex ? 'selected' : ''}`}
+                        aria-pressed={
+                          selected?.split === item.split && selected?.rowIndex === item.rowIndex
+                        }
                         onClick={() => choose(item)}
                       >
                         <BookOpen size={18} />
@@ -199,16 +244,29 @@ export function SourceBrowser({ onImport }) {
                     <section className="source-preview" aria-label="Aperçu du scénario">
                       <div className="section-label">APERÇU DU TEXTE</div>
                       <h3>{selected.title}</h3>
-                      {selected.summary && (
-                        <p className="source-summary">
-                          {selected.summary}
-                          {selected.summary.length >= 700 ? '…' : ''}
+                      {previewLoading && (
+                        <p className="source-loading" role="status">
+                          <LoaderCircle size={17} className="spin" />
+                          Chargement de l’aperçu…
                         </p>
                       )}
-                      <pre>
-                        {selected.preview}
-                        {selected.preview.length >= 650 ? '…' : ''}
-                      </pre>
+                      {previewError && (
+                        <p className="source-warning" role="status">
+                          Aperçu indisponible : {previewError}
+                        </p>
+                      )}
+                      {activePreview?.summary && (
+                        <p className="source-summary">
+                          {activePreview.summary}
+                          {activePreview.summary.length >= 700 ? '…' : ''}
+                        </p>
+                      )}
+                      {activePreview?.preview && (
+                        <pre>
+                          {activePreview.preview}
+                          {activePreview.preview.length >= 650 ? '…' : ''}
+                        </pre>
+                      )}
                       <p className="source-size-note">
                         Le début des textes longs est importé dans la limite de 60 séquences et 180
                         000 caractères. La portée exacte reste indiquée dans le projet. Les repères
@@ -227,7 +285,9 @@ export function SourceBrowser({ onImport }) {
                       <button
                         type="button"
                         className="button primary"
-                        disabled={importing || !acknowledgeRights || selected.truncatedBySource}
+                        disabled={
+                          importing || !acknowledgeRights || activePreview?.truncatedBySource
+                        }
                         onClick={importSelected}
                       >
                         {importing ? (
@@ -237,7 +297,7 @@ export function SourceBrowser({ onImport }) {
                         )}
                         Importer ce scénario
                       </button>
-                      {selected.truncatedBySource && (
+                      {activePreview?.truncatedBySource && (
                         <p className="source-warning">
                           Ce texte est tronqué par la source. Son import est indisponible.
                         </p>

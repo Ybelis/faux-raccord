@@ -1,4 +1,5 @@
-import { guessCharacters, MAX_CHARS } from '../src/core/parser.js';
+import { guessCharacters, MAX_CHARS, fold } from '../src/core/parser.js';
+import titleIndex from '../data/moviesum-index.json' with { type: 'json' };
 
 // Only this public dataset can be queried. A client never supplies a remote URL.
 export const MOVIESUM = Object.freeze({
@@ -38,7 +39,8 @@ function json(value, status = 200) {
   });
 }
 
-function checkSplit(value = 'train') {
+function checkSplit(value = 'train', allowAll = false) {
+  if (allowAll && value === 'all') return value;
   if (!Object.hasOwn(SPLITS, value)) throw new SourceError('Partition MovieSum inconnue.');
   return value;
 }
@@ -84,16 +86,10 @@ async function readBounded(response, limit, isRequest = false) {
   }
 }
 
-async function requestRows({
-  split,
-  offset,
-  query = '',
-  length = PAGE_SIZE,
-  fetcher = fetch,
-  signal,
-}) {
-  // Hugging Face search searches all string columns, including the script itself.
-  const url = new URL(query ? '/search' : '/rows', VIEWER_ORIGIN);
+async function requestRows({ split, offset, length = PAGE_SIZE, fetcher = fetch, signal }) {
+  // L'index des titres est local ; seuls l'aperçu et l'import lisent une ligne
+  // distante. La recherche ne dépend pas de l'index plein texte Hugging Face.
+  const url = new URL('/rows', VIEWER_ORIGIN);
   for (const [key, value] of Object.entries({
     dataset: MOVIESUM.id,
     config: 'default',
@@ -102,7 +98,6 @@ async function requestRows({
     length,
   }))
     url.searchParams.set(key, value);
-  if (query) url.searchParams.set('query', query);
   const timeout = AbortSignal.timeout(20_000);
   const combinedSignal = signal ? AbortSignal.any([signal, timeout]) : timeout;
   let response;
@@ -184,6 +179,77 @@ function catalogItem(entry, split) {
     language: 'Anglais',
     truncatedBySource: (entry.truncated_cells || []).includes('script'),
   };
+}
+
+/** Recherche déterministe sur les titres et IMDb, jamais sur le texte du film. */
+export function searchMovieSum(split, query, offset = 0) {
+  const terms = fold(query).replace(/[_()]/g, ' ').split(/\s+/).filter(Boolean);
+  const matching = titleIndex.items.filter((item) => {
+    if (split !== 'all' && item.split !== split) return false;
+    const searchable = fold(`${displayTitle(item.title)} ${item.imdbId}`);
+    return terms.every((term) => searchable.includes(term));
+  });
+  return {
+    source: MOVIESUM,
+    split,
+    query,
+    offset,
+    pageSize: PAGE_SIZE,
+    total: matching.length,
+    partial: false,
+    searchFields: ['title', 'imdbId'],
+    catalogMode: 'local-metadata-index',
+    indexRevision: titleIndex.datasetRevision,
+    indexGeneratedAt: titleIndex.generatedAt,
+    items: matching.slice(offset, offset + PAGE_SIZE).map((item) => ({
+      source: 'moviesum',
+      split: item.split,
+      rowIndex: item.rowIndex,
+      title: displayTitle(item.title),
+      imdbId: item.imdbId,
+      language: 'Anglais',
+      summary: '',
+      preview: '',
+      hasPreview: false,
+    })),
+  };
+}
+
+function verifyIndexedMovie(entry, split, rowIndex, requestedImdbId) {
+  const indexed = titleIndex.items.find(
+    (item) => item.split === split && item.rowIndex === rowIndex,
+  );
+  if (
+    !indexed ||
+    entry.row?.imdb_id !== indexed.imdbId ||
+    (requestedImdbId !== undefined && requestedImdbId !== indexed.imdbId)
+  ) {
+    throw new SourceError(
+      'Le catalogue source a changé. Actualisez l’index MovieSum avant d’importer ce film.',
+      409,
+    );
+  }
+}
+
+async function readMovie(split, rowIndex, expectedImdbId, fetcher, signal) {
+  if (expectedImdbId !== undefined && !/^tt\d{5,12}$/.test(expectedImdbId))
+    throw new SourceError('Identifiant IMDb invalide.');
+  const cacheKey = `${split}:${rowIndex}`;
+  const cached = fetcher === fetch ? catalogCache.get(cacheKey) : null;
+  if (cached && Date.now() - cached.created < CACHE_MS) {
+    verifyIndexedMovie(cached.entry, split, rowIndex, expectedImdbId);
+    return cached.entry;
+  }
+  const data = await requestRows({ split, offset: rowIndex, length: 1, fetcher, signal });
+  const entry = data.rows.find((item) => item.row_idx === rowIndex);
+  if (!entry) throw new SourceError('Ce scénario n’a pas été retrouvé dans MovieSum.', 404);
+  verifyIndexedMovie(entry, split, rowIndex, expectedImdbId);
+  // Une seule ligne en cache évite de conserver douze scénarios longs en mémoire.
+  if (fetcher === fetch) {
+    catalogCache.clear();
+    catalogCache.set(cacheKey, { created: Date.now(), entry });
+  }
+  return entry;
 }
 
 function sceneParts(text) {
@@ -318,7 +384,8 @@ export function movieSumProject(entry, split, now = new Date()) {
 }
 
 /**
- * API contract: GET /api/library?split=train&q=&offset=0, six metadata entries.
+ * API contract: GET /api/library?split=all&q=&offset=0, six local metadata entries.
+ * GET /api/library/preview?split=train&rowIndex=0 reads a bounded remote excerpt.
  * POST /api/library/import { source:'moviesum', split, rowIndex, acknowledgeRights:true }.
  * Full screenplay text crosses the client boundary only after explicit import.
  */
@@ -329,30 +396,34 @@ export async function handleSources(request, env = {}, { fetcher = fetch } = {})
     const origin = request.headers.get('origin');
     if (request.method !== 'GET' && origin && origin !== url.origin)
       throw new SourceError('Origine de requête non autorisée.', 403);
+    if (url.searchParams.has('url') || url.searchParams.has('dataset'))
+      throw new SourceError('Seul le catalogue MovieSum configuré est autorisé.');
     if (url.pathname === '/api/library' && request.method === 'GET') {
-      const split = checkSplit(url.searchParams.get('split') || 'train');
-      const offset = checkIndex(url.searchParams.get('offset') || 0, SPLITS[split], 'Page');
+      const split = checkSplit(url.searchParams.get('split') || 'train', true);
+      const offset = checkIndex(
+        url.searchParams.get('offset') || 0,
+        split === 'all' ? titleIndex.count : SPLITS[split],
+        'Page',
+      );
       const query = (url.searchParams.get('q') || '').trim();
       if (query.length > 100) throw new SourceError('La recherche est limitée à 100 caractères.');
-      if (url.searchParams.has('url') || url.searchParams.has('dataset'))
-        throw new SourceError('Seul le catalogue MovieSum configuré est autorisé.');
-      const cacheKey = `${split}:${offset}:${query}`;
-      const cached = catalogCache.get(cacheKey);
-      if (cached && Date.now() - cached.created < CACHE_MS) return json(cached.value);
-      const data = await requestRows({ split, offset, query, fetcher, signal: request.signal });
-      const value = {
-        source: MOVIESUM,
+      return json(searchMovieSum(split, query, offset));
+    }
+    if (url.pathname === '/api/library/preview' && request.method === 'GET') {
+      const split = checkSplit(url.searchParams.get('split') || 'train');
+      const rowIndex = checkIndex(
+        url.searchParams.get('rowIndex'),
+        SPLITS[split],
+        'Identifiant du film',
+      );
+      const entry = await readMovie(
         split,
-        query,
-        offset,
-        pageSize: PAGE_SIZE,
-        total: data.num_rows_total,
-        partial: Boolean(data.partial),
-        items: data.rows.map((entry) => catalogItem(entry, split)),
-      };
-      if (catalogCache.size >= 12) catalogCache.delete(catalogCache.keys().next().value);
-      catalogCache.set(cacheKey, { created: Date.now(), value });
-      return json(value);
+        rowIndex,
+        url.searchParams.get('expectedImdbId') || undefined,
+        fetcher,
+        request.signal,
+      );
+      return json(catalogItem(entry, split));
     }
     if (url.pathname === '/api/library/import' && request.method === 'POST') {
       const raw = await readBounded(request, 2048, true);
@@ -368,15 +439,7 @@ export async function handleSources(request, env = {}, { fetcher = fetch } = {})
         throw new SourceError('Confirmez avoir pris connaissance des conditions de réutilisation.');
       const split = checkSplit(body.split || 'train');
       const rowIndex = checkIndex(body.rowIndex, SPLITS[split], 'Identifiant du film');
-      const data = await requestRows({
-        split,
-        offset: rowIndex,
-        length: 1,
-        fetcher,
-        signal: request.signal,
-      });
-      const entry = data.rows.find((item) => item.row_idx === rowIndex);
-      if (!entry) throw new SourceError('Ce scénario n’a pas été retrouvé dans MovieSum.', 404);
+      const entry = await readMovie(split, rowIndex, body.expectedImdbId, fetcher, request.signal);
       const project = movieSumProject(entry, split);
       // The hosted viewer follows its current dataset revision. A content digest
       // identifies exactly which XML text was imported if that revision changes.
@@ -388,6 +451,7 @@ export async function handleSources(request, env = {}, { fetcher = fetch } = {})
         byte.toString(16).padStart(2, '0'),
       ).join('');
       project.provenance.datasetRevision = 'Révision courante du Dataset Viewer à la date d’import';
+      project.provenance.catalogRevision = titleIndex.datasetRevision;
       return json(project);
     }
     return json({ error: 'Route de bibliothèque introuvable.' }, 404);

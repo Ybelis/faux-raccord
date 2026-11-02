@@ -42,8 +42,6 @@ const STATES = {
   unknown: 'Non précisé',
 };
 const STATUS = { pending: 'À vérifier', confirmed: 'Confirmé', dismissed: 'Écarté' };
-const percent = (value) =>
-  value == null ? '—' : `${(value * 100).toLocaleString('fr-FR', { maximumFractionDigits: 1 })} %`;
 const stateLabel = (state) => STATES[state] || state || 'Non précisé';
 
 /** XML imports have scene locators, not genuine PDF page numbers. */
@@ -51,6 +49,20 @@ function sourceLabel(scene, page) {
   if (!scene) return 'Source indisponible';
   if (scene.pageIsSceneReference) return scene.sourceLocator || `Scène XML ${scene.number}`;
   return `Scène ${scene.number} · ${page ? `p. ${page}` : `p. ${scene.pages.join('–')}`}`;
+}
+
+function AnalysisWarnings({ analysis }) {
+  if (!analysis?.warnings?.length) return null;
+  return (
+    <aside className="notice warning-notice" role="status">
+      <CircleHelp size={20} />
+      <div>
+        {analysis.warnings.map((message, index) => (
+          <p key={index}>{message}</p>
+        ))}
+      </div>
+    </aside>
+  );
 }
 
 export function ScriptWorkspace({ project, activeScene, onScene, onReview }) {
@@ -338,6 +350,7 @@ export function AnalysisWorkspace({
           </div>
           {analysis ? (
             <>
+              <AnalysisWarnings analysis={analysis} />
               <div className="result-label">
                 <Badge tone={analysis.recorded ? 'amber' : 'mint'}>
                   {analysis.recorded ? 'Analyse enregistrée' : 'Analyse exécutée'}
@@ -430,6 +443,7 @@ export function ReviewWorkspace(props) {
     );
   return (
     <>
+      <AnalysisWarnings analysis={analysis} />
       <div className="review-summary">
         <span>
           <strong>
@@ -490,11 +504,19 @@ function PointsReview({ project, activeAlert, onAlert, onDecision, onScene }) {
         <section className="panel">
           <Empty
             icon={CheckCircle2}
-            title={alerts.length ? 'Aucun point dans cette sélection' : 'Aucun changement signalé'}
+            title={
+              project.analysis.warnings?.length
+                ? 'Extraction à reprendre'
+                : alerts.length
+                  ? 'Aucun point dans cette sélection'
+                  : 'Aucun changement signalé'
+            }
           >
-            {alerts.length
-              ? 'Changez le filtre pour retrouver les décisions déjà prises.'
-              : 'Le système n’a pas signalé d’incompatibilité dans les scènes analysées. Cela ne garantit pas l’absence d’erreurs.'}
+            {project.analysis.warnings?.length
+              ? 'Le modèle n’a pas fourni de preuves exploitables. Ce résultat ne permet pas de vérifier la continuité ; reprenez l’analyse avec un autre modèle.'
+              : alerts.length
+                ? 'Changez le filtre pour retrouver les décisions déjà prises.'
+                : 'Le système n’a pas signalé d’incompatibilité dans les scènes analysées. Cela ne garantit pas l’absence d’erreurs.'}
           </Empty>
         </section>
       ) : (
@@ -785,95 +807,4 @@ function Questions({
   );
 }
 
-export function Evaluation({ report, analysis }) {
-  if (report?.status !== 'completed')
-    return (
-      <section className="panel">
-        <Empty title="Évaluation non exécutée">
-          Le protocole et ses commandes sont disponibles dans le README.
-        </Empty>
-      </section>
-    );
-  return (
-    <>
-      <section className="notice">
-        <CircleHelp size={21} />
-        <p>
-          <strong>{report.n} cas synthétiques réservés au test.</strong> La mesure porte sur la
-          détection d’au moins une alerte par cas, pas sur la justesse de chaque alerte. Les
-          annotations proposées avec assistance IA restent à relire par le groupe.
-        </p>
-      </section>
-      <section className="panel evaluation-panel">
-        <h2>Comparer au prompt simple</h2>
-        <div className="table-scroll">
-          <table>
-            <thead>
-              <tr>
-                <th>Méthode</th>
-                <th>Précision</th>
-                <th>Rappel</th>
-                <th>F1</th>
-                <th>Latence médiane</th>
-              </tr>
-            </thead>
-            <tbody>
-              {[
-                ['Prompt simple', report.baseline],
-                ['Extraction + recherche + comparaison', report.system],
-              ].map(([label, metrics]) => (
-                <tr key={label}>
-                  <th scope="row">{label}</th>
-                  {['precision', 'recall', 'f1'].map((metric) => (
-                    <td key={metric}>{percent(metrics?.[metric])}</td>
-                  ))}
-                  <td>
-                    {metrics?.medianSeconds?.toLocaleString('fr-FR', { maximumFractionDigits: 1 })}{' '}
-                    s
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <p>
-          Le système produit moins de fausses alertes, mais manque davantage de cas positifs. Le
-          prompt simple obtient ici un meilleur F1. Ces résultats ne démontrent pas une performance
-          sur des films réels.
-        </p>
-        <p className="body-note">
-          Précision du système : intervalle de confiance à 95 %{' '}
-          {report.system?.precisionCI?.map(percent).join(' – ')}. Les résultats complets, les
-          erreurs, le protocole sur Valkaama et les coûts sont dans{' '}
-          <code>docs/evaluation_report.md</code>.
-        </p>
-      </section>
-      <div className="evaluation-columns">
-        <section className="panel">
-          <h2>Vérification des citations</h2>
-          <p>
-            Les références doivent exister dans le texte. Ce contrôle écarte des citations inventées
-            ; il ne certifie pas l’interprétation du modèle.
-          </p>
-        </section>
-        <section className="panel">
-          <h2>Dernière exécution du projet</h2>
-          {analysis ? (
-            <>
-              <p>
-                <code>{analysis.model}</code> · prompt {analysis.promptVersion}
-              </p>
-              <p>
-                {analysis.usage.calls} appels · {analysis.usage.inputTokens.toLocaleString('fr-FR')}{' '}
-                tokens d’entrée · {(analysis.milliseconds / 1000).toFixed(1)} secondes.
-              </p>
-              <p>{analysis.rejectedEvidence} citation(s) ou résultat(s) non conformes écartés.</p>
-            </>
-          ) : (
-            <p>Aucune analyse dans ce projet.</p>
-          )}
-        </section>
-      </div>
-    </>
-  );
-}
+export { Evaluation } from './Evaluation.jsx';

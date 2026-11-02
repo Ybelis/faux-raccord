@@ -268,6 +268,35 @@ test('cancellation interrupts a quota retry instead of waiting for its full dela
   await assert.rejects(() => pending, /interrompue/);
 });
 
+test('a daily Groq quota fails immediately without repeating the same refused request', async () => {
+  let calls = 0;
+  await assert.rejects(
+    () =>
+      callModel(modelConfig(environment), 'JSON', 'Test', {
+        fetcher: async () => {
+          calls++;
+          return Response.json(
+            {
+              error: {
+                code: 'rate_limit_exceeded',
+                message:
+                  'Rate limit in org_example: tokens per day (TPD), Limit 200000. gsk_exampleKey',
+              },
+            },
+            { status: 429 },
+          );
+        },
+      }),
+    (error) =>
+      error.code === 'RATE_LIMIT' &&
+      error.dailyQuota === true &&
+      error.message.includes('quotidien') &&
+      !error.details.includes('org_example') &&
+      !error.details.includes('gsk_'),
+  );
+  assert.equal(calls, 1);
+});
+
 test('an expired timeout is reported separately from a user cancellation without a real wait', async () => {
   const expired = new AbortController();
   expired.abort(new DOMException('Time limit exceeded', 'TimeoutError'));
@@ -366,6 +395,32 @@ test(
     assert.equal(providerSignal.aborted, true);
   },
 );
+
+test('an extraction with only invented quotes reports a warning instead of a clean review', async (context) => {
+  context.mock.method(globalThis, 'fetch', async () =>
+    groqReply(
+      JSON.stringify({
+        objects: [
+          {
+            name: 'montre de Clara',
+            aliases: [],
+            mentions: [{ sceneId: 'S001', quote: 'exact original text', state: 'broken' }],
+          },
+        ],
+      }),
+    ),
+  );
+  const response = await api(analysisRequest(), environment);
+  const events = (await response.text())
+    .trim()
+    .split('\n')
+    .map((line) => JSON.parse(line));
+  const result = events.find((event) => event.type === 'result').result;
+  assert.equal(result.objects.length, 0);
+  assert.equal(result.rejectedEvidence, 1);
+  assert.equal(result.warnings.length, 1);
+  assert.match(result.warnings[0], /ne permet pas de conclure/);
+});
 
 test(
   'a disconnected request aborts inference and safely closes the progress stream',

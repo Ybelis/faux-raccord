@@ -8,6 +8,7 @@ const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
 const pageErrors = [];
 const checks = [];
 const modelRequests = [];
+let extractionFailure = false;
 page.on('pageerror', (error) => pageErrors.push(error.message));
 
 // Fixtures test HTTP/UI integration, not model accuracy. No Groq request is sent.
@@ -75,6 +76,11 @@ await page.route('**/api/analyze', async (route) => {
     { type: 'progress', done: 0, total: body.scenes.length, message: 'Fixture de test : lecture…' },
     { type: 'result', result },
   ];
+  if (extractionFailure) {
+    result.objects = [];
+    result.rejectedEvidence = 1;
+    result.warnings = ['Fixture de test : le modèle ne fournit aucune preuve exploitable.'];
+  }
   await route.fulfill({
     contentType: 'application/x-ndjson',
     body: events.map((event) => JSON.stringify(event)).join('\n') + '\n',
@@ -165,6 +171,32 @@ try {
   await page.setViewportSize({ width: 360, height: 844 });
   await assertNoOverflow(page, 'import-analysis-review-360');
   await page.screenshot({ path: 'artifacts/flow-review-mobile.png', fullPage: true });
+
+  extractionFailure = true;
+  await navigate(page, 'Analyse');
+  await page.getByRole('checkbox', { name: /Remplacer l’analyse actuelle/ }).check();
+  await page.getByRole('button', { name: 'Analyser 2 scènes', exact: true }).click();
+  await expect(page.locator('.result-summary .warning-notice')).toContainText(
+    'aucune preuve exploitable',
+  );
+  await page.getByRole('button', { name: 'Relire les résultats', exact: true }).click();
+  await page.getByRole('tab', { name: /Points à vérifier/ }).click();
+  await expect(
+    page.getByRole('heading', { name: 'Extraction à reprendre', exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: 'Aucun changement signalé', exact: true }),
+  ).toHaveCount(0);
+  await expect(page.locator('.warning-notice')).toContainText('aucune preuve exploitable');
+  await assertNoOverflow(page, 'extraction-failure-warning-360');
+  await page.screenshot({ path: 'artifacts/extraction-warning-mobile.png', fullPage: true });
+  await navigate(page, 'Analyse');
+  await expect(page.locator('.result-summary .warning-notice')).toContainText(
+    'aucune preuve exploitable',
+  );
+  checks.push(
+    'An extraction with no usable object and a rejected proof displays a warning in Analysis and Review instead of claiming no continuity issue',
+  );
   expect(pageErrors).toEqual([]);
   await writeFile(
     'artifacts/flow-check.json',
