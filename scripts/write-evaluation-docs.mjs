@@ -193,6 +193,8 @@ Reproduction sans inférence : \`node eval/controlled-run.mjs\`, puis \`node scr
 
 **Profil d’inférence contrôlé.** ${summary.inferenceProfile}
 
+**Langues.** Interface FR/EN ; citations et analyses enregistrées conservées. Le profil de génération anglais « english-output-v1 » a passé un contrôle opérationnel distinct, sans benchmark de qualité comparable ; les scores ci-dessous concernent le profil français.
+
 **Données et droits.** Valkaama, Tim Baumann d’après Hendrik Behnisch, version ${license.originalVersion}, 56 scènes, **${license.license}**. Source : [page officielle](${license.originalSourceUrl}). Adaptation pédagogique sous la même licence : 15 erreurs délibérées et quatre contrôles sur 19 accessoires ajoutés, évaluation S001–S012. Les Heures Creuses et les vignettes sont synthétiques. MovieSum est une source facultative hors benchmark ; la licence déclarée du dataset ne garantit pas les droits des scénarios sous-jacents. Importer uniquement des textes autorisés.
 
 **Évaluation.** ${summary.primaryStatus} ${c?.system ? `Sur les quinze injections : précision contrôlée ${f.percentage(c.system.precision)} [IC 95 % ${f.interval(c.system.precisionCI95)}], rappel ${f.percentage(c.system.recall)} [${f.interval(c.system.recallCI95)}], F1 ${f.percentage(c.system.f1)}. ${c.system.unannotatedAlertCount} alertes sur des objets non annotés sont exclues de ce score et restent à relire.` : ''} Les annotations sont proposées avec assistance IA, sans relecture humaine attestée ; jeu visible, œuvre unique, intervalles descriptifs. Les 50 vignettes, les 24 questions et les 12 recherches sont des expériences distinctes, pas un score global.

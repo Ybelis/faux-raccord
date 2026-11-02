@@ -12,6 +12,9 @@
 | `local-validation.json`  | Courts exemples de connexion, question et extraction                                                   | Contrôles réels de modèles Ollama ; succès et échecs sont distingués                                         |
 
 Les références proposées avec assistance IA ne sont pas réputées validées par une personne.
+`english-smoke.json` conserve une question et une analyse réellement exécutées
+avec le profil anglais sur deux scènes synthétiques. C’est un contrôle opérationnel,
+sans score de précision/rappel comparable au benchmark français.
 L’audit structurel se trouve dans `annotation_audit.json` ; ses champs de validation humaine
 restent explicitement vides. La [documentation des résultats](http://127.0.0.1:4173/#/docs/evaluation)
 explique les métriques, la portée et les limites de chaque expérience.

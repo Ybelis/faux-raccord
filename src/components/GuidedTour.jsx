@@ -1,3 +1,4 @@
+import { useI18n } from '../i18n-context.jsx';
 import React, { useEffect, useRef } from 'react';
 import { ArrowLeft, ArrowRight, Check, X } from 'lucide-react';
 
@@ -37,6 +38,7 @@ export const TOUR_STEPS = [
 
 /** The guide annotates the real workspace; its parent owns a disposable demo. */
 export function GuidedTour({ step, onStep, onClose, decisionMade }) {
+  const { t } = useI18n();
   const heading = useRef(null);
   const current = TOUR_STEPS[step];
   useEffect(() => {
@@ -54,35 +56,35 @@ export function GuidedTour({ step, onStep, onClose, decisionMade }) {
   }, [step]);
   const blocked = current.requiresDecision && !decisionMade;
   return (
-    <aside className="tour-card" aria-label="Guide interactif">
+    <aside className="tour-card" aria-label={t('Guide interactif')}>
       <div className="tour-heading">
         <span>
-          PRISE EN MAIN · {step + 1} / {TOUR_STEPS.length}
+          {t('PRISE EN MAIN ·')} {step + 1} / {TOUR_STEPS.length}
         </span>
-        <button className="icon-button" onClick={onClose} aria-label="Quitter le guide">
+        <button className="icon-button" onClick={onClose} aria-label={t('Quitter le guide')}>
           <X size={18} />
         </button>
       </div>
       <h2 ref={heading} tabIndex={-1}>
-        {current.title}
+        {t(current.title)}
       </h2>
-      <p>{current.text}</p>
+      <p>{t(current.text)}</p>
       {blocked && (
         <p className="tour-instruction">
-          Pour continuer, choisissez « Confirmer le point » ou « Écarter ».
+          {t('Pour continuer, choisissez « Confirmer le point » ou « Écarter ».')}
         </p>
       )}
       <div className="tour-actions">
         <button className="text-button" disabled={step === 0} onClick={() => onStep(step - 1)}>
           <ArrowLeft size={16} />
-          Précédent
+          {t('Précédent')}
         </button>
         <button
           className="button primary"
           disabled={blocked}
           onClick={() => (step === TOUR_STEPS.length - 1 ? onClose() : onStep(step + 1))}
         >
-          {step === TOUR_STEPS.length - 1 ? 'Revenir à mon projet' : 'Suivant'}
+          {step === TOUR_STEPS.length - 1 ? t('Revenir à mon projet') : t('Suivant')}
           {step === TOUR_STEPS.length - 1 ? <Check size={16} /> : <ArrowRight size={16} />}
         </button>
       </div>

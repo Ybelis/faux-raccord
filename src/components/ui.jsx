@@ -1,3 +1,4 @@
+import { useI18n } from '../i18n-context.jsx';
 import React, { useEffect, useRef } from 'react';
 import { Package, Search, X } from 'lucide-react';
 
@@ -15,20 +16,22 @@ export function Empty({ title, children, icon: Icon = Package, action }) {
   );
 }
 export function SearchField({ value, onChange, label = 'Rechercher' }) {
+  const { t } = useI18n();
   return (
     <label className="search-field">
       <Search size={17} aria-hidden="true" />
-      <span className="sr-only">{label}</span>
+      <span className="sr-only">{t(label)}</span>
       <input
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        placeholder={label}
+        placeholder={t(label)}
         type="search"
       />
     </label>
   );
 }
 export function Modal({ title, subtitle, children, onClose, wide = false }) {
+  const { t } = useI18n();
   const ref = useRef(null);
   useEffect(() => {
     const previousFocus = document.activeElement;
@@ -74,16 +77,16 @@ export function Modal({ title, subtitle, children, onClose, wide = false }) {
         className={`modal ${wide ? 'wide' : ''}`}
         role="dialog"
         aria-modal="true"
-        aria-label={title}
+        aria-label={t(title)}
         ref={ref}
         tabIndex={-1}
       >
         <header className="modal-heading">
           <div>
-            <h2>{title}</h2>
-            {subtitle && <p>{subtitle}</p>}
+            <h2>{t(title)}</h2>
+            {subtitle && <p>{t(subtitle)}</p>}
           </div>
-          <button className="icon-button" aria-label="Fermer" onClick={onClose}>
+          <button className="icon-button" aria-label={t('Fermer')} onClick={onClose}>
             <X size={20} />
           </button>
         </header>

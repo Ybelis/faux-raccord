@@ -9,6 +9,7 @@ import {
   DEFAULT_MODEL_SETTINGS,
 } from '../src/core/model.js';
 import { withContinuityProfile } from '../src/core/inference-profile.js';
+import { responseLanguage, withResponseLanguage, languageMetadata } from './response-language.js';
 import { handleSources } from './sources.js';
 import { demo } from '../data/demo.js';
 import valkaama from '../data/valkaama.json' with { type: 'json' };
@@ -180,11 +181,16 @@ export async function api(request, env = {}) {
         sources: retrieve(body.scenes, String(body.query || '').slice(0, 500), { topK: 8 }),
       });
     const config = modelConfig(env, body.provider || 'groq', body.model, body.settings);
+    const language = responseLanguage(body.language);
+    const generate = withResponseLanguage(callModel, language);
     if (path === '/api/ask') {
       const question = String(body.question || '').trim();
       if (question.length < 3 || question.length > 800)
         return json({ error: 'La question doit contenir entre 3 et 800 caractères.' }, 400);
-      return json(await answerQuestion(body.scenes, question, config));
+      return json({
+        ...(await answerQuestion(body.scenes, question, config, { model: generate })),
+        ...languageMetadata(language),
+      });
     }
     if (path === '/api/analyze') {
       if (body.consent !== true)
@@ -204,16 +210,17 @@ export async function api(request, env = {}) {
           };
           const profiled =
             config.provider === 'groq'
-              ? withContinuityProfile(callModel, {
+              ? withContinuityProfile(generate, {
                   onProgress: (progress) => emit({ type: 'progress', ...progress }),
                 })
               : null;
           analyze(body.scenes, config, {
-            ...(profiled ? { model: profiled } : {}),
+            model: profiled || generate,
             signal: analysisSignal,
             onProgress: (progress) => emit({ type: 'progress', ...progress }),
           })
             .then((result) => {
+              Object.assign(result, languageMetadata(language));
               if (profiled) {
                 result.inferenceProfile = profiled.profile;
                 result.usage.logicalCalls = profiled.stats.logicalCalls;

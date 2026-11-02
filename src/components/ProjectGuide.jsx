@@ -1,22 +1,26 @@
 import React from 'react';
 import { ArrowRight, BookOpen } from 'lucide-react';
 import { guideChapters } from '../../data/project-guide.js';
+import { guideChaptersEn } from '../../data/project-guide.en.js';
+import { useI18n } from '../i18n-context.jsx';
 
 /** La documentation utilisateur partage une seule source de contenu. */
 export function ProjectGuide({ chapterId, onChapter, onEvaluation }) {
-  const chapter = guideChapters.find((item) => item.id === chapterId) || guideChapters[0];
+  const { language, t } = useI18n();
+  const chapters = language === 'en' ? guideChaptersEn : guideChapters;
+  const chapter = chapters.find((item) => item.id === chapterId) || chapters[0];
   return (
     <div className="project-guide">
       <header className="page-heading">
         <div>
-          <p className="page-index">DOCUMENTATION</p>
+          <p className="page-index">{t('DOCUMENTATION')}</p>
           <h1>{chapter.title}</h1>
           <p className="page-description">{chapter.summary}</p>
         </div>
       </header>
       <div className="guide-layout">
-        <nav className="guide-nav" aria-label="Rubriques de la documentation">
-          {guideChapters.map((item) => (
+        <nav className="guide-nav" aria-label={t('Rubriques de la documentation')}>
+          {chapters.map((item) => (
             <a
               key={item.id}
               href={`#/docs/${item.id}`}
@@ -28,7 +32,7 @@ export function ProjectGuide({ chapterId, onChapter, onEvaluation }) {
             </a>
           ))}
           <button className="text-button" onClick={onEvaluation}>
-            Consulter les résultats d’évaluation <ArrowRight size={15} />
+            {t('Consulter les résultats d’évaluation')} <ArrowRight size={15} />
           </button>
         </nav>
         <article className="guide-content">
@@ -48,7 +52,7 @@ export function ProjectGuide({ chapterId, onChapter, onEvaluation }) {
               {section.table && (
                 <>
                   <p className="table-hint">
-                    Faites défiler le tableau pour lire toutes les colonnes.
+                    {t('Faites défiler le tableau pour lire toutes les colonnes.')}
                   </p>
                   <div className="table-scroll">
                     <table>

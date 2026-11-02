@@ -1,0 +1,210 @@
+{
+  "kind": "english-language-smoke-check",
+  "notQualityBenchmark": true,
+  "synthetic": true,
+  "source": "Two synthetic scenes written for this language check, without personal data.",
+  "startedAt": "2026-11-02T15:31:20.512Z",
+  "languageProfile": "english-output-v1",
+  "model": "openai/gpt-oss-120b",
+  "settings": {
+    "temperature": 0,
+    "maxOutputTokens": 2000,
+    "reasoningEffort": "low",
+    "contextWindow": 8192
+  },
+  "previousInfrastructureAttempts": [
+    {
+      "at": "2026-11-02T15:29:29.029Z",
+      "error": "Le moteur IA ne répond pas. Vérifiez sa connexion."
+    }
+  ],
+  "checks": {
+    "question": {
+      "result": {
+        "answer": "The watch glass shatters in scene 1 [S001-C1]",
+        "citations": [
+          "S001-C1"
+        ],
+        "sources": [
+          {
+            "id": "S001-C1",
+            "sceneId": "S001",
+            "heading": "INT. WORKSHOP - DAY",
+            "page": 1,
+            "text": "Alice drops her silver watch. The watch glass shatters. The same watch is broken.",
+            "start": 0,
+            "score": 0.487
+          }
+        ],
+        "usage": {
+          "inputTokens": 444,
+          "outputTokens": 71,
+          "milliseconds": 333,
+          "provider": "groq",
+          "model": "openai/gpt-oss-120b",
+          "promptVersion": "1.0.0",
+          "settings": {
+            "temperature": 0,
+            "maxOutputTokens": 2000,
+            "reasoningEffort": "low"
+          },
+          "outputLimit": 1200
+        },
+        "responseLanguage": "en",
+        "languageProfile": "english-output-v1"
+      },
+      "operational": true
+    },
+    "analysis": {
+      "result": {
+        "objects": [
+          {
+            "name": "silver watch",
+            "aliases": [
+              "watch"
+            ],
+            "category": "accessoire",
+            "mentions": [
+              {
+                "sceneId": "S001",
+                "quote": "The watch glass shatters.",
+                "page": 1,
+                "state": "broken",
+                "owner": "Alice",
+                "action": "break",
+                "temporal": "continuous"
+              },
+              {
+                "sceneId": "S001",
+                "quote": "The same watch is broken.",
+                "page": 1,
+                "state": "broken",
+                "owner": "Alice",
+                "action": "unknown",
+                "temporal": "continuous"
+              },
+              {
+                "sceneId": "S002",
+                "quote": "Its glass is intact.",
+                "page": 1,
+                "state": "intact",
+                "owner": "Alice",
+                "action": "observe",
+                "temporal": "continuous"
+              }
+            ],
+            "id": "OBJ001",
+            "key": "silver watch"
+          }
+        ],
+        "alerts": [
+          {
+            "id": "ALT001",
+            "entityId": "OBJ001",
+            "entityName": "silver watch",
+            "category": "state",
+            "severity": "medium",
+            "verdict": "ambiguous",
+            "title": "Silver watch state change",
+            "description": "The watch is described as broken in S001 and later as having an intact glass in S002, but the script provides no explicit repair, replacement, or other transition. While a repair could have occurred off‑screen, the lack of any mention makes the continuity uncertain.",
+            "question": "Is there an implied repair or replacement of the silver watch between S001 and S002 that is not shown in the script?",
+            "evidence": [
+              {
+                "sceneId": "S001",
+                "quote": "The same watch is broken.",
+                "page": 1,
+                "state": "broken",
+                "owner": "Alice",
+                "action": "unknown",
+                "temporal": "continuous"
+              },
+              {
+                "sceneId": "S002",
+                "quote": "Its glass is intact.",
+                "page": 1,
+                "state": "intact",
+                "owner": "Alice",
+                "action": "observe",
+                "temporal": "continuous"
+              }
+            ],
+            "retrieved": [
+              {
+                "id": "S001-C1",
+                "sceneId": "S001",
+                "score": 0.487
+              },
+              {
+                "id": "S002-C1",
+                "sceneId": "S002",
+                "score": 0.415
+              }
+            ],
+            "status": "pending",
+            "note": ""
+          }
+        ],
+        "analyzedSceneIds": [
+          "S001",
+          "S002"
+        ],
+        "candidateCount": 1,
+        "rejectedEvidence": 0,
+        "usage": {
+          "calls": 2,
+          "inputTokens": 1351,
+          "outputTokens": 450,
+          "milliseconds": 1407,
+          "logicalCalls": 2,
+          "physicalCalls": 2
+        },
+        "model": "openai/gpt-oss-120b",
+        "provider": "groq",
+        "settings": {
+          "temperature": 0,
+          "maxOutputTokens": 2000,
+          "reasoningEffort": "low"
+        },
+        "promptVersion": "1.0.0",
+        "completedAt": "2026-11-02T15:31:22.309Z",
+        "milliseconds": 1409,
+        "responseLanguage": "en",
+        "languageProfile": "english-output-v1",
+        "inferenceProfile": {
+          "id": "continuity-free-v1",
+          "extractionBatchSize": 3,
+          "extractionMaxOutputTokens": 3000,
+          "judgmentMaxOutputTokens": 1000,
+          "judgmentCandidatesPerRequest": 2
+        }
+      },
+      "operational": true
+    }
+  },
+  "operational": true,
+  "completedAt": "2026-11-02T15:31:22.310Z",
+  "input": {
+    "question": "What is the state of the watch glass in scene 1?",
+    "scenes": [
+      {
+        "id": "S001",
+        "number": 1,
+        "heading": "INT. WORKSHOP - DAY",
+        "pages": [
+          1
+        ],
+        "text": "Alice drops her silver watch. The watch glass shatters. The same watch is broken."
+      },
+      {
+        "id": "S002",
+        "number": 2,
+        "heading": "EXT. COURTYARD - CONTINUOUS",
+        "pages": [
+          1
+        ],
+        "text": "Alice looks at the same silver watch. Its glass is intact. Nobody has repaired or replaced this watch."
+      }
+    ]
+  },
+  "responseLanguageProfileSha256": "bd180da607d1cfd0c7f6d50bfcb7244d8fc14f7bb1931558124309d1593869e6"
+}

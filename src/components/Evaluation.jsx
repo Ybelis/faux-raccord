@@ -1,61 +1,80 @@
 import React, { useState } from 'react';
 import { CircleHelp, CheckCircle2 } from 'lucide-react';
 import { Badge, Empty } from './ui.jsx';
-import { metricsFromConfusion, percent } from '../evaluation.js';
+import { metricsFromConfusion } from '../evaluation.js';
+import { useI18n } from '../i18n-context.jsx';
 
-function seconds(value) {
-  return value == null ? '—' : `${value.toLocaleString('fr-FR', { maximumFractionDigits: 3 })} s`;
+function formatSeconds(value, language) {
+  return value == null
+    ? '—'
+    : `${value.toLocaleString(language === 'en' ? 'en-GB' : 'fr-FR', { maximumFractionDigits: 3 })} s`;
+}
+function formatPercent(value, language) {
+  if (value == null) return '—';
+  return `${(100 * value).toLocaleString(language === 'en' ? 'en-GB' : 'fr-FR', { maximumFractionDigits: 1 })}${language === 'en' ? '%' : ' %'}`;
 }
 
 /** Une expérience à la fois : les tests de code ne sont pas un score du LLM. */
 export function Evaluation({ report, analysis, onOpenControlled, onControlledScene }) {
+  const { language, t } = useI18n();
+  const percent = (value) => formatPercent(value, language);
+  const seconds = (value) => formatSeconds(value, language);
   const controlled = report?.controlled;
   return (
     <>
       <section
         className="panel evaluation-panel controlled-evaluation"
-        aria-label="Expérience contrôlée principale"
+        aria-label={t('Expérience contrôlée principale')}
       >
         <div className="evaluation-title">
           <div>
-            <p className="group-label">EXPÉRIENCE DE CONTINUITÉ</p>
-            <h2>15 erreurs injectées dans un seul scénario</h2>
+            <p className="group-label">{t('EXPÉRIENCE DE CONTINUITÉ')}</p>
+            <h2>{t('15 erreurs injectées dans un seul scénario')}</h2>
           </div>
-          <Badge>Valkaama · adaptation</Badge>
+          <Badge>{t('Valkaama · adaptation')}</Badge>
         </div>
+        {language === 'en' && (
+          <p className="body-note">
+            {t(
+              'Les textes du scénario, les citations et les résultats enregistrés restent dans leur langue d’origine.',
+            )}
+          </p>
+        )}
         <p>
-          Une version préparée contient 19 accessoires ajoutés. Quinze de leurs transitions sont
-          modifiées pour créer des incohérences ; quatre restent expliquées. Les 56 scènes sont
-          conservées, les passages évalués se trouvent dans les scènes 1 à 12. Le scénario original
-          reste intact.
+          {' '}
+          {t(
+            'Une version préparée contient 19 accessoires ajoutés. Quinze de leurs transitions sont modifiées pour créer des incohérences ; quatre restent expliquées. Les 56 scènes sont conservées, les passages évalués se trouvent dans les scènes 1 à 12. Le scénario original reste intact.',
+          )}{' '}
         </p>
         <button className="button secondary" onClick={onOpenControlled}>
-          Ouvrir le scénario de test
+          {' '}
+          {t('Ouvrir le scénario de test')}{' '}
         </button>
         {controlled?.status === 'measured' ? (
           <>
             <p>
-              <strong>Unité : une alerte associée à une erreur injectée.</strong> L’association
-              exige l’objet et deux citations vérifiables dans les scènes attendues. Chaque erreur
-              ne rapporte qu’un vrai positif ; les doublons coûtent de la précision.
+              <strong>{t('Unité : une alerte associée à une erreur injectée.')}</strong>{' '}
+              {t(
+                'L’association exige l’objet et deux citations vérifiables dans les scènes attendues. Chaque erreur ne rapporte qu’un vrai positif ; les doublons coûtent de la précision.',
+              )}{' '}
             </p>
             <div className="table-scroll controlled-metrics">
               <table>
                 <thead>
                   <tr>
-                    <th>Méthode</th>
-                    <th>Détectées (VP)</th>
-                    <th>Fausses alertes (FP)</th>
-                    <th>Manquées (FN)</th>
-                    <th>Précision</th>
-                    <th>Rappel</th>
-                    <th>F1</th>
+                    <th>{t('Méthode')}</th>
+                    <th>{t('Détectées (VP)')}</th>
+                    <th>{t('Fausses alertes (FP)')}</th>
+                    <th>{t('Manquées (FN)')}</th>
+                    <th>{t('Précision')}</th>
+                    <th>{t('Rappel')}</th>
+                    <th>{t('F1')}</th>
                   </tr>
                 </thead>
                 <tbody>
                   {[
-                    ['Prompt simple', controlled.baseline],
-                    ['Système', controlled.system],
+                    [t('Prompt simple'), controlled.baseline],
+                    [t('Système'), controlled.system],
                   ].map(([label, result]) => (
                     <tr key={label}>
                       <th scope="row">{label}</th>
@@ -71,71 +90,87 @@ export function Evaluation({ report, analysis, onOpenControlled, onControlledSce
               </table>
             </div>
             <p className="body-note">
-              Même texte et modèle pour les deux méthodes : <code>{controlled.model?.id}</code>. Les
-              alertes sur les accessoires d’origine non annotés sont exclues de cette précision
-              contrôlée : {controlled.system?.unannotatedAlertCount} pour le système,{' '}
-              {controlled.baseline?.unannotatedAlertCount} pour le prompt simple. Ce score ne mesure
-              donc pas toutes les fausses alertes possibles dans le scénario.
+              {' '}
+              {t('Même texte et modèle pour les deux méthodes :')}{' '}
+              <code>{controlled.model?.id}</code>
+              {t(
+                '. Les alertes sur les accessoires d’origine non annotés sont exclues de cette précision contrôlée :',
+              )}{' '}
+              {controlled.system?.unannotatedAlertCount} {t('pour le système,')}{' '}
+              {controlled.baseline?.unannotatedAlertCount}{' '}
+              {t(
+                'pour le prompt simple. Ce score ne mesure donc pas toutes les fausses alertes possibles dans le scénario.',
+              )}{' '}
             </p>
             <details className="metric-details">
-              <summary>Comprendre les chiffres et leur incertitude</summary>
+              <summary>{t('Comprendre les chiffres et leur incertitude')}</summary>
               <p>
-                Précision = VP / (VP + FP) : parmi les alertes dans le périmètre annoté, combien
-                correspondent à une injection ? Rappel = VP / (VP + FN) : combien des 15 injections
-                sont retrouvées ? F1 combine ces deux proportions.
+                {' '}
+                {t(
+                  'Précision = VP / (VP + FP) : parmi les alertes dans le périmètre annoté, combien correspondent à une injection ? Rappel = VP / (VP + FN) : combien des 15 injections sont retrouvées ? F1 combine ces deux proportions.',
+                )}{' '}
               </p>
               <p>
-                Le score exige aussi deux preuves littérales valides. Dans cet essai, le faux
-                positif du prompt simple vient d’une citation approximative de la montre : l’erreur
-                a été reconnue, mais la preuve est non conforme. Ce compteur ne signifie donc pas
-                une contradiction inventée.
+                {' '}
+                {t(
+                  'Le score exige aussi deux preuves littérales valides. Dans cet essai, le faux positif du prompt simple vient d’une citation approximative de la montre : l’erreur a été reconnue, mais la preuve est non conforme. Ce compteur ne signifie donc pas une contradiction inventée.',
+                )}{' '}
               </p>
               {[
-                ['Système', controlled.system],
-                ['Prompt simple', controlled.baseline],
+                [t('Système'), controlled.system],
+                [t('Prompt simple'), controlled.baseline],
               ].map(([label, result]) => (
                 <p key={label}>
-                  <strong>{label} :</strong> précision {result.tp} / ({result.tp} + {result.fp}) ;
-                  rappel {result.tp} / 15. IC descriptif à 95 % : précision{' '}
-                  {result.precisionCI95?.map(percent).join(' – ') || 'non défini'}, rappel{' '}
-                  {result.recallCI95?.map(percent).join(' – ') || 'non défini'}. Durée{' '}
-                  {seconds(result.seconds)} ; {result.usage?.inputTokens?.toLocaleString('fr-FR')}{' '}
-                  tokens d’entrée et {result.usage?.outputTokens?.toLocaleString('fr-FR')} de
-                  sortie. Coût catalogue indicatif :{' '}
+                  <strong>{label} :</strong> {t('précision')} {result.tp} / ({result.tp} +{' '}
+                  {result.fp}
+                  {t(') ; rappel')} {result.tp} {t('/ 15. IC descriptif à 95 % : précision')}{' '}
+                  {result.precisionCI95?.map(percent).join(' – ') || t('non défini')}
+                  {t(', rappel')} {result.recallCI95?.map(percent).join(' – ') || t('non défini')}
+                  {t('. Durée')} {seconds(result.seconds)} ;{' '}
+                  {result.usage?.inputTokens?.toLocaleString(language === 'en' ? 'en-GB' : 'fr-FR')}{' '}
+                  {t('tokens d’entrée et')}{' '}
+                  {result.usage?.outputTokens?.toLocaleString(
+                    language === 'en' ? 'en-GB' : 'fr-FR',
+                  )}{' '}
+                  {t('de sortie. Coût catalogue indicatif :')}{' '}
                   {result.indicativeCostUSD == null
-                    ? 'non estimé'
-                    : `${result.indicativeCostUSD.toFixed(4)} USD`}
+                    ? t('non estimé')
+                    : `${result.indicativeCostUSD.toLocaleString(language === 'en' ? 'en-GB' : 'fr-FR', { minimumFractionDigits: 4, maximumFractionDigits: 4 })} USD`}
                   .
                 </p>
               ))}
               <p>
-                Une seule œuvre et des erreurs construites, dépendantes les unes des autres. Le
-                corrigé est proposé avec assistance IA et doit être relu par l’équipe. Les
-                intervalles de Wilson décrivent l’effectif ; ils ne prouvent aucune généralisation à
-                un tournage réel. L’association automatique vérifie les objets et passages, sans
-                être un jugement sémantique indépendant.
+                {' '}
+                {t(
+                  'Une seule œuvre et des erreurs construites, dépendantes les unes des autres. Le corrigé est proposé avec assistance IA et doit être relu par l’équipe. Les intervalles de Wilson décrivent l’effectif ; ils ne prouvent aucune généralisation à un tournage réel. L’association automatique vérifie les objets et passages, sans être un jugement sémantique indépendant.',
+                )}{' '}
               </p>
               <p>
-                Injections manquées par le système :{' '}
-                {controlled.system?.missedErrorIds?.join(', ') || 'aucune'}. La baseline peut faire
-                mieux sur ce jeu ; le rapport conserve aussi ses résultats.
+                {' '}
+                {t('Injections manquées par le système :')}{' '}
+                {controlled.system?.missedErrorIds?.join(', ') || t('aucune')}
+                {t(
+                  '. La baseline peut faire mieux sur ce jeu ; le rapport conserve aussi ses résultats.',
+                )}{' '}
               </p>
-              <p>{controlled.systemProtocol}</p>
-              <p>Prompt simple : {controlled.baselineProtocol?.input}</p>
+              <p>{t(controlled.systemProtocol)}</p>
+              <p>
+                {t('Prompt simple :')} {t(controlled.baselineProtocol?.input)}
+              </p>
               {controlled.executionNotes?.map((note) => (
-                <p key={note}>{note}</p>
+                <p key={note}>{t(note)}</p>
               ))}
             </details>
             <details className="metric-details">
-              <summary>Voir les associations des alertes aux erreurs attendues</summary>
+              <summary>{t('Voir les associations des alertes aux erreurs attendues')}</summary>
               <div className="table-scroll controlled-ledger">
                 <table>
                   <thead>
                     <tr>
-                      <th>Alerte</th>
-                      <th>Objet</th>
-                      <th>Résultat</th>
-                      <th>Erreur associée</th>
+                      <th>{t('Alerte')}</th>
+                      <th>{t('Objet')}</th>
+                      <th>{t('Résultat')}</th>
+                      <th>{t('Erreur associée')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -145,9 +180,9 @@ export function Evaluation({ report, analysis, onOpenControlled, onControlledSce
                         <td>{row.entityName}</td>
                         <td>
                           {{
-                            'true-positive': 'Détectée',
-                            'false-positive-controlled-scope': 'Fausse alerte',
-                            unannotated: 'Hors annotation',
+                            'true-positive': t('Détectée'),
+                            'false-positive-controlled-scope': t('Fausse alerte'),
+                            unannotated: t('Hors annotation'),
                           }[row.status] || row.status}
                         </td>
                         <td>{row.matchedErrorId || row.reason}</td>
@@ -160,37 +195,45 @@ export function Evaluation({ report, analysis, onOpenControlled, onControlledSce
           </>
         ) : (
           <p className="notice">
-            La mesure contrôlée n’est pas encore complète. Aucun score n’est déduit des anciens
-            tests.{controlled?.errors?.system && ` Système : ${controlled.errors.system.message}`}
-            {controlled?.errors?.baseline && ` Baseline : ${controlled.errors.baseline.message}`}
+            {' '}
+            {t(
+              'La mesure contrôlée n’est pas encore complète. Aucun score n’est déduit des anciens tests.',
+            )}
+            {controlled?.errors?.system &&
+              t(' Système : {message}', { message: t(controlled.errors.system.message) })}
+            {controlled?.errors?.baseline &&
+              t(' Baseline : {message}', { message: t(controlled.errors.baseline.message) })}
           </p>
         )}
         {report?.controlledAnnotations?.entries && (
           <details className="metric-details">
-            <summary>Corrigé des 15 erreurs insérées et des 4 transitions expliquées</summary>
+            <summary>
+              {t('Corrigé des 15 erreurs insérées et des 4 transitions expliquées')}
+            </summary>
             <p>
-              Ce corrigé sert à l’évaluation. Il n’est jamais envoyé au modèle pendant l’analyse.
-              Les citations proviennent de l’adaptation de test et ont été proposées avec assistance
-              IA ; une relecture humaine reste nécessaire.
+              {' '}
+              {t(
+                'Ce corrigé sert à l’évaluation. Il n’est jamais envoyé au modèle pendant l’analyse. Les citations proviennent de l’adaptation de test et ont été proposées avec assistance IA ; une relecture humaine reste nécessaire.',
+              )}{' '}
             </p>
             <div className="controlled-gold">
               {report.controlledAnnotations.entries.map((entry) => (
                 <section key={entry.errorId}>
                   <h3>
                     {entry.errorId} · {entry.object} ·{' '}
-                    {entry.expectedAlert ? 'Erreur injectée' : 'Transition expliquée'}
+                    {entry.expectedAlert ? t('Erreur injectée') : t('Transition expliquée')}
                   </h3>
                   <p>{entry.reason}</p>
                   {[
-                    ['Avant', entry.before],
-                    ['Après', entry.after],
+                    [t('Avant'), entry.before],
+                    [t('Après'), entry.after],
                   ].map(([label, source]) => (
                     <div key={label}>
                       <button
                         className="text-button"
                         onClick={() => onControlledScene(source.sceneId)}
                       >
-                        {label} · {source.sceneId} · repère p. {source.sourcePages.join('–')}
+                        {label} · {source.sceneId} {t('· repère p.')} {source.sourcePages.join('–')}
                       </button>
                       <blockquote>{source.quote}</blockquote>
                     </div>
@@ -201,13 +244,17 @@ export function Evaluation({ report, analysis, onOpenControlled, onControlledSce
           </details>
         )}
         <p>
-          Source : Tim Baumann, scénario de Valkaama (30 juin 2007), d’après Hendrik Behnisch.{' '}
+          {' '}
+          {t(
+            'Source : Tim Baumann, scénario de Valkaama (30 juin 2007), d’après Hendrik Behnisch.',
+          )}{' '}
           <a
             href="https://www.valkaama.com/index.php?l=en&page=sources"
             target="_blank"
             rel="noreferrer"
           >
-            Publication de l’auteur
+            {' '}
+            {t('Publication de l’auteur')}{' '}
           </a>{' '}
           ·{' '}
           <a
@@ -215,13 +262,16 @@ export function Evaluation({ report, analysis, onOpenControlled, onControlledSce
             target="_blank"
             rel="noreferrer"
           >
-            CC BY-SA 3.0
-          </a>
-          . Les ajouts et modifications sont signalés, l’adaptation conserve cette licence.
+            {' '}
+            {t('CC BY-SA 3.0')}{' '}
+          </a>{' '}
+          {t(
+            '. Les ajouts et modifications sont signalés, l’adaptation conserve cette licence.',
+          )}{' '}
         </p>
       </section>
       <details className="historical-evaluation">
-        <summary>Vérifications complémentaires</summary>
+        <summary>{t('Vérifications complémentaires')}</summary>
         <HistoricalEvaluation report={report} analysis={analysis} />
       </details>
     </>
@@ -229,12 +279,16 @@ export function Evaluation({ report, analysis, onOpenControlled, onControlledSce
 }
 
 function HistoricalEvaluation({ report, analysis }) {
+  const { language, t } = useI18n();
+  const percent = (value) => formatPercent(value, language);
+  const seconds = (value) => formatSeconds(value, language);
   const [method, setMethod] = useState('system');
   if (report?.status !== 'completed')
     return (
       <section className="panel">
-        <Empty title="Évaluation non exécutée">
-          Le protocole et ses commandes sont disponibles dans le README.
+        <Empty title={t('Évaluation non exécutée')}>
+          {' '}
+          {t('Le protocole et ses commandes sont disponibles dans le README.')}{' '}
         </Empty>
       </section>
     );
@@ -253,39 +307,43 @@ function HistoricalEvaluation({ report, analysis }) {
       <section className="notice">
         <CircleHelp size={21} />
         <p>
-          <strong>Ce qui est mesuré : signaler les cas qui méritent une relecture.</strong> Un cas
-          est un petit scénario ; il compte comme signalé dès qu’au moins un point est produit. Ce
-          score ne mesure pas chaque alerte d’un film complet.
+          <strong>{t('Ce qui est mesuré : signaler les cas qui méritent une relecture.')}</strong>{' '}
+          {t(
+            'Un cas est un petit scénario ; il compte comme signalé dès qu’au moins un point est produit. Ce score ne mesure pas chaque alerte d’un film complet.',
+          )}{' '}
         </p>
       </section>
       <section className="panel evaluation-panel">
         <div className="evaluation-title">
           <div>
-            <p className="group-label">EXPÉRIENCE DE CONTINUITÉ</p>
-            <h2>Comparer au prompt simple</h2>
+            <p className="group-label">{t('EXPÉRIENCE DE CONTINUITÉ')}</p>
+            <h2>{t('Comparer au prompt simple')}</h2>
           </div>
-          <Badge>{report.n} cas synthétiques</Badge>
+          <Badge>
+            {report.n} {t('cas synthétiques')}
+          </Badge>
         </div>
         <p>
-          Les deux méthodes reçoivent les mêmes textes et utilisent le même modèle. Le prompt simple
-          demande directement de repérer les changements. Le système extrait les accessoires,
-          recherche le contexte, puis compare les passages.
+          {' '}
+          {t(
+            'Les deux méthodes reçoivent les mêmes textes et utilisent le même modèle. Le prompt simple demande directement de repérer les changements. Le système extrait les accessoires, recherche le contexte, puis compare les passages.',
+          )}{' '}
         </p>
         <div className="table-scroll">
           <table>
             <thead>
               <tr>
-                <th>Méthode</th>
-                <th>Précision</th>
-                <th>Rappel</th>
-                <th>F1</th>
-                <th>Latence médiane</th>
+                <th>{t('Méthode')}</th>
+                <th>{t('Précision')}</th>
+                <th>{t('Rappel')}</th>
+                <th>{t('F1')}</th>
+                <th>{t('Latence médiane')}</th>
               </tr>
             </thead>
             <tbody>
               {[
-                ['Prompt simple', report.baseline],
-                ['Extraction + recherche + comparaison', report.system],
+                [t('Prompt simple'), report.baseline],
+                [t('Extraction + recherche + comparaison'), report.system],
               ].map(([label, metrics]) => (
                 <tr key={label}>
                   <th scope="row">{label}</th>
@@ -299,23 +357,27 @@ function HistoricalEvaluation({ report, analysis }) {
           </table>
         </div>
         <p>
-          <strong>Le compromis observé :</strong> le système réduit les fausses alertes de{' '}
-          {report.baseline.fp} à {report.system.fp}, mais manque {report.system.fn} cas positifs. Le
-          prompt simple a ici un meilleur F1. Ces résultats ne prouvent pas une supériorité générale
-          du système.
+          <strong>{t('Le compromis observé :')}</strong>{' '}
+          {t('le système réduit les fausses alertes de')} {report.baseline.fp} {t('à')}{' '}
+          {report.system.fp}
+          {t(', mais manque')} {report.system.fn}{' '}
+          {t(
+            'cas positifs. Le prompt simple a ici un meilleur F1. Ces résultats ne prouvent pas une supériorité générale du système.',
+          )}{' '}
         </p>
         <details className="metric-details">
-          <summary>Comment les cas ont-ils été préparés ?</summary>
+          <summary>{t('Comment les cas ont-ils été préparés ?')}</summary>
           <p>
-            60 exemples synthétiques : 10 pour développer, puis 50 réservés pour cette exécution.
-            Parmi les 50, 21 comportent un changement à relever et 29 n’en comportent pas selon les
-            annotations proposées. Certains cas sont proches de ceux du développement ; la
-            séparation des fichiers ne garantit pas leur indépendance.
+            {' '}
+            {t(
+              '60 exemples synthétiques : 10 pour développer, puis 50 réservés pour cette exécution. Parmi les 50, 21 comportent un changement à relever et 29 n’en comportent pas selon les annotations proposées. Certains cas sont proches de ceux du développement ; la séparation des fichiers ne garantit pas leur indépendance.',
+            )}{' '}
           </p>
           <p>
-            Les annotations ont été proposées avec assistance IA. Leur relecture automatique ne
-            remplace pas une validation humaine. Les scores restent ceux de la version, du modèle et
-            des paramètres enregistrés.
+            {' '}
+            {t(
+              'Les annotations ont été proposées avec assistance IA. Leur relecture automatique ne remplace pas une validation humaine. Les scores restent ceux de la version, du modèle et des paramètres enregistrés.',
+            )}{' '}
           </p>
         </details>
       </section>
@@ -323,192 +385,232 @@ function HistoricalEvaluation({ report, analysis }) {
       {counts && (
         <section
           className="panel evaluation-panel metric-explainer"
-          aria-label="Comprendre les métriques"
+          aria-label={t('Comprendre les métriques')}
         >
           <div className="evaluation-title">
             <div>
-              <p className="group-label">D’OÙ VIENNENT LES POURCENTAGES ?</p>
-              <h2>Lire les résultats en nombres de cas</h2>
+              <p className="group-label">{t('D’OÙ VIENNENT LES POURCENTAGES ?')}</p>
+              <h2>{t('Lire les résultats en nombres de cas')}</h2>
             </div>
-            <div className="segmented metric-method" role="group" aria-label="Méthode à expliquer">
+            <div
+              className="segmented metric-method"
+              role="group"
+              aria-label={t('Méthode à expliquer')}
+            >
               <button
                 className={method === 'system' ? 'selected' : ''}
                 aria-pressed={method === 'system'}
                 onClick={() => setMethod('system')}
               >
-                Système
+                {' '}
+                {t('Système')}{' '}
               </button>
               <button
                 className={method === 'baseline' ? 'selected' : ''}
                 aria-pressed={method === 'baseline'}
                 onClick={() => setMethod('baseline')}
               >
-                Prompt simple
+                {' '}
+                {t('Prompt simple')}{' '}
               </button>
             </div>
           </div>
           <div className="confusion-grid">
             <div>
               <strong>{counts.tp}</strong>
-              <span>cas positifs signalés</span>
-              <small>Vrais positifs : le cas positif est signalé.</small>
+              <span>{t('cas positifs signalés')}</span>
+              <small>{t('Vrais positifs : le cas positif est signalé.')}</small>
             </div>
             <div>
               <strong>{counts.fp}</strong>
-              <span>fausses alertes</span>
-              <small>Faux positifs : le cas est signalé à tort.</small>
+              <span>{t('fausses alertes')}</span>
+              <small>{t('Faux positifs : le cas est signalé à tort.')}</small>
             </div>
             <div>
               <strong>{counts.fn}</strong>
-              <span>cas positifs manqués</span>
-              <small>Faux négatifs : aucun point n’est signalé.</small>
+              <span>{t('cas positifs manqués')}</span>
+              <small>{t('Faux négatifs : aucun point n’est signalé.')}</small>
             </div>
             <div>
               <strong>{counts.tn}</strong>
-              <span>cas négatifs non signalés</span>
-              <small>Vrais négatifs : pas de fausse alerte.</small>
+              <span>{t('cas négatifs non signalés')}</span>
+              <small>{t('Vrais négatifs : pas de fausse alerte.')}</small>
             </div>
           </div>
           <dl className="metric-definitions">
             <div>
               <dt>
-                Précision <strong>{percent(counts.precision)}</strong>
+                {' '}
+                {t('Précision')} <strong>{percent(counts.precision)}</strong>
               </dt>
               <dd>
-                Parmi les {counts.signaled} cas signalés, combien devaient l’être ?
+                {' '}
+                {t('Parmi les')} {counts.signaled} {t('cas signalés, combien devaient l’être ?')}{' '}
                 <code>
                   {counts.tp} / ({counts.tp} + {counts.fp}) = {percent(counts.precision)}
-                </code>
-                Elle indique la proportion de signalements justifiés dans ce jeu.
+                </code>{' '}
+                {t('Elle indique la proportion de signalements justifiés dans ce jeu.')}{' '}
               </dd>
             </div>
             <div>
               <dt>
-                Rappel <strong>{percent(counts.recall)}</strong>
+                {' '}
+                {t('Rappel')} <strong>{percent(counts.recall)}</strong>
               </dt>
               <dd>
-                Parmi les {counts.expectedPositive} cas positifs, combien sont retrouvés ?
+                {' '}
+                {t('Parmi les')} {counts.expectedPositive}{' '}
+                {t('cas positifs, combien sont retrouvés ?')}{' '}
                 <code>
                   {counts.tp} / ({counts.tp} + {counts.fn}) = {percent(counts.recall)}
-                </code>
-                Il rend visibles les oublis du système.
+                </code>{' '}
+                {t('Il rend visibles les oublis du système.')}{' '}
               </dd>
             </div>
             <div>
               <dt>
-                F1 <strong>{percent(counts.f1)}</strong>
+                {' '}
+                {t('F1')} <strong>{percent(counts.f1)}</strong>
               </dt>
               <dd>
-                Une mesure qui combine précision et rappel.
-                <code>2 × précision × rappel / (précision + rappel)</code>Elle diminue si l’une des
-                deux mesures est faible ; elle ne choisit pas le compromis à la place de
-                l’utilisateur.
+                {' '}
+                {t('Une mesure qui combine précision et rappel.')}{' '}
+                <code>{t('2 × précision × rappel / (précision + rappel)')}</code>
+                {t(
+                  'Elle diminue si l’une des deux mesures est faible ; elle ne choisit pas le compromis à la place de l’utilisateur.',
+                )}{' '}
               </dd>
             </div>
           </dl>
           <details className="metric-details">
             <summary>
-              Pourquoi ne pas donner uniquement le pourcentage de bonnes décisions ?
+              {' '}
+              {t('Pourquoi ne pas donner uniquement le pourcentage de bonnes décisions ?')}{' '}
             </summary>
             <p>
-              La justesse globale, ou accuracy, vaut ici ({counts.tp} + {counts.tn}) /{' '}
-              {counts.total} = <strong>{percent(counts.accuracy)}</strong>. Elle mélange cas
-              positifs et négatifs. Un système qui ne signale jamais rien réussirait déjà 29 cas sur
-              50, soit 58 %, tout en manquant les 21 changements. C’est pourquoi nous affichons
-              précision et rappel séparément.
+              {' '}
+              {t('La justesse globale, ou accuracy, vaut ici (')}
+              {counts.tp} + {counts.tn}) / {counts.total} ={' '}
+              <strong>{percent(counts.accuracy)}</strong>
+              {t(
+                '. Elle mélange cas positifs et négatifs. Un système qui ne signale jamais rien réussirait déjà 29 cas sur 50, soit 58 %, tout en manquant les 21 changements. C’est pourquoi nous affichons précision et rappel séparément.',
+              )}{' '}
             </p>
           </details>
           <details className="metric-details">
-            <summary>Comment lire l’intervalle de confiance à 95 % ?</summary>
+            <summary>{t('Comment lire l’intervalle de confiance à 95 % ?')}</summary>
             <p>
-              Pour cette précision, l’intervalle de Wilson est{' '}
-              {selected.precisionCI?.map(percent).join(' – ')}. Il montre que l’estimation reste
-              incertaine avec peu de signalements. Il ne signifie pas que chaque alerte est fiable à
-              95 % et ne corrige ni les annotations discutables, ni le biais des cas synthétiques.
+              {' '}
+              {t('Pour cette précision, l’intervalle de Wilson est')}{' '}
+              {selected.precisionCI?.map(percent).join(' – ')}
+              {t(
+                '. Il montre que l’estimation reste incertaine avec peu de signalements. Il ne signifie pas que chaque alerte est fiable à 95 % et ne corrige ni les annotations discutables, ni le biais des cas synthétiques.',
+              )}{' '}
             </p>
             <p>
-              La borne basse du système est de 74,2 %. Cette expérience ne permet donc pas
-              d’affirmer qu’un seuil de 80 % est garanti.
+              {' '}
+              {t(
+                'La borne basse du système est de 74,2 %. Cette expérience ne permet donc pas d’affirmer qu’un seuil de 80 % est garanti.',
+              )}{' '}
             </p>
           </details>
           <details className="metric-details">
-            <summary>Que signifient latence, tokens et coût ?</summary>
+            <summary>{t('Que signifient latence, tokens et coût ?')}</summary>
             <p>
-              La latence médiane sépare les cas en deux moitiés : une moitié prend moins de temps,
-              l’autre davantage. Elle inclut les attentes observées ; ce n’est pas un délai garanti
-              pour un scénario complet.
+              {' '}
+              {t(
+                'La latence médiane sépare les cas en deux moitiés : une moitié prend moins de temps, l’autre davantage. Elle inclut les attentes observées ; ce n’est pas un délai garanti pour un scénario complet.',
+              )}{' '}
             </p>
             <p>
-              Les tokens sont les unités de texte comptées par le modèle. Pour cette méthode :{' '}
-              {selected.inputTokens?.toLocaleString('fr-FR')} en entrée,{' '}
-              {selected.outputTokens?.toLocaleString('fr-FR')} en sortie. Le coût estimé se calcule
-              séparément pour l’entrée et la sortie à partir d’un tarif daté ; il ne correspond pas
-              nécessairement à une facture.
+              {' '}
+              {t(
+                'Les tokens sont les unités de texte comptées par le modèle. Pour cette méthode :',
+              )}{' '}
+              {selected.inputTokens?.toLocaleString(language === 'en' ? 'en-GB' : 'fr-FR')}{' '}
+              {t('en entrée,')}{' '}
+              {selected.outputTokens?.toLocaleString(language === 'en' ? 'en-GB' : 'fr-FR')}{' '}
+              {t(
+                'en sortie. Le coût estimé se calcule séparément pour l’entrée et la sortie à partir d’un tarif daté ; il ne correspond pas nécessairement à une facture.',
+              )}{' '}
             </p>
           </details>
         </section>
       )}
 
       <section className="panel evaluation-panel">
-        <p className="group-label">PLUSIEURS VÉRIFICATIONS, PLUSIEURS QUESTIONS</p>
-        <h2>Ce que les autres tests permettent de conclure</h2>
+        <p className="group-label">{t('PLUSIEURS VÉRIFICATIONS, PLUSIEURS QUESTIONS')}</p>
+        <h2>{t('Ce que les autres tests permettent de conclure')}</h2>
         <div className="test-scope-list">
           <article>
-            <h3>Tests du code et des parcours</h3>
+            <h3>{t('Tests du code et des parcours')}</h3>
             <p>
-              Vérifient le découpage des scènes, les citations, les limites d’import, les réglages,
-              la sauvegarde et les boutons. Des fournisseurs simulés rendent ces contrôles
-              reproductibles. Un test logiciel réussi ne prouve pas que le LLM comprend correctement
-              un scénario.
+              {' '}
+              {t(
+                'Vérifient le découpage des scènes, les citations, les limites d’import, les réglages, la sauvegarde et les boutons. Des fournisseurs simulés rendent ces contrôles reproductibles. Un test logiciel réussi ne prouve pas que le LLM comprend correctement un scénario.',
+              )}{' '}
             </p>
             <code>npm test · scripts/check-*.mjs</code>
           </article>
           <article>
             <h3>
-              Questions sur Valkaama{' '}
+              {' '}
+              {t('Questions sur Valkaama')}{' '}
               <Badge tone={qaComplete ? 'mint' : 'amber'}>
-                {qaComplete ? 'Exécution complète' : 'Comparaison incomplète'}
+                {qaComplete ? t('Exécution complète') : t('Comparaison incomplète')}
               </Badge>
             </h3>
             {qa?.model && (
               <p className="body-note">
-                Profil QA : <code>{qa.model}</code>. Cette expérience est distincte du benchmark de
-                continuité.
+                {' '}
+                {t('Profil QA :')} <code>{qa.model}</code>
+                {t('. Cette expérience est distincte du benchmark de continuité.')}{' '}
               </p>
             )}
             <p>
-              {qaFinished} / {qaPlanned} questions disposent des deux sorties nécessaires. Les
-              questions utilisent de vrais passages du scénario, dont quatre informations absentes.
-              Cette expérience mesure une réponse, une référence et un contrat de format ; elle ne
-              mesure pas les faux raccords.
+              {qaFinished} / {qaPlanned}{' '}
+              {t(
+                'questions disposent des deux sorties nécessaires. Les questions utilisent de vrais passages du scénario, dont quatre informations absentes. Cette expérience mesure une réponse, une référence et un contrat de format ; elle ne mesure pas les faux raccords.',
+              )}{' '}
             </p>
             {qaComplete ? (
               <p>
-                Prompt simple : {qa.baseline.passed} / {qaPlanned}. Avec recherche :{' '}
-                {qa.system.passed} / {qaPlanned}. La grille reste à faire relire.
+                {' '}
+                {t('Prompt simple :')} {qa.baseline.passed} / {qaPlanned}
+                {t('. Avec recherche :')} {qa.system.passed} / {qaPlanned}
+                {t('. La grille reste à faire relire.')}{' '}
               </p>
             ) : (
               <p>
-                Les erreurs de quota ou de connexion empêchent une comparaison complète. Aucun score
-                global de qualité n’est revendiqué sur cet essai.
+                {' '}
+                {t(
+                  'Les erreurs de quota ou de connexion empêchent une comparaison complète. Aucun score global de qualité n’est revendiqué sur cet essai.',
+                )}{' '}
               </p>
             )}
           </article>
           <article>
-            <h3>Recherche de passages</h3>
+            <h3>{t('Recherche de passages')}</h3>
             <p>
-              {report.retrieval?.n ?? 12} requêtes de référence dans Valkaama. Le rappel à cinq
-              résultats indique si la bonne scène apparaît parmi les cinq premiers passages.{' '}
-              {report.retrieval && <>Résultat enregistré : {percent(report.retrieval.value)}.</>}{' '}
-              Cela ne vérifie pas la réponse générée ensuite.
+              {report.retrieval?.n ?? 12}{' '}
+              {t(
+                'requêtes de référence dans Valkaama. Le rappel à cinq résultats indique si la bonne scène apparaît parmi les cinq premiers passages.',
+              )}{' '}
+              {report.retrieval && (
+                <>
+                  {t('Résultat enregistré :')} {percent(report.retrieval.value)}.
+                </>
+              )}{' '}
+              {t('Cela ne vérifie pas la réponse générée ensuite.')}{' '}
             </p>
           </article>
           <article>
-            <h3>Essais adversariaux</h3>
+            <h3>{t('Essais adversariaux')}</h3>
             <p>
-              Des demandes essaient de détourner les instructions ou d’obtenir un secret. Les trois
-              essais enregistrés n’ont pas réussi à le faire ; trois exemples ne prouvent pas une
-              résistance générale.
+              {' '}
+              {t(
+                'Des demandes essaient de détourner les instructions ou d’obtenir un secret. Les trois essais enregistrés n’ont pas réussi à le faire ; trois exemples ne prouvent pas une résistance générale.',
+              )}{' '}
             </p>
           </article>
         </div>
@@ -516,28 +618,32 @@ function HistoricalEvaluation({ report, analysis }) {
 
       <div className="evaluation-columns">
         <section className="panel">
-          <h2>Ce qui est vérifié dans une citation</h2>
+          <h2>{t('Ce qui est vérifié dans une citation')}</h2>
           <p>
-            Le code contrôle que les mots existent dans la scène et que les identifiants sont
-            autorisés. Le modèle peut encore mal interpréter un passage réel. L’utilisateur doit
-            donc lire les deux extraits avant de décider.
+            {' '}
+            {t(
+              'Le code contrôle que les mots existent dans la scène et que les identifiants sont autorisés. Le modèle peut encore mal interpréter un passage réel. L’utilisateur doit donc lire les deux extraits avant de décider.',
+            )}{' '}
           </p>
         </section>
         <section className="panel">
-          <h2>Dernière exécution du projet</h2>
+          <h2>{t('Dernière exécution du projet')}</h2>
           {analysis ? (
             <>
               <p>
-                <code>{analysis.model}</code> · prompt {analysis.promptVersion}
+                <code>{analysis.model}</code> {t('· prompt')} {analysis.promptVersion}
               </p>
               <p>
-                {analysis.usage.calls} appels · {analysis.usage.inputTokens.toLocaleString('fr-FR')}{' '}
-                tokens d’entrée · {seconds(analysis.milliseconds / 1000)}.
+                {analysis.usage.calls} {t('appels ·')}{' '}
+                {analysis.usage.inputTokens.toLocaleString(language === 'en' ? 'en-GB' : 'fr-FR')}{' '}
+                {t('tokens d’entrée ·')} {seconds(analysis.milliseconds / 1000)}.
               </p>
-              <p>{analysis.rejectedEvidence} citation(s) ou résultat(s) non conformes écartés.</p>
+              <p>
+                {analysis.rejectedEvidence} {t('citation(s) ou résultat(s) non conformes écartés.')}
+              </p>
             </>
           ) : (
-            <p>Aucune analyse dans ce projet.</p>
+            <p>{t('Aucune analyse dans ce projet.')}</p>
           )}
         </section>
       </div>

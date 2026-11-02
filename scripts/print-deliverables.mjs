@@ -150,7 +150,7 @@ ${header('Fiche système', 'IA générative avec RAG pour relire la continuité 
 <p>Segmentation ; extraction JSON par lots de trois scènes ; contrôle des citations ; suivi des états et de la possession ; recherche BM25 ; comparaison LLM ; revue humaine. Questions : recherche puis réponse citée ou abstention. Déclenché par l’utilisateur, sans choix autonome d’outils ni action extérieure.</p>
 <h2>Modèles et reproductibilité</h2>
 <p>Profil historique : <span class="mono">openai/gpt-oss-20b</span> via Groq, température 0, raisonnement low, Apache 2.0. Expérience contrôlée : <span class="mono">${html(c?.model?.id || 'non mesurée')}</span>, ${html(c?.model?.license || 'licence à confirmer')}, identique pour système et baseline. QA : profil 120B séparé.</p>
-<p>Ollama en option locale ; petits modèles non validés pour une extraction fiable. Identifiants API sans snapshot immuable. Les analyses conservent modèle, réglages et prompts ; changer la configuration impose une nouvelle mesure.</p>
+<p>Ollama local non validé pour l’extraction. Identifiants API mutables ; configuration consignée. Interface FR/EN ; profil anglais contrôlé sur un exemple, hors benchmark. Les scores concernent le français.</p>
 <p class="small">${html(summary.inferenceProfileShort)}</p>
 </section><section>
 <h2>Données et droits</h2>

@@ -120,7 +120,7 @@ export const guideChapters = [
       {
         title: 'Choisir un modèle selon l’usage',
         paragraphs: [
-          'La tâche demande du texte structuré, des citations exactes en anglais et des explications en français. La fidélité des états, actions et négations compte autant que le format JSON. Les fonctions de vision, d’audio et d’outillage autonome ne sont pas nécessaires à ce traitement.',
+          'La tâche demande du texte structuré et des citations exactes dans leur langue d’origine. Les explications peuvent être générées en français ou en anglais. Le profil mesuré conserve ses réponses françaises. Le profil anglais english-output-v1 a passé un contrôle opérationnel sur deux scènes synthétiques, mais ne dispose pas encore d’un benchmark de qualité comparable. La fidélité des états, actions et négations compte autant que le format JSON.',
           'Le profil distant mesuré utilise openai/gpt-oss-120b sur Groq : API compatible avec les sorties JSON, licence Apache-2.0 et absence de poids à charger sur le poste. Le 120B a été retenu après épuisement du quota 20B. La comparaison publiée oppose le système au prompt simple avec le même 120B ; elle ne démontre pas une supériorité du 120B sur le 20B.',
           'Pour un traitement local, les candidats ci-dessous ont été retenus à partir des fiches des éditeurs et du catalogue Ollama, consultés le 2 novembre 2026. Ils ne sont ni installés par l’application ni évalués dans le rapport actuel. Les poids indiqués excluent le cache de contexte et la mémoire du moteur.',
         ],

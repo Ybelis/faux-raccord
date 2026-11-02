@@ -42,7 +42,11 @@ et décisions. Il n’y a pas de synchronisation entre les membres.
 La **[documentation utilisateur](http://127.0.0.1:4173/#/docs/utiliser)** rassemble
 l’utilisation, les données et le fonctionnement, les résultats et tests,
 ainsi que les limites et la confidentialité. Sa source unique est
-[data/project-guide.js](data/project-guide.js).
+[data/project-guide.js](data/project-guide.js), avec sa traduction dans
+[data/project-guide.en.js](data/project-guide.en.js). Le sélecteur Français / English
+change l’interface et la documentation utilisateur ; le choix est conservé sur
+cet appareil. Les scénarios, citations et résultats déjà enregistrés gardent
+leur langue d’origine. Les PDF de rendu restent en français.
 
 ```text
 Scénario → scènes → extraction LLM → contrôle des citations
@@ -55,6 +59,14 @@ dans `worker/`. `npm run explain` déroule un exemple avec des sorties de modèl
 **simulées et annoncées** : il explique le code, sans mesurer un LLM.
 
 ## Choix des modèles
+
+Les nouvelles réponses suivent la langue choisie dans l’interface. Le profil
+anglais `english-output-v1` est versionné dans `worker/response-language.js` ;
+il ne traduit jamais les preuves et n’hérite pas des scores du profil français.
+Changer la langue n’altère pas les analyses déjà enregistrées.
+Une question et une analyse en anglais ont été exécutées sur deux scènes synthétiques :
+[contrôle opérationnel réel](eval/english-smoke.json). Ce contrôle ne mesure pas
+la précision et le rappel du profil anglais.
 
 Le profil mesuré utilise `openai/gpt-oss-120b` sur Groq : sorties JSON,
 inférence distante sans charger les poids sur le poste, licence Apache-2.0.
@@ -128,6 +140,14 @@ Le groupe comprend trois étudiants. Chaque membre doit contribuer réellement e
 pouvoir expliquer l’ensemble du système. Les prochains commits doivent refléter
 le travail accompli sous l’identité de leur auteur. L’historique ne doit pas être
 réattribué pour simuler une répartition.
+
+Avant le rendu, il reste à faire réellement :
+
+- [ ] Faire essayer le produit à une personne qui écrit ou relit des scénarios, conserver son retour et convenir d’un critère d’utilité.
+- [ ] Relire les 19 transitions du corrigé (15 erreurs et quatre changements expliqués), puis noter relecteur, date et désaccords. Confirmer seulement les sept alertes ne valide pas tout le corrigé.
+- [ ] Partager le dépôt avec les deux autres membres et le professeur ; renseigner les noms, rôles et contact, et identifier les contributions réelles au code de chacun.
+- [ ] Vérifier que chacun sait lancer l’application et expliquer le pipeline, les métriques et les limites ; répéter la démonstration de cinq minutes avec l’échec E03.
+- [ ] Emporter la vidéo de secours en local. Sa copie dans `deliverables/faux-raccord/` est hors du dépôt applicatif ; elle n’apparaît pas automatiquement sur GitHub.
 
 | Outil                                                       | Usage déclaré                                                                              |
 | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------ |

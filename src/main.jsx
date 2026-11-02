@@ -8,6 +8,7 @@ import {
   ChevronDown,
   FileText,
   Library,
+  Languages,
   LoaderCircle,
   Play,
   Settings2,
@@ -27,6 +28,7 @@ import {
   Evaluation,
 } from './components/Workspace.jsx';
 import { readModelSelection, persistModelSelection } from './model-settings.js';
+import { LanguageProvider, useI18n } from './i18n-context.jsx';
 import './styles.css';
 
 const STEPS = [
@@ -60,6 +62,7 @@ async function api(path, body) {
 }
 
 function App() {
+  const { language, setLanguage, t } = useI18n();
   const [project, setProject] = useState(null);
   const [saved, setSaved] = useState([]);
   const [samples, setSamples] = useState([]);
@@ -255,7 +258,7 @@ function App() {
       const response = await fetch('/api/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ scenes: selectedScenes, ...selection, consent }),
+        body: JSON.stringify({ scenes: selectedScenes, ...selection, consent, language }),
         signal: abort.current.signal,
       });
       if (!response.ok) throw new Error((await response.json()).error);
@@ -325,7 +328,12 @@ function App() {
     setError('');
     setAnswer(null);
     try {
-      const result = await api('ask', { scenes: scenes.slice(0, 60), question, ...selection });
+      const result = await api('ask', {
+        scenes: scenes.slice(0, 60),
+        question,
+        ...selection,
+        language,
+      });
       if (requestId === questionRequest.current) setAnswer(result);
     } catch (error) {
       if (requestId === questionRequest.current) setError(safeText(error));
@@ -341,7 +349,11 @@ function App() {
     setModal(null);
   }
   function exportReport() {
-    downloadFile(`${project.title}-rapport.md`, reportMarkdown(project), 'text/markdown');
+    downloadFile(
+      `${project.title}-${language === 'en' ? 'report' : 'rapport'}.md`,
+      reportMarkdown(project, language),
+      'text/markdown',
+    );
     setModal(null);
   }
   function dismissWelcome() {
@@ -414,7 +426,7 @@ function App() {
   return (
     <div className={`app-shell ${tourStep !== null ? 'tour-running' : ''}`}>
       <a className="skip-link" href="#content">
-        Aller au contenu
+        {t('Aller au contenu')}
       </a>
       <aside className="sidebar">
         <a
@@ -424,17 +436,17 @@ function App() {
             event.preventDefault();
             navigate('script');
           }}
-          aria-label="Faux Raccord, accueil"
+          aria-label={t('Faux Raccord, accueil')}
         >
           <span className="brand-mark" aria-hidden="true">
             F<span>/</span>R
           </span>
           <span>
-            Faux Raccord<small>Continuité du scénario</small>
+            Faux Raccord<small>{t('Continuité du scénario')}</small>
           </span>
         </a>
-        <div className="sidebar-caption">VOTRE PARCOURS</div>
-        <nav aria-label="Navigation principale">
+        <div className="sidebar-caption">{t('VOTRE PARCOURS')}</div>
+        <nav aria-label={t('Navigation principale')}>
           {STEPS.map((step, index) => (
             <button
               key={step.id}
@@ -444,8 +456,8 @@ function App() {
             >
               <span className="step-number">0{index + 1}</span>
               <span>
-                <strong>{step.label}</strong>
-                <small>{step.description}</small>
+                <strong>{t(step.label)}</strong>
+                <small>{t(step.description)}</small>
               </span>
               {step.id === 'review' && pending > 0 && <span className="nav-count">{pending}</span>}
             </button>
@@ -454,7 +466,7 @@ function App() {
         <div className="sidebar-bottom">
           <button className="nav-utility" onClick={startTour} disabled={busy || tourStep !== null}>
             <Play size={17} />
-            Guide interactif
+            {t('Guide interactif')}
           </button>
           <button
             className="nav-utility"
@@ -463,12 +475,12 @@ function App() {
             aria-current={tab === 'docs' ? 'page' : undefined}
           >
             <BookOpen size={17} />
-            Documentation
+            {t('Documentation')}
           </button>
           <div className="sidebar-footnote">
-            Analyse du texte.
+            {t('Analyse du texte.')}
             <br />
-            Décision de l’équipe.
+            {t('Décision de l’équipe.')}
           </div>
         </div>
       </aside>
@@ -480,31 +492,49 @@ function App() {
             disabled={busy || tourStep !== null}
           >
             <FileText size={18} />
-            <span>{project?.title || 'Ouverture…'}</span>
+            <span>{project?.title || t('Ouverture…')}</span>
             <ChevronDown size={16} />
           </button>
           <div className="topbar-actions">
             <span className={`save-state ${saveStatus === 'error' ? 'error' : ''}`}>
               <span className="status-dot" />
-              {tourStep !== null
-                ? 'Copie de démonstration'
-                : saveStatus === 'saved'
-                  ? 'Enregistré sur cet appareil'
-                  : saveStatus === 'error'
-                    ? 'Sauvegarde indisponible'
-                    : 'Enregistrement…'}
+              {t(
+                tourStep !== null
+                  ? 'Copie de démonstration'
+                  : saveStatus === 'saved'
+                    ? 'Enregistré sur cet appareil'
+                    : saveStatus === 'error'
+                      ? 'Sauvegarde indisponible'
+                      : 'Enregistrement…',
+              )}
             </span>
+            <label className="language-picker">
+              <Languages size={16} aria-hidden="true" />
+              <span className="sr-only">{t('Langue')}</span>
+              <select
+                aria-label={t('Langue')}
+                value={language}
+                onChange={(event) => setLanguage(event.target.value)}
+              >
+                <option value="fr" lang="fr">
+                  FR
+                </option>
+                <option value="en" lang="en">
+                  EN
+                </option>
+              </select>
+            </label>
             <label className="theme-picker">
               <Sun size={16} />
-              <span className="sr-only">Thème</span>
+              <span className="sr-only">{t('Thème')}</span>
               <select
-                aria-label="Thème"
+                aria-label={t('Thème')}
                 value={theme}
                 onChange={(event) => setTheme(event.target.value)}
               >
                 {Object.entries(THEME_LABELS).map(([value, label]) => (
                   <option key={value} value={value}>
-                    {label}
+                    {t(label)}
                   </option>
                 ))}
               </select>
@@ -512,8 +542,8 @@ function App() {
             <button
               className="icon-button"
               onClick={() => setModal('settings')}
-              aria-label="Réglages du moteur"
-              title="Réglages du moteur"
+              aria-label={t('Réglages du moteur')}
+              title={t('Réglages du moteur')}
             >
               <Settings2 size={19} />
             </button>
@@ -523,11 +553,11 @@ function App() {
           {error && (
             <div className="notice error-notice" role="alert">
               <TriangleAlert size={19} />
-              <span>{error}</span>
+              <span>{t(error)}</span>
               <button
                 className="icon-button"
                 onClick={() => setError('')}
-                aria-label="Fermer l’erreur"
+                aria-label={t('Fermer l’erreur')}
               >
                 <X size={18} />
               </button>
@@ -540,18 +570,20 @@ function App() {
               onEvaluation={() => navigate('evaluation')}
             />
           ) : !project ? (
-            <Empty icon={LoaderCircle} title="Ouverture du projet">
-              Chargement du scénario et de vos dernières décisions.
+            <Empty icon={LoaderCircle} title={t('Ouverture du projet')}>
+              {t('Chargement du scénario et de vos dernières décisions.')}
             </Empty>
           ) : (
             <>
               <div className="page-heading">
                 <div>
                   <p className="page-index">
-                    {currentStep >= 0 ? `ÉTAPE 0${currentStep + 1} / 03` : 'DOCUMENTATION'}
+                    {currentStep >= 0
+                      ? t('ÉTAPE {step} / 03', { step: `0${currentStep + 1}` })
+                      : t('DOCUMENTATION')}
                   </p>
-                  <h1>{heading}</h1>
-                  <p className="page-description">{description}</p>
+                  <h1>{t(heading)}</h1>
+                  <p className="page-description">{t(description)}</p>
                 </div>
                 <div className="page-actions">
                   {tab === 'script' && (
@@ -561,7 +593,7 @@ function App() {
                       onClick={() => setModal('sources')}
                     >
                       <Library size={17} />
-                      Bibliothèque
+                      {t('Bibliothèque')}
                     </button>
                   )}
                   <button
@@ -570,16 +602,16 @@ function App() {
                     onClick={() => setModal('export')}
                   >
                     <ArrowDownToLine size={17} />
-                    Exporter
+                    {t('Exporter')}
                   </button>
                 </div>
               </div>
               {tourStep !== null && (
                 <div className="training-banner">
                   <Play size={16} />
-                  <span>Guide en cours · vous travaillez sur une copie de l’exemple.</span>
+                  <span>{t('Guide en cours · vous travaillez sur une copie de l’exemple.')}</span>
                   <button className="text-button" onClick={closeTour}>
-                    Quitter
+                    {t('Quitter')}
                   </button>
                 </div>
               )}
@@ -596,9 +628,9 @@ function App() {
                     }}
                   />
                   <div className="step-footer">
-                    <p>Le découpage correspond à votre document ? Passez à l’analyse.</p>
+                    <p>{t('Le découpage correspond à votre document ? Passez à l’analyse.')}</p>
                     <button className="button primary" onClick={() => navigate('analysis')}>
-                      Configurer l’analyse
+                      {t('Configurer l’analyse')}
                       <ArrowRight size={17} />
                     </button>
                   </div>
@@ -666,13 +698,13 @@ function App() {
             </>
           )}
           <footer className="workspace-footer">
-            <span>Faux Raccord · Aide à la relecture de scénarios</span>
+            <span>{t('Faux Raccord · Aide à la relecture de scénarios')}</span>
             <button
               className="text-button"
               onClick={() => openDocumentation('fonctionnement')}
               disabled={tourStep !== null}
             >
-              Méthode et limites
+              {t('Méthode et limites')}
               <ArrowRight size={14} />
             </button>
           </footer>
@@ -718,11 +750,15 @@ function App() {
       {toast && (
         <div className="toast" role="status">
           <CheckCircle2 size={18} />
-          {toast}
+          {t(toast)}
         </div>
       )}
     </div>
   );
 }
 
-createRoot(document.getElementById('root')).render(<App />);
+createRoot(document.getElementById('root')).render(
+  <LanguageProvider>
+    <App />
+  </LanguageProvider>,
+);
