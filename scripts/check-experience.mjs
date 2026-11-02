@@ -197,6 +197,40 @@ try {
     'Provider-specific settings, advanced parameters, compatibility fixture, reload persistence and dialog focus restoration',
   );
 
+  await navigate(page, 'Analyse');
+  await expect(page.getByRole('spinbutton', { name: 'Nombre de scènes' })).toHaveValue('12');
+  await page.getByRole('spinbutton', { name: 'À partir de la scène' }).fill('54');
+  await expect(page.getByRole('spinbutton', { name: 'Nombre de scènes' })).toHaveValue('3');
+  await expect(page.locator('.analysis-form')).toContainText('scènes 54 à 56 · 3 sur 56');
+  checks.push(
+    'Moving the starting scene near the document end reduces the requested scope from 12 to the 3 remaining scenes',
+  );
+
+  await page.getByRole('button', { name: 'Réglages du moteur', exact: true }).click();
+  await settings.getByRole('button', { name: /Ollama/ }).click();
+  await settings.getByRole('button', { name: 'Revenir au projet', exact: true }).click();
+  const localConsent = page.getByRole('checkbox', { name: /traiter ces scènes en local/ });
+  await localConsent.check();
+  await expect(localConsent).toBeChecked();
+  await page.getByRole('button', { name: 'Réglages du moteur', exact: true }).click();
+  await settings.getByRole('button', { name: /Groq/ }).click();
+  await settings.getByRole('button', { name: 'Revenir au projet', exact: true }).click();
+  const remoteConsent = page.getByRole('checkbox', {
+    name: /J’autorise l’envoi des scènes sélectionnées à Groq/,
+  });
+  await expect(remoteConsent).not.toBeChecked();
+  await remoteConsent.check();
+  await page.getByRole('button', { name: 'Réglages du moteur', exact: true }).click();
+  await settings
+    .getByRole('combobox', { name: 'Modèles du catalogue Groq' })
+    .selectOption('openai/gpt-oss-120b');
+  await settings.getByRole('button', { name: 'Revenir au projet', exact: true }).click();
+  await expect(remoteConsent).not.toBeChecked();
+  await expect(page.getByRole('button', { name: 'Analyser 3 scènes', exact: true })).toBeDisabled();
+  checks.push(
+    'Changing provider from Ollama to Groq, or changing the model, clears the previous analysis consent',
+  );
+
   await page.locator('.project-switch').click();
   await page.getByRole('button', { name: /Les Heures Creuses/ }).click();
   await navigate(page, 'Relecture');

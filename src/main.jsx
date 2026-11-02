@@ -119,6 +119,10 @@ function App() {
   useEffect(() => {
     if (system) persistModelSelection(selection);
   }, [selection, system]);
+  // Une autorisation de traitement local ne vaut pas accord d'envoi à Groq.
+  useEffect(() => {
+    setConsent(false);
+  }, [selection.provider, selection.model]);
   useEffect(() => {
     // Le guide modifie une copie jetable, jamais le projet sauvegardé.
     if (!project || tourStep !== null) return;
@@ -570,6 +574,7 @@ function App() {
                   scope={scope}
                   onStart={(value) => {
                     setStartScene(value);
+                    setScope((current) => Math.min(current, scenes.length - value + 1));
                     setReplaceConsent(false);
                   }}
                   onScope={(value) => {
