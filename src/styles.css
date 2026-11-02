@@ -669,6 +669,64 @@ main {
   color: var(--text);
   font-weight: 600;
 }
+.document-purpose {
+  max-width: 780px;
+  margin-bottom: 16px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.7;
+}
+.document-next-action {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px 24px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+.document-next-action > div {
+  flex: 1 1 260px;
+}
+.document-next-action strong {
+  font-size: 14px;
+}
+.document-next-action p {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.7;
+}
+.analysis-layout.has-result .analysis-aside {
+  order: -1;
+}
+.analysis-form-title {
+  margin-bottom: 22px;
+  font-size: 16px;
+}
+.decision-help {
+  margin: 16px 0;
+  color: var(--text);
+  font-size: 12px;
+  line-height: 1.8;
+}
+.continuity-example {
+  margin-bottom: 24px;
+  padding: 16px 18px;
+  border-left: 2px solid var(--accent);
+  background: var(--canvas);
+}
+.continuity-example strong {
+  font-family: Georgia, serif;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+.continuity-example p {
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.7;
+}
 .provenance {
   border-top: 1px solid var(--line);
   font-size: 12px;
@@ -849,15 +907,6 @@ summary {
 }
 .scene-alert-link > svg:last-child {
   margin-left: auto;
-}
-.step-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  margin-top: 22px;
-  font-size: 12px;
-  color: var(--muted);
 }
 .workspace-footer {
   display: flex;
@@ -2699,14 +2748,6 @@ tbody th {
     margin-left: 17px;
     margin-right: 17px;
     width: calc(100% - 34px);
-  }
-  .step-footer {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 13px;
-  }
-  .step-footer p {
-    font-size: 12px;
   }
   .workspace-footer {
     align-items: flex-start;

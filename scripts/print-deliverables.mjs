@@ -1,7 +1,12 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { loadEvaluationReports, evaluationSummary, format } from './write-evaluation-docs.mjs';
+import {
+  loadEvaluationReports,
+  evaluationSummary,
+  format,
+  projectTeam,
+} from './write-evaluation-docs.mjs';
 
 // Les chiffres viennent des rapports mesurés. Ce script ne lance aucun appel
 // au modèle et n'inclut ni variables d'environnement ni contenu de scénario.
@@ -69,7 +74,7 @@ const document = (title, body) =>
 const header = (title, subtitle) =>
   `<header><div class="brand"><strong>FAUX RACCORD</strong><span>${html(referenceDate)}</span></div><h1>${html(title)}</h1><p class="subtitle">${subtitle}</p></header>`;
 const footer = (label, page) =>
-  `<footer><span>${html(label)} · équipe de trois — noms à renseigner</span><span>${page}</span></footer>`;
+  `<footer><span>Faux Raccord · ${html(label)}</span><span>${page}</span></footer>`;
 const metricRow = (label, row) =>
   `<tr><td>${html(label)}</td><td>${row ? `${row.tp} / ${row.fp} / ${row.fn}` : '—'}</td><td>${percentage(row?.precision)}<br><span class="small">${interval(row?.precisionCI95)}</span></td><td>${percentage(row?.recall)}<br><span class="small">${interval(row?.recallCI95)}</span></td><td>${percentage(row?.f1)}</td></tr>`;
 const missed = c?.system?.missedErrorIds || [];
@@ -90,7 +95,7 @@ const evaluation = document(
 <main class="page">
 ${header('Rapport d’évaluation', 'Expérience principale : retrouver quinze faux raccords introduits dans un même scénario')}
 <h2>1. Données, droits et protocole</h2>
-<p><strong>Valkaama</strong>, Tim Baumann d’après Hendrik Behnisch, version ${html(license.originalVersion)} : 56 scènes conservées. L’adaptation pédagogique ajoute 19 accessoires et prépare leur continuité cohérente. <strong>Exactement quinze phrases ultérieures sont ensuite modifiées</strong> pour créer quinze erreurs ; quatre transitions expliquées restent comme contrôles négatifs. L’évaluation couvre S001–S012, où se trouvent toutes les injections. Aucun faux raccord n’est attribué aux auteurs originaux.</p>
+<p><strong>Valkaama</strong>, Tim Baumann d’après Hendrik Behnisch, version ${html(license.originalVersion)} : 56 scènes conservées. L’adaptation d’évaluation ajoute 19 accessoires et prépare leur continuité cohérente. <strong>Exactement quinze phrases ultérieures sont ensuite modifiées</strong> pour créer quinze erreurs ; quatre transitions expliquées restent comme contrôles négatifs. L’évaluation couvre S001–S012, où se trouvent toutes les injections. Aucun faux raccord n’est attribué aux auteurs originaux.</p>
 <p>La <a href="${html(license.originalSourceUrl)}">page officielle de l’auteur</a> annonce la licence <strong>${html(license.license)}</strong>. L’adaptation est attribuée, ses modifications documentées et sa licence identique. Les contrôles vérifient les preuves littérales et que l’annulation des quinze modifications restitue la référence : <strong>${c?.validation?.valid ? 'validation réussie' : 'validation à exécuter ou corriger'}</strong>. Annotations proposées avec assistance IA, relecture humaine non attestée ; jeu de développement visible.</p>
 <p>Le système utilise le pipeline du produit : extraction par lots de trois scènes, contrôle des citations, suivi des états, BM25 puis comparaison LLM. Protocole baseline, même modèle : ${html(summary.baselineProtocolText)}.</p>
 <p class="small">Modèle : <span class="mono">${html(c?.model?.id || 'non mesuré')}</span> via ${html(c?.model?.provider || '—')}, température 0, licence ${html(c?.model?.license || 'à confirmer')}. Pipeline <span class="mono">${html(c?.dataset?.pipelineHash?.slice(0, 12) || 'absent')}</span>.</p>
@@ -129,7 +134,7 @@ ${qaSection}
 <p><strong>Recherche seule :</strong> ${retrieval.n} requêtes lexicales, scène attendue dans les cinq premiers résultats : ${percentage(retrieval.value)}. Cela ne mesure pas la justesse d’une analyse.</p>
 <h2>6. Sécurité, portée et travaux restants</h2>
 <p>${redPassed}/${red.rows.length} essais adversariaux réels résistants aux attaques testées. Citations et identifiants contrôlés ; documents traités comme données ; clé absente des prompts ; sorties non exécutées. Trois essais ne garantissent pas une sécurité générale.</p>
-<p>Le besoin métier et le gain de temps ne sont pas validés. Relecture humaine des annotations à consigner. Objets homonymes, transferts implicites et flashbacks restent difficiles. Aucune modalité image/audio/vidéo n’est revendiquée ; elle est encouragée dans le brief.</p>
+<p>Le besoin métier et le gain de temps ne sont pas validés. Relecture humaine des annotations à consigner. Objets homonymes, transferts implicites et flashbacks restent difficiles. L’analyse porte uniquement sur le texte ; images, audio et vidéo ne sont pas pris en charge.</p>
 <div class="note warning">Une œuvre et des erreurs construites ne suffisent pas à généraliser. Réserver un autre scénario annoté avant de conclure.</div>
 <p class="small rule">Preuves : rapports JSON dans <span class="mono">eval/</span> ; annotations et licence dans <span class="mono">data/controlled-script/</span>. Reproduction sans appel : <span class="mono">node eval/controlled-run.mjs</span>. Les chemins complets figurent dans la version Markdown.</p>
 ${footer('Rapport d’évaluation', '2 / 2')}
@@ -164,7 +169,7 @@ ${header('Fiche système', 'IA générative avec RAG pour relire la continuité 
 <h2>Évaluation disponible</h2>
 <p><strong>${html(summary.primaryStatus)}</strong> ${c?.system ? `Précision sur les alertes des accessoires contrôlés : ${percentage(c.system.precision)} [IC 95 % ${interval(c.system.precisionCI95)}] ; rappel des quinze injections : ${percentage(c.system.recall)} [${interval(c.system.recallCI95)}] ; F1 ${percentage(c.system.f1)}. ${c.system.unannotatedAlertCount} alertes hors périmètre exclues du score et à relire.` : ''}</p>
 <p>Annotations proposées avec assistance IA, relecture humaine non attestée ; jeu visible, œuvre unique, intervalles descriptifs. Les 50 vignettes, 24 questions et 12 recherches sont des expériences distinctes. Sécurité : ${redPassed}/${red.rows.length} essais adversariaux réels, portée limitée. Décision finale humaine.</p>
-<p class="small rule">Responsables et contact : <strong>équipe de trois — à renseigner</strong>. Politique : <span class="mono">docs/use_policy.md</span>. Évaluation et red team : <span class="mono">docs/evaluation_report.md</span>, <span class="mono">docs/red_team_log.md</span>. Guide dans l’application, rubrique « Documentation ». Source et adaptation : <span class="mono">data/controlled-script/license.json</span>.</p>
+<p class="small rule"><strong>${html(projectTeam.names.join(' · '))}</strong>. Contact : <a href="${html(projectTeam.contactUrl)}">issues du dépôt GitHub</a>. Politique : <span class="mono">docs/use_policy.md</span>. Évaluation : <span class="mono">docs/evaluation_report.md</span>. Sources et licence : <span class="mono">data/controlled-script/license.json</span>. Guide utilisateur dans l’application.</p>
 ${footer('Fiche système', '1 / 1')}
 </main>`,
 );
@@ -213,7 +218,7 @@ if (process.argv.includes('--pdf')) {
       );
       if (spacing.some((sheet) => sheet.gap < 8))
         throw new Error(
-          `${name} : le contenu empiète sur le pied de page. Ajuster la mise en page avant le rendu.`,
+          `${name} : le contenu empiète sur le pied de page. Ajuster la mise en page avant l’export.`,
         );
       const pdfPath = `docs/print/${name}.pdf`;
       await page.pdf({
@@ -225,7 +230,7 @@ if (process.argv.includes('--pdf')) {
       const actual = await extractText(new Uint8Array(await readFile(pdfPath)));
       if (actual.totalPages !== expectedPages)
         throw new Error(
-          `${pdfPath} : ${actual.totalPages} pages au lieu de ${expectedPages}. Ajuster la mise en page avant le rendu.`,
+          `${pdfPath} : ${actual.totalPages} pages au lieu de ${expectedPages}. Ajuster la mise en page avant l’export.`,
         );
       console.log(
         `${pdfPath} : ${actual.totalPages} page${actual.totalPages > 1 ? 's' : ''}, vérifiées avec unpdf.`,

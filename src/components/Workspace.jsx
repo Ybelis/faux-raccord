@@ -71,7 +71,7 @@ function AnalysisWarnings({ analysis }) {
   );
 }
 
-export function ScriptWorkspace({ project, activeScene, onScene, onReview }) {
+export function ScriptWorkspace({ project, activeScene, onScene, onReview, onAnalyze }) {
   const { t } = useI18n();
   const [query, setQuery] = useState('');
   const selected = project.scenes.find((scene) => scene.id === activeScene) || project.scenes[0];
@@ -110,6 +110,11 @@ export function ScriptWorkspace({ project, activeScene, onScene, onReview }) {
             </span>
           )}
         </div>
+        <p className="document-purpose">
+          {t(
+            'Faux Raccord compare les passages où un accessoire change d’état ou de propriétaire. Vous relisez les changements signalés ; le texte du scénario reste inchangé.',
+          )}
+        </p>
         <details className="provenance">
           <summary>{t('Provenance et conditions d’utilisation')}</summary>
           <p>{project.description || t('Document ajouté par l’utilisateur.')}</p>
@@ -147,6 +152,35 @@ export function ScriptWorkspace({ project, activeScene, onScene, onReview }) {
             </p>
           ))}
         </details>
+        <div className="document-next-action">
+          <div>
+            <strong>
+              {project.analysis
+                ? t('Un résultat est prêt à consulter')
+                : t('Commencez par vérifier le texte ci-dessous')}
+            </strong>
+            <p>
+              {project.analysis
+                ? t(
+                    '{scenes} scènes analysées · {alerts} points signalés. Vous pouvez les lire sans relancer le modèle.',
+                    {
+                      scenes: project.analysis.analyzedSceneIds.length,
+                      alerts: allAlerts.length,
+                    },
+                  )
+                : t(
+                    'Choisissez ensuite les scènes à analyser. Vous obtiendrez des points à vérifier, accompagnés de leurs passages sources.',
+                  )}
+            </p>
+          </div>
+          <button
+            className="button primary"
+            onClick={project.analysis ? () => onReview() : onAnalyze}
+          >
+            {project.analysis ? t('Voir le résultat') : t('Configurer l’analyse')}
+            <ArrowRight size={17} />
+          </button>
+        </div>
       </section>
       <section
         className="script-workbench panel"
@@ -252,8 +286,9 @@ export function AnalysisWorkspace({
   const analysis = project.analysis;
   const tooLong = selected.reduce((sum, scene) => sum + scene.text.length, 0) > 120000;
   return (
-    <div className="analysis-layout">
+    <div className={`analysis-layout${analysis ? ' has-result' : ''}`}>
       <section className="panel analysis-form">
+        {analysis && <h2 className="analysis-form-title">{t('Relancer une analyse')}</h2>}
         <div className="section-heading">
           <span className="section-number">01</span>
           <div>
@@ -698,6 +733,11 @@ function PointDetail({ alert, project, onDecision, onScene, onNext, showNext }) 
         <p className="field-help">
           {' '}
           {t('La note est sauvegardée automatiquement. Votre décision peut être modifiée.')}{' '}
+        </p>
+        <p className="decision-help">
+          {t(
+            'Confirmer : une incohérence à corriger. Écarter : un changement expliqué ou une fausse alerte.',
+          )}
         </p>
         <div className="review-actions">
           <button

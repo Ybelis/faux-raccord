@@ -19,13 +19,13 @@ export const TOUR_STEPS = [
     tab: 'review',
     target: 'evidence',
     title: '3. Comparer les passages',
-    text: 'Chaque point rapproche deux citations du scénario. Lisez-les : un changement peut être voulu. Le lien sous chaque citation permet de retrouver la scène complète.',
+    text: 'Ici, la montre de Clara se brise scène 2, puis son verre est intact scène 4. Comparez les deux citations : une réparation est-elle mentionnée ? Les liens ouvrent les scènes complètes.',
   },
   {
     tab: 'review',
     target: 'decision',
     title: '4. Prendre une décision',
-    text: 'Ajoutez une note si nécessaire, puis confirmez ou écartez ce point. Cela enregistre votre avis ; le modèle ne décide pas à votre place.',
+    text: 'Confirmez si vous retenez une incohérence à corriger. Écartez si une réparation ou le contexte explique le changement. Ajoutez une note pour garder votre raisonnement. Cet essai reste dans la copie du tutoriel.',
     requiresDecision: true,
   },
   {

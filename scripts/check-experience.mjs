@@ -11,7 +11,14 @@ const checks = [];
 const verificationRequests = [];
 const sourceImports = [];
 const sourcePreviews = [];
+const inferenceRequests = [];
 page.on('pageerror', (error) => pageErrors.push(error.message));
+
+// This walkthrough must only read recorded results, never spend model quota.
+await page.route(/\/api\/(?:ask|analyze)$/, async (route) => {
+  inferenceRequests.push(route.request().url());
+  await route.fulfill({ status: 503, json: { error: 'Unexpected inference during UI check.' } });
+});
 
 // Catalog and compatibility responses are fixtures; no remote service is called.
 await page.route('**/api/models?*', async (route) => {
@@ -130,6 +137,13 @@ try {
   await page.goto(baseURL, { waitUntil: 'networkidle' });
   const introduction = page.getByRole('dialog', { name: 'Commencer avec Faux Raccord' });
   await expect(introduction).toBeVisible();
+  await expect(introduction.locator('.continuity-example')).toContainText('montre');
+  for (const width of [390, 360]) {
+    await page.setViewportSize({ width, height: 844 });
+    await assertNoOverflow(page, `welcome-${width}`);
+    await page.screenshot({ path: `artifacts/welcome-${width}.png`, fullPage: true });
+  }
+  await page.setViewportSize({ width: 1440, height: 1000 });
   await page.keyboard.press('Tab');
   expect(await introduction.evaluate((dialog) => dialog.contains(document.activeElement))).toBe(
     true,
@@ -141,6 +155,39 @@ try {
   await page.keyboard.press('Escape');
   await expect(introduction).toHaveCount(0);
   checks.push('First-use introduction is keyboard accessible and dismissible');
+
+  await page
+    .getByRole('searchbox', { name: 'Chercher dans le texte', exact: true })
+    .fill('NO_SCENE_MATCH_7391');
+  await expect(page.locator('.scene-list button')).toHaveCount(0);
+  await page.locator('.project-switch').click();
+  await page.getByRole('button', { name: /Valkaama — atelier de continuité/ }).click();
+  await expect(
+    page.getByRole('searchbox', { name: 'Chercher dans le texte', exact: true }),
+  ).toHaveValue('');
+  await expect(page.locator('.scene-list button')).toHaveCount(56);
+  await expect(page.locator('.document-next-action')).toContainText(
+    '12 scènes analysées · 7 points signalés',
+  );
+  for (const width of [390, 360]) {
+    await page.setViewportSize({ width, height: 844 });
+    await assertNoOverflow(page, `recorded-result-entry-${width}`);
+    await page.screenshot({ path: `artifacts/recorded-result-entry-${width}.png`, fullPage: true });
+  }
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.getByRole('button', { name: 'Voir le résultat', exact: true }).click();
+  await expect(page.locator('.points-list button')).toHaveCount(7);
+  await expect(page.locator('.evidence-card')).toHaveCount(2);
+  expect(inferenceRequests).toEqual([]);
+  checks.push(
+    'Changing screenplay resets its scene search, and the direct result button opens all seven recorded alerts without inference',
+  );
+  await page.locator('.project-switch').click();
+  await page
+    .locator('.project-option')
+    .filter({ hasText: 'Valkaama' })
+    .filter({ hasNotText: 'atelier de continuité' })
+    .click();
 
   await page.getByRole('combobox', { name: 'Thème', exact: true }).selectOption('paper');
   const paperBackground = await page.evaluate(
@@ -274,6 +321,14 @@ try {
   ).toBeDisabled();
   await guide.getByRole('button', { name: 'Suivant', exact: true }).click();
   await expect(page.locator('.evidence-card')).toHaveCount(2);
+  await expect(page.locator('.evidence-card blockquote')).toHaveText([
+    "La montre argentée de Clara tombe sur les pavés. Le verre de la montre se brise et les aiguilles s'arrêtent.",
+    'CLARA regarde sa montre argentée : son verre est parfaitement intact et les aiguilles tournent normalement.',
+  ]);
+  await expect(page.locator('.evidence-card button')).toHaveText([/Scène 2/, /Scène 4/]);
+  checks.push(
+    'The tutorial explains the actual first alert: Clara’s silver watch breaks in scene 2 and is intact in scene 4',
+  );
   await guide.getByRole('button', { name: 'Suivant', exact: true }).click();
   await expect(guide.getByRole('button', { name: 'Suivant', exact: true })).toBeDisabled();
   // A valid decision on any point should allow the tutorial to continue.
@@ -344,6 +399,7 @@ try {
   );
 
   expect(pageErrors).toEqual([]);
+  expect(inferenceRequests).toEqual([]);
   await writeFile(
     'artifacts/experience-check.json',
     JSON.stringify(
@@ -353,6 +409,7 @@ try {
         verificationRequests,
         sourceImports,
         sourcePreviews,
+        inferenceRequests,
         checks,
         inference: 'Mocked model catalog, compatibility and library responses; no live inference',
       },
@@ -374,6 +431,7 @@ try {
         passed: false,
         pageErrors,
         verificationRequests,
+        inferenceRequests,
         checks,
         error: error.message,
         inference: 'Mocked model catalog and compatibility check; no live inference',

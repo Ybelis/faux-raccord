@@ -46,6 +46,14 @@ export function Dialogs(props) {
         )}
         onClose={onWelcomeClose}
       >
+        <div className="continuity-example">
+          <strong>{t('Une montre se brise, puis réapparaît intacte.')}</strong>
+          <p>
+            {t(
+              'Faux Raccord retrouve les deux passages. Vous vérifiez si une réparation explique le changement, puis vous gardez ou écartez l’alerte.',
+            )}
+          </p>
+        </div>
         <ol className="welcome-steps">
           {[
             [

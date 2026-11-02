@@ -2,6 +2,11 @@ import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+export const projectTeam = {
+  names: ['Yann QUEGUINER', 'Jean-Remy BITOUMBOU-BIBOKA', 'Simon LUSSATO'],
+  contactUrl: 'https://github.com/Ybelis/faux-raccord/issues',
+};
+
 // Les versions Markdown et imprimables lisent les mêmes preuves. Ce script ne
 // lance pas d'inférence ; une mesure absente reste absente, jamais remplacée par zéro.
 export async function loadEvaluationReports() {
@@ -115,9 +120,9 @@ export async function writeEvaluationDocuments(data) {
 
 État des preuves : ${summary.date}. [Rapport principal brut](../eval/controlled-report.json), [script reproductible](../eval/controlled-run.mjs).
 
-## 1. Expérience principale demandée : un scénario, quinze erreurs
+## 1. Expérience principale : un scénario, quinze erreurs
 
-**Valkaama**, Tim Baumann d’après Hendrik Behnisch, version ${license.originalVersion}, contient 56 scènes. Une adaptation pédagogique conserve ces scènes et ajoute 19 accessoires. Une version de référence est d’abord cohérente ; **exactement 15 phrases ultérieures sont modifiées pour créer 15 faux raccords**, avec quatre transitions expliquées laissées comme contrôles négatifs. L’évaluation porte sur les scènes S001–S012 du même scénario, où se trouvent toutes les injections. Ce ne sont pas des erreurs attribuées aux auteurs originaux.
+**Valkaama**, Tim Baumann d’après Hendrik Behnisch, version ${license.originalVersion}, contient 56 scènes. Une adaptation d’évaluation conserve ces scènes et ajoute 19 accessoires. Une version de référence est d’abord cohérente ; **exactement 15 phrases ultérieures sont modifiées pour créer 15 faux raccords**, avec quatre transitions expliquées laissées comme contrôles négatifs. L’évaluation porte sur les scènes S001–S012 du même scénario, où se trouvent toutes les injections. Ce ne sont pas des erreurs attribuées aux auteurs originaux.
 
 La [page officielle de l’auteur](${license.originalSourceUrl}) annonce la licence **${license.license}** du scénario. Attribution et modifications sont conservées dans [license.json](../data/controlled-script/license.json) ; l’adaptation reprend cette licence. La validation automatique vérifie les deux passages de chaque annotation et qu’annuler les quinze modifications restitue exactement la référence. Validation des fichiers : **${c?.validation?.valid ? 'réussie' : 'à exécuter ou à corriger'}**. Annotations proposées avec assistance IA ; relecture humaine non encore attestée. Jeu de développement visible, pas test indépendant.
 
@@ -176,7 +181,7 @@ ${qaText} [Rapport QA](../eval/qa-real-report.json).
 
 Recherche seule : ${retrieval.n} requêtes lexicales sur Valkaama, scène attendue dans les cinq premiers résultats dans ${f.percentage(retrieval.value)} des cas. Sécurité : ${red.rows.filter((row) => row.passed).length}/${red.rows.length} tests adversariaux réels réussis ; échantillon limité. [Journal](red_team_log.md).
 
-L’utilité pour une équipe de tournage et le gain de temps ne sont pas validés. Le jeu principal est visible et ses annotations attendent une relecture humaine. Objets homonymes, possession implicite et flashbacks restent difficiles. La modalité image/audio/vidéo est encouragée dans le brief ; aucune n’est revendiquée ici. Réserver un autre scénario annoté avant de conclure sur la généralisation.
+L’utilité pour une équipe de tournage et le gain de temps ne sont pas validés. Le jeu principal est visible et ses annotations attendent une relecture humaine. Objets homonymes, possession implicite et flashbacks restent difficiles. L’analyse porte uniquement sur le texte ; images, audio et vidéo ne sont pas pris en charge. Réserver un autre scénario annoté avant de conclure sur la généralisation.
 
 Reproduction sans inférence : \`node eval/controlled-run.mjs\`, puis \`node scripts/write-evaluation-docs.mjs\` et \`node scripts/print-deliverables.mjs --pdf\`. Nouvelle mesure payante ou soumise au quota : commande \`commands.live\` conservée dans le rapport brut.
 `;
@@ -195,7 +200,7 @@ Reproduction sans inférence : \`node eval/controlled-run.mjs\`, puis \`node scr
 
 **Langues.** Interface FR/EN ; citations et analyses enregistrées conservées. Le profil de génération anglais « english-output-v1 » a passé un contrôle opérationnel distinct, sans benchmark de qualité comparable ; les scores ci-dessous concernent le profil français.
 
-**Données et droits.** Valkaama, Tim Baumann d’après Hendrik Behnisch, version ${license.originalVersion}, 56 scènes, **${license.license}**. Source : [page officielle](${license.originalSourceUrl}). Adaptation pédagogique sous la même licence : 15 erreurs délibérées et quatre contrôles sur 19 accessoires ajoutés, évaluation S001–S012. Les Heures Creuses et les vignettes sont synthétiques. MovieSum est une source facultative hors benchmark ; la licence déclarée du dataset ne garantit pas les droits des scénarios sous-jacents. Importer uniquement des textes autorisés.
+**Données et droits.** Valkaama, Tim Baumann d’après Hendrik Behnisch, version ${license.originalVersion}, 56 scènes, **${license.license}**. Source : [page officielle](${license.originalSourceUrl}). Adaptation d’évaluation sous la même licence : 15 erreurs délibérées et quatre contrôles sur 19 accessoires ajoutés, évaluation S001–S012. Les Heures Creuses et les vignettes sont synthétiques. MovieSum est une source facultative hors benchmark ; la licence déclarée du dataset ne garantit pas les droits des scénarios sous-jacents. Importer uniquement des textes autorisés.
 
 **Évaluation.** ${summary.primaryStatus} ${c?.system ? `Sur les quinze injections : précision contrôlée ${f.percentage(c.system.precision)} [IC 95 % ${f.interval(c.system.precisionCI95)}], rappel ${f.percentage(c.system.recall)} [${f.interval(c.system.recallCI95)}], F1 ${f.percentage(c.system.f1)}. ${c.system.unannotatedAlertCount} alertes sur des objets non annotés sont exclues de ce score et restent à relire.` : ''} Les annotations sont proposées avec assistance IA, sans relecture humaine attestée ; jeu visible, œuvre unique, intervalles descriptifs. Les 50 vignettes, les 24 questions et les 12 recherches sont des expériences distinctes, pas un score global.
 
@@ -203,7 +208,7 @@ Reproduction sans inférence : \`node eval/controlled-run.mjs\`, puis \`node scr
 
 **Hors périmètre et limites.** Pas d’analyse image, audio ou vidéo, d’OCR ni de planning de tournage. Pas de reconstruction fiable de l’ordre narratif. Identité des objets, flashbacks et transferts implicites difficiles ; recherche lexicale limitée sur les paraphrases et les langues croisées. Une citation exacte ne prouve pas la justesse d’une alerte. Aucune promesse de détection exhaustive.
 
-**Responsables.** Équipe de trois étudiants — noms et contact à renseigner. Politique : [use_policy.md](use_policy.md). Mesures : [evaluation_report.md](evaluation_report.md). Le guide interne est accessible dans l’application, rubrique « Documentation ».
+**Équipe.** ${projectTeam.names.join(' · ')}. Contact : [issues du dépôt](${projectTeam.contactUrl}). Politique : [use_policy.md](use_policy.md). Mesures : [evaluation_report.md](evaluation_report.md). Guide utilisateur dans l’application, rubrique « Documentation ».
 `;
 
   const redLog = `# Journal de red teaming — Faux Raccord

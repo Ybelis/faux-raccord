@@ -2,9 +2,9 @@
 
 État des preuves : 2 novembre 2026. [Rapport principal brut](../eval/controlled-report.json), [script reproductible](../eval/controlled-run.mjs).
 
-## 1. Expérience principale demandée : un scénario, quinze erreurs
+## 1. Expérience principale : un scénario, quinze erreurs
 
-**Valkaama**, Tim Baumann d’après Hendrik Behnisch, version 2007-06-30, contient 56 scènes. Une adaptation pédagogique conserve ces scènes et ajoute 19 accessoires. Une version de référence est d’abord cohérente ; **exactement 15 phrases ultérieures sont modifiées pour créer 15 faux raccords**, avec quatre transitions expliquées laissées comme contrôles négatifs. L’évaluation porte sur les scènes S001–S012 du même scénario, où se trouvent toutes les injections. Ce ne sont pas des erreurs attribuées aux auteurs originaux.
+**Valkaama**, Tim Baumann d’après Hendrik Behnisch, version 2007-06-30, contient 56 scènes. Une adaptation d’évaluation conserve ces scènes et ajoute 19 accessoires. Une version de référence est d’abord cohérente ; **exactement 15 phrases ultérieures sont modifiées pour créer 15 faux raccords**, avec quatre transitions expliquées laissées comme contrôles négatifs. L’évaluation porte sur les scènes S001–S012 du même scénario, où se trouvent toutes les injections. Ce ne sont pas des erreurs attribuées aux auteurs originaux.
 
 La [page officielle de l’auteur](https://www.valkaama.com/index.php?l=en&page=sources) annonce la licence **CC BY-SA 3.0** du scénario. Attribution et modifications sont conservées dans [license.json](../data/controlled-script/license.json) ; l’adaptation reprend cette licence. La validation automatique vérifie les deux passages de chaque annotation et qu’annuler les quinze modifications restitue exactement la référence. Validation des fichiers : **réussie**. Annotations proposées avec assistance IA ; relecture humaine non encore attestée. Jeu de développement visible, pas test indépendant.
 
@@ -58,6 +58,6 @@ L’ancien jeu séparé de **50 courtes vignettes synthétiques** reste disponib
 
 Recherche seule : 12 requêtes lexicales sur Valkaama, scène attendue dans les cinq premiers résultats dans 100,0 % des cas. Sécurité : 3/3 tests adversariaux réels réussis ; échantillon limité. [Journal](red_team_log.md).
 
-L’utilité pour une équipe de tournage et le gain de temps ne sont pas validés. Le jeu principal est visible et ses annotations attendent une relecture humaine. Objets homonymes, possession implicite et flashbacks restent difficiles. La modalité image/audio/vidéo est encouragée dans le brief ; aucune n’est revendiquée ici. Réserver un autre scénario annoté avant de conclure sur la généralisation.
+L’utilité pour une équipe de tournage et le gain de temps ne sont pas validés. Le jeu principal est visible et ses annotations attendent une relecture humaine. Objets homonymes, possession implicite et flashbacks restent difficiles. L’analyse porte uniquement sur le texte ; images, audio et vidéo ne sont pas pris en charge. Réserver un autre scénario annoté avant de conclure sur la généralisation.
 
 Reproduction sans inférence : `node eval/controlled-run.mjs`, puis `node scripts/write-evaluation-docs.mjs` et `node scripts/print-deliverables.mjs --pdf`. Nouvelle mesure payante ou soumise au quota : commande `commands.live` conservée dans le rapport brut.

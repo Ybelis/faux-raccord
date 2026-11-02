@@ -12,7 +12,7 @@
 
 **Langues.** Interface FR/EN ; citations et analyses enregistrées conservées. Le profil de génération anglais « english-output-v1 » a passé un contrôle opérationnel distinct, sans benchmark de qualité comparable ; les scores ci-dessous concernent le profil français.
 
-**Données et droits.** Valkaama, Tim Baumann d’après Hendrik Behnisch, version 2007-06-30, 56 scènes, **CC BY-SA 3.0**. Source : [page officielle](https://www.valkaama.com/index.php?l=en&page=sources). Adaptation pédagogique sous la même licence : 15 erreurs délibérées et quatre contrôles sur 19 accessoires ajoutés, évaluation S001–S012. Les Heures Creuses et les vignettes sont synthétiques. MovieSum est une source facultative hors benchmark ; la licence déclarée du dataset ne garantit pas les droits des scénarios sous-jacents. Importer uniquement des textes autorisés.
+**Données et droits.** Valkaama, Tim Baumann d’après Hendrik Behnisch, version 2007-06-30, 56 scènes, **CC BY-SA 3.0**. Source : [page officielle](https://www.valkaama.com/index.php?l=en&page=sources). Adaptation d’évaluation sous la même licence : 15 erreurs délibérées et quatre contrôles sur 19 accessoires ajoutés, évaluation S001–S012. Les Heures Creuses et les vignettes sont synthétiques. MovieSum est une source facultative hors benchmark ; la licence déclarée du dataset ne garantit pas les droits des scénarios sous-jacents. Importer uniquement des textes autorisés.
 
 **Évaluation.** Mesure réelle du système et de la baseline disponible. Sur les quinze injections : précision contrôlée 100,0 % [IC 95 % 64,6 %–100,0 %], rappel 46,7 % [24,8 %–69,9 %], F1 63,6 %. 0 alertes sur des objets non annotés sont exclues de ce score et restent à relire. Les annotations sont proposées avec assistance IA, sans relecture humaine attestée ; jeu visible, œuvre unique, intervalles descriptifs. Les 50 vignettes, les 24 questions et les 12 recherches sont des expériences distinctes, pas un score global.
 
@@ -20,4 +20,4 @@
 
 **Hors périmètre et limites.** Pas d’analyse image, audio ou vidéo, d’OCR ni de planning de tournage. Pas de reconstruction fiable de l’ordre narratif. Identité des objets, flashbacks et transferts implicites difficiles ; recherche lexicale limitée sur les paraphrases et les langues croisées. Une citation exacte ne prouve pas la justesse d’une alerte. Aucune promesse de détection exhaustive.
 
-**Responsables.** Équipe de trois étudiants — noms et contact à renseigner. Politique : [use_policy.md](use_policy.md). Mesures : [evaluation_report.md](evaluation_report.md). Le guide interne est accessible dans l’application, rubrique « Documentation ».
+**Équipe.** Yann QUEGUINER · Jean-Remy BITOUMBOU-BIBOKA · Simon LUSSATO. Contact : [issues du dépôt](https://github.com/Ybelis/faux-raccord/issues). Politique : [use_policy.md](use_policy.md). Mesures : [evaluation_report.md](evaluation_report.md). Guide utilisateur dans l’application, rubrique « Documentation ».

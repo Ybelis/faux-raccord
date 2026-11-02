@@ -44,7 +44,7 @@ a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
 <main class="page">
 <header><div class="brand"><strong>FAUX RACCORD</strong><span>2 novembre 2026</span></div><h1>Rapport d’évaluation</h1><p class="subtitle">Expérience principale : retrouver quinze faux raccords introduits dans un même scénario</p></header>
 <h2>1. Données, droits et protocole</h2>
-<p><strong>Valkaama</strong>, Tim Baumann d’après Hendrik Behnisch, version 2007-06-30 : 56 scènes conservées. L’adaptation pédagogique ajoute 19 accessoires et prépare leur continuité cohérente. <strong>Exactement quinze phrases ultérieures sont ensuite modifiées</strong> pour créer quinze erreurs ; quatre transitions expliquées restent comme contrôles négatifs. L’évaluation couvre S001–S012, où se trouvent toutes les injections. Aucun faux raccord n’est attribué aux auteurs originaux.</p>
+<p><strong>Valkaama</strong>, Tim Baumann d’après Hendrik Behnisch, version 2007-06-30 : 56 scènes conservées. L’adaptation d’évaluation ajoute 19 accessoires et prépare leur continuité cohérente. <strong>Exactement quinze phrases ultérieures sont ensuite modifiées</strong> pour créer quinze erreurs ; quatre transitions expliquées restent comme contrôles négatifs. L’évaluation couvre S001–S012, où se trouvent toutes les injections. Aucun faux raccord n’est attribué aux auteurs originaux.</p>
 <p>La <a href="https://www.valkaama.com/index.php?l=en&amp;page=sources">page officielle de l’auteur</a> annonce la licence <strong>CC BY-SA 3.0</strong>. L’adaptation est attribuée, ses modifications documentées et sa licence identique. Les contrôles vérifient les preuves littérales et que l’annulation des quinze modifications restitue la référence : <strong>validation réussie</strong>. Annotations proposées avec assistance IA, relecture humaine non attestée ; jeu de développement visible.</p>
 <p>Le système utilise le pipeline du produit : extraction par lots de trois scènes, contrôle des citations, suivi des états, BM25 puis comparaison LLM. Protocole baseline, même modèle : les mêmes 12 scènes en deux moitiés de 6 scènes, deux appels sans mémoire ni RAG ; aucune annotation fournie. Chaque paire annotée tient dans une moitié.</p>
 <p class="small">Modèle : <span class="mono">openai/gpt-oss-120b</span> via groq, température 0, licence Apache-2.0. Pipeline <span class="mono">317d4f315597</span>.</p>
@@ -58,7 +58,7 @@ a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
 <h2>3. Échecs et preuve affichée</h2>
 <p><strong>Injections manquées :</strong> E03, E04, E06, E07, E08, E11, E12, E15 </p>
 <p>Piste dans les traces : E03/E06/E12 sont extraits comme remplissages malgré la négation ; diagnostic à relire. Chaque alerte affiche ses deux passages, scène et page. Une citation exacte ne garantit pas une interprétation juste.</p>
-<footer><span>Rapport d’évaluation · équipe de trois — noms à renseigner</span><span>1 / 2</span></footer>
+<footer><span>Faux Raccord · Rapport d’évaluation</span><span>1 / 2</span></footer>
 </main>
 <main class="page">
 <header><div class="brand"><strong>FAUX RACCORD</strong><span>2 novembre 2026</span></div><h1>Coût, compléments et limites</h1><p class="subtitle">Les expériences suivantes ont leur propre unité et leur propre modèle</p></header>
@@ -74,8 +74,8 @@ a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
 <p><strong>Recherche seule :</strong> 12 requêtes lexicales, scène attendue dans les cinq premiers résultats : 100,0 %. Cela ne mesure pas la justesse d’une analyse.</p>
 <h2>6. Sécurité, portée et travaux restants</h2>
 <p>3/3 essais adversariaux réels résistants aux attaques testées. Citations et identifiants contrôlés ; documents traités comme données ; clé absente des prompts ; sorties non exécutées. Trois essais ne garantissent pas une sécurité générale.</p>
-<p>Le besoin métier et le gain de temps ne sont pas validés. Relecture humaine des annotations à consigner. Objets homonymes, transferts implicites et flashbacks restent difficiles. Aucune modalité image/audio/vidéo n’est revendiquée ; elle est encouragée dans le brief.</p>
+<p>Le besoin métier et le gain de temps ne sont pas validés. Relecture humaine des annotations à consigner. Objets homonymes, transferts implicites et flashbacks restent difficiles. L’analyse porte uniquement sur le texte ; images, audio et vidéo ne sont pas pris en charge.</p>
 <div class="note warning">Une œuvre et des erreurs construites ne suffisent pas à généraliser. Réserver un autre scénario annoté avant de conclure.</div>
 <p class="small rule">Preuves : rapports JSON dans <span class="mono">eval/</span> ; annotations et licence dans <span class="mono">data/controlled-script/</span>. Reproduction sans appel : <span class="mono">node eval/controlled-run.mjs</span>. Les chemins complets figurent dans la version Markdown.</p>
-<footer><span>Rapport d’évaluation · équipe de trois — noms à renseigner</span><span>2 / 2</span></footer>
+<footer><span>Faux Raccord · Rapport d’évaluation</span><span>2 / 2</span></footer>
 </main></body></html>

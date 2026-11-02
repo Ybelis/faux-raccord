@@ -416,7 +416,9 @@ function App() {
           : 'Résultats et méthode';
   const description =
     tab === 'script'
-      ? 'Vérifiez le texte et le découpage des scènes avant de lancer l’analyse.'
+      ? analysis
+        ? 'Lisez les scènes ou ouvrez le résultat disponible pour comparer les passages signalés.'
+        : 'Vérifiez le texte et le découpage des scènes avant de lancer l’analyse.'
       : tab === 'analysis'
         ? 'Sélectionnez les scènes à examiner et le moteur qui les traitera.'
         : tab === 'review'
@@ -618,22 +620,17 @@ function App() {
               {tab === 'script' && (
                 <>
                   <ScriptWorkspace
+                    key={project.id}
                     project={project}
                     activeScene={activeScene}
                     onScene={setActiveScene}
+                    onAnalyze={() => navigate('analysis')}
                     onReview={(id) => {
                       setActiveAlert(id);
                       setReviewTab('points');
                       navigate('review');
                     }}
                   />
-                  <div className="step-footer">
-                    <p>{t('Le découpage correspond à votre document ? Passez à l’analyse.')}</p>
-                    <button className="button primary" onClick={() => navigate('analysis')}>
-                      {t('Configurer l’analyse')}
-                      <ArrowRight size={17} />
-                    </button>
-                  </div>
                 </>
               )}
               {tab === 'analysis' && (

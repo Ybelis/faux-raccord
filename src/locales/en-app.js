@@ -1,4 +1,25 @@
 export default {
+  'Une montre se brise, puis réapparaît intacte.': 'A watch breaks, then reappears intact.',
+  'Faux Raccord retrouve les deux passages. Vous vérifiez si une réparation explique le changement, puis vous gardez ou écartez l’alerte.':
+    'Faux Raccord brings the two passages together. Check whether a repair explains the change, then keep or dismiss the alert.',
+  'Faux Raccord compare les passages où un accessoire change d’état ou de propriétaire. Vous relisez les changements signalés ; le texte du scénario reste inchangé.':
+    'Faux Raccord compares passages where a prop changes state or owner. Review the flagged changes; the screenplay text stays unchanged.',
+  'Un résultat est prêt à consulter': 'A result is ready to review',
+  'Lisez les scènes ou ouvrez le résultat disponible pour comparer les passages signalés.':
+    'Read the scenes or open the available result to compare the flagged passages.',
+  'Commencez par vérifier le texte ci-dessous': 'Start by checking the text below',
+  '{scenes} scènes analysées · {alerts} points signalés. Vous pouvez les lire sans relancer le modèle.':
+    '{scenes} scenes analysed · {alerts} flagged points. You can review them without running the model again.',
+  'Choisissez ensuite les scènes à analyser. Vous obtiendrez des points à vérifier, accompagnés de leurs passages sources.':
+    'Then choose the scenes to analyse. The result will be points to review, each with its source passages.',
+  'Voir le résultat': 'View result',
+  'Relancer une analyse': 'Run a new analysis',
+  'Confirmer : une incohérence à corriger. Écarter : un changement expliqué ou une fausse alerte.':
+    'Confirm: a continuity error to correct. Dismiss: an explained change or a false alert.',
+  'Ici, la montre de Clara se brise scène 2, puis son verre est intact scène 4. Comparez les deux citations : une réparation est-elle mentionnée ? Les liens ouvrent les scènes complètes.':
+    'Here, Clara’s watch breaks in scene 2, then its glass is intact in scene 4. Compare the quotations: is a repair mentioned? The links open the full scenes.',
+  'Confirmez si vous retenez une incohérence à corriger. Écartez si une réparation ou le contexte explique le changement. Ajoutez une note pour garder votre raisonnement. Cet essai reste dans la copie du tutoriel.':
+    'Confirm if you identify a continuity error to correct. Dismiss if a repair or the context explains the change. Add a note to record your reasoning. This practice stays in the tutorial copy.',
   Scénario: 'Script',
   'Importer et lire': 'Import and read',
   Analyse: 'Analysis',

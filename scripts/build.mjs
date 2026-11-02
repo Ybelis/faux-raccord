@@ -1,6 +1,6 @@
 import { build as viteBuild } from 'vite';
 import { build as bundle } from 'esbuild';
-import { mkdir, readFile, writeFile, readdir, copyFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile, readdir } from 'node:fs/promises';
 import path from 'node:path';
 import { loadEvaluation } from './evaluation-data.mjs';
 import { documentAssets, readDocumentAsset } from './document-assets.mjs';
@@ -57,6 +57,4 @@ await bundle({
   external: ['node:*'],
   logLevel: 'warning',
 });
-await mkdir('dist/.openai', { recursive: true });
-await copyFile('.openai/hosting.json', 'dist/.openai/hosting.json');
 console.log('Built: React interface + self-contained Worker. No secret is embedded.');

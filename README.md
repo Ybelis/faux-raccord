@@ -1,13 +1,18 @@
 # Faux Raccord
 
-Faux Raccord aide à relire la continuité des accessoires dans un scénario. Le
-modèle extrait leurs mentions et explique les changements à examiner ; chaque
-alerte donne accès à ses deux passages sources. Le lecteur confirme ou écarte
-le point et conserve sa note.
+Faux Raccord aide une personne qui relit un scénario à repérer les changements
+inexpliqués d’un accessoire entre deux scènes.
 
-C’est une **application d’IA générative avec RAG**, avec un parcours défini dans
-le code. Elle analyse le texte, sans vision ni OCR. Une alerte est une proposition
-de relecture, pas une erreur avérée.
+Par exemple, une montre est cassée dans une scène puis fonctionne dans la
+suivante, sans réparation mentionnée. L’application rapproche ces passages et
+propose un point à vérifier. Le lecteur retrouve les deux scènes, décide si
+l’alerte est pertinente et peut laisser une note.
+
+Le projet utilise un **LLM avec RAG** : le modèle extrait les accessoires et
+leurs états, puis compare les passages retrouvés dans le scénario. L’analyse
+porte sur le texte ; les images d’un film et les PDF scannés ne sont pas pris
+en charge. Les alertes servent à guider la relecture et peuvent être fausses
+ou incomplètes.
 
 ## Lancer
 
@@ -46,7 +51,7 @@ ainsi que les limites et la confidentialité. Sa source unique est
 [data/project-guide.en.js](data/project-guide.en.js). Le sélecteur Français / English
 change l’interface et la documentation utilisateur ; le choix est conservé sur
 cet appareil. Les scénarios, citations et résultats déjà enregistrés gardent
-leur langue d’origine. Les PDF de rendu restent en français.
+leur langue d’origine. Les documents PDF restent en français.
 
 ```text
 Scénario → scènes → extraction LLM → contrôle des citations
@@ -86,8 +91,8 @@ attribué à un modèle non testé.
 
 Le scénario réel **Valkaama**, de Tim Baumann d’après Hendrik Behnisch, est publié
 sous **CC BY-SA 3.0**. L’expérience principale utilise une adaptation identifiée
-contenant **15 incohérences insérées volontairement**, conformément à la consigne
-du professeur. Le scénario publié reste intact. Les changements, deux passages
+contenant **15 incohérences insérées volontairement** pour mesurer la détection.
+Le scénario publié reste intact. Les changements, deux passages
 de référence et l’attribution sont dans [data/controlled-script/](data/controlled-script/).
 La mesure porte sur les scènes 1–12 du scénario complet et ses 19 accessoires
 annotés : 15 incohérences et quatre transitions expliquées. Les autres alertes
@@ -136,24 +141,14 @@ retours internes de prise en main ne remplacent pas cette validation métier.
 
 ## Équipe et outils IA
 
-Le groupe comprend trois étudiants. Chaque membre doit contribuer réellement et
-pouvoir expliquer l’ensemble du système. Les prochains commits doivent refléter
-le travail accompli sous l’identité de leur auteur. L’historique ne doit pas être
-réattribué pour simuler une répartition.
+Yann QUEGUINER · Jean-Remy BITOUMBOU-BIBOKA · Simon LUSSATO.
 
-Avant le rendu, il reste à faire réellement :
+Pour signaler un problème : [issues du dépôt](https://github.com/Ybelis/faux-raccord/issues).
 
-- [ ] Faire essayer le produit à une personne qui écrit ou relit des scénarios, conserver son retour et convenir d’un critère d’utilité.
-- [ ] Relire les 19 transitions du corrigé (15 erreurs et quatre changements expliqués), puis noter relecteur, date et désaccords. Confirmer seulement les sept alertes ne valide pas tout le corrigé.
-- [ ] Partager le dépôt avec les deux autres membres et le professeur ; renseigner les noms, rôles et contact, et identifier les contributions réelles au code de chacun.
-- [ ] Vérifier que chacun sait lancer l’application et expliquer le pipeline, les métriques et les limites ; répéter la démonstration de cinq minutes avec l’échec E03.
-- [ ] Emporter la vidéo de secours en local. Sa copie dans `deliverables/faux-raccord/` est hors du dépôt applicatif ; elle n’apparaît pas automatiquement sur GitHub.
-
-| Outil                                                       | Usage déclaré                                                                              |
-| ----------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| Codex                                                       | Recherche des sources, code, interface, tests, propositions de références et documentation |
-| Groq / GPT-OSS et autres modèles indiqués dans les rapports | Inférence et mesures enregistrées                                                          |
-| Canva                                                       | Canvas de cadrage et support initial, conservés hors du dépôt applicatif                   |
+Le développement a été réalisé avec l’assistance de Codex pour le code,
+les tests, la recherche de sources et la documentation. Groq fournit les
+inférences consignées dans les rapports. Canva a servi au support de cadrage,
+conservé à part du code.
 
 Le code est sous [licence MIT](LICENSE). Les scénarios et leurs adaptations
 conservent leurs propres licences et attributions.

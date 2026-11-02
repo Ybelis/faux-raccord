@@ -24,8 +24,8 @@ un PDF dans l’interface ou reproduire les évaluations déjà fournies.
 Le projet de démonstration français et les variations d'évaluation sont des
 **fictions synthétiques contrôlées**, distinctes du corpus réel. Ils servent
 à montrer le traitement d'erreurs connues et ne sont jamais présentés comme
-des défauts trouvés dans Valkaama. Les annotations de référence proposées par
-Codex doivent être relues et validées par les étudiants avant le rendu.
+des défauts trouvés dans Valkaama. Les annotations de référence ont été préparées
+avec assistance IA ; leur validation humaine n’est pas encore consignée.
 
 Les imports de l'utilisateur restent sur son appareil, sauf les passages envoyés
 au fournisseur de modèle qu'il choisit pour l'analyse. La clé du fournisseur est
@@ -34,9 +34,9 @@ externe sans autorisation ; choisir le mode local dans ce cas.
 
 ## Expérience contrôlée : 15 erreurs dans un seul scénario
 
-Le dossier `controlled-script/` applique la consigne spécifique du professeur :
-construire une référence en insérant 10 à 20 incohérences dans un scénario,
-mesurer précision et rappel, et montrer les passages sources de chaque alerte.
+Le dossier `controlled-script/` contient une expérience sur un même scénario :
+quinze incohérences sont insérées volontairement pour mesurer la précision et
+le rappel, avec les passages sources attendus pour chaque alerte.
 Le scénario publié et son PDF ne sont pas modifiés.
 
 | Fichier                                                      | Rôle                                                                                        |
@@ -56,8 +56,8 @@ original ne contient pas les phrases ajoutées.
 La validation automatique vérifie les citations et l’empreinte de l’original.
 Revenir sur les quinze modifications déclarées doit restituer la version
 préparée, sans autre changement de texte. L’adaptation conserve l’attribution et
-CC BY-SA 3.0 ; les annotations proposées avec assistance IA restent à relire
-par les trois étudiants. Ce jeu visible est un benchmark de développement
+CC BY-SA 3.0 ; les annotations proposées avec assistance IA restent à valider.
+Ce jeu visible est un benchmark de développement
 contrôlé, pas une évaluation aveugle indépendante.
 
 Le score porte sur les 19 accessoires annotés. Chaque injection peut être
@@ -72,7 +72,7 @@ Protocole et commandes : [eval/README.md](../eval/README.md).
 modifiées de Valkaama : vingt faits présents et quatre informations absentes.
 Les questions et les grilles de réponse ont été proposées avec assistance IA.
 Le script vérifie que les citations de référence existent ; cette vérification
-ne remplace pas la relecture du jugement attendu par les étudiants.
+ne remplace pas la validation humaine du jugement attendu.
 
 Ce jeu ne crée pas de faux raccords dans Valkaama. Il évalue les questions
 sourcées et l'abstention, séparément des cas synthétiques de continuité.
