@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Faux Raccord — fiche système</title><style>
+@page { size: A4; margin: 15mm; }
+* { box-sizing: border-box; }
+html { color-scheme: light; background: #e9ebed; }
+body { margin: 0; color: #18242d; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; line-height: 1.42; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.page { width: 180mm; height: 266mm; margin: 12mm auto; padding: 0 0 13mm; position: relative; background: white; break-after: page; }
+.page:last-child { break-after: auto; }
+.screen-page { padding: 15mm; width: 210mm; height: 296mm; }
+.screen-page .page { margin: 0; }
+header { border-top: 3pt solid #233e49; padding-top: 5mm; margin-bottom: 6mm; }
+.brand { display: flex; justify-content: space-between; align-items: baseline; gap: 8mm; font-size: 8.5pt; letter-spacing: .04em; color: #4b606a; }
+.brand strong { letter-spacing: .11em; color: #233e49; }
+h1 { font-size: 23pt; line-height: 1.12; margin: 4mm 0 2mm; font-weight: 700; letter-spacing: -.035em; }
+.subtitle { color: #53636b; margin: 0; max-width: 166mm; }
+h2 { font-size: 12pt; margin: 5.5mm 0 2mm; line-height: 1.25; color: #233e49; }
+h3 { font-size: 10pt; margin: 3mm 0 1mm; }
+p { margin: 0 0 2.5mm; }
+ul { margin: 1mm 0 3mm; padding-left: 4.5mm; }
+li { margin: 0 0 1.2mm; }
+table { width: 100%; border-collapse: collapse; margin: 2.5mm 0; font-size: 9pt; }
+th { font-weight: 700; color: #324b56; background: #edf2f3; text-align: left; }
+th, td { border-bottom: .5pt solid #cdd6da; padding: 2.1mm 2mm; vertical-align: top; }
+.metric-table th:first-child, .metric-table td:first-child { width: 32%; }
+.metric-table th:not(:first-child), .metric-table td:not(:first-child) { text-align: right; }
+.note { background: #f0f4f4; border-left: 2pt solid #607b82; padding: 3mm 3.5mm; margin: 3mm 0; }
+.warning { background: #fbf4e8; border-left-color: #ae7a2c; }
+.small { font-size: 8.5pt; color: #52636c; line-height: 1.4; }
+.mono { font-family: Consolas, 'Courier New', monospace; font-size: 8.5pt; overflow-wrap: anywhere; }
+.two-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 6mm; }
+.two-columns h2:first-child { margin-top: 0; }
+.rule { border-top: .5pt solid #cdd6da; padding-top: 3mm; margin-top: 3mm; }
+footer { position: absolute; bottom: 0; left: 0; right: 0; border-top: .5pt solid #cdd6da; padding-top: 2.5mm; display: flex; justify-content: space-between; gap: 8mm; color: #607078; font-size: 8pt; }
+a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+.card h1 { font-size: 22pt; }
+.card h2 { margin-top: 4mm; font-size: 11pt; }
+.card header { margin-bottom: 4mm; }
+.card { font-size: 9.5pt; }
+.card .small { font-size: 8.2pt; }
+.card table { font-size: 8.6pt; }
+@media screen { .page { box-shadow: 0 5px 30px #14232d1a; outline: 15mm solid white; margin-top: 27mm; margin-bottom: 35mm; } }
+@media print { html { background: white; } .page { margin: 0; } a { text-decoration: none; } }
+</style></head><body>
+<main class="page card">
+<header><div class="brand"><strong>FAUX RACCORD</strong><span>2 novembre 2026</span></div><h1>Fiche système</h1><p class="subtitle">Aide à la relecture de continuité des accessoires d’un scénario</p></header>
+<div class="two-columns"><section>
+<h2>Usage prévu</h2>
+<p>Scriptes et petites équipes de court métrage préparant le suivi des accessoires. Le produit rassemble des mentions et propose des points sourcés à examiner. Le besoin et le gain de temps restent à valider avec une personne réelle.</p>
+<h2>Entrées et sorties</h2>
+<p>PDF avec texte, TXT, Fountain, Markdown. Scènes et pages, accessoires, mentions, deux passages par point signalé, décision et note de revue. Export du projet JSON et du rapport Markdown.</p>
+<h2>Modèle de référence</h2>
+<p><span class="mono">openai/gpt-oss-20b</span> via Groq : MoE 20B, 3,6B actifs, licence Apache 2.0 ; température 0 et raisonnement low. Précision d’infrastructure TruePoint gérée par Groq, pas par l’équipe. L’API ne propose pas de snapshot immuable.</p>
+<p>Ollama et autres modèles en option. Licence, mémoire et compatibilité à vérifier pour chaque choix. Les nouveaux paramètres sont conservés avec l’analyse ; changer la configuration impose une nouvelle évaluation.</p>
+<h2>Fonctionnement</h2>
+<p>Segmentation déterministe ; extraction JSON par lots ; contrôle des citations ; suivi des objets ; candidats d’état ou de possession ; BM25 puis comparaison LLM ; revue humaine. Les questions utilisent recherche, réponse citée ou abstention.</p>
+</section><section>
+<h2>Données et droits</h2>
+<p>Valkaama, Tim Baumann d’après Hendrik Behnisch, version 2007-06-30 : 56 scènes, CC BY-SA 3.0, pages conservées. Les Heures Creuses et le benchmark de continuité sont synthétiques.</p>
+<p>MovieSum : catalogue externe facultatif, hors benchmark. Sa licence de jeu déclarée CC BY-NC 4.0 ne garantit pas les droits des œuvres sous-jacentes. Imports avec provenance et portée explicites.</p>
+<h2>Protections et confidentialité</h2>
+<p>Clés côté serveur ; limites de fichier, pages et texte ; citations et identifiants contrôlés ; documents traités comme données ; sorties non exécutées. Groq reçoit les scènes ou extraits utiles ; Ollama permet l’inférence locale. Les projets restent sur l’appareil, sans synchronisation d’équipe.</p>
+<h2>Hors périmètre et limites</h2>
+<p>Pas de vidéo, d’OCR ni de planning de tournage. L’ordre narratif n’est pas reconstruit. Identité des objets, flashbacks et transferts implicites difficiles ; RAG lexical limité sur les paraphrases et les langues croisées. Les citations ne prouvent pas la justesse d’une conclusion.</p>
+</section></div>
+<h2>Évaluation disponible</h2>
+<p>50 cas synthétiques réservés, annotations assistées par IA à relire. <strong>Précision par cas signalé 94,4 % [74,2 %–99,0 %], rappel 81,0 %, F1 87,2 %.</strong> Baseline : précision 84,0 %, rappel 100,0 %, F1 91,3 %. Le pipeline réduit les fausses alertes mais n’est pas globalement supérieur.</p>
+<p>Le jeu de 24 questions réelles existe ; sa comparaison complète reste à vérifier. Recherche seule : 12 requêtes, rappel de scène à 5 de 100,0 %. Red team : 3/3 essais réussis ; portée limitée.</p>
+<p class="small rule">Responsables et contact : <strong>équipe de trois — à renseigner</strong>. Détails : <span class="mono">docs/evaluation_report.md</span>, <span class="mono">docs/use_policy.md</span>, <span class="mono">docs/red_team_log.md</span>, <span class="mono">data/README.md</span>. Les rapports bruts conservent leurs dates, modèles et références de code.</p>
+<footer><span>Fiche système · équipe de trois — noms à renseigner</span><span>1 / 1</span></footer>
+</main></body></html>

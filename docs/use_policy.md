@@ -5,9 +5,16 @@ Les utilisateurs visés sont les scriptes et les petites équipes de tournage.
 Les alertes sont des points à examiner, jamais une preuve définitive d'erreur.
 
 Importer uniquement des textes que l'équipe a le droit d'utiliser. Une analyse
-Groq envoie les scènes sélectionnées à ce fournisseur. Pour des textes
+ou une question avec Groq envoie les scènes sélectionnées ou les extraits utiles
+à ce fournisseur. Pour des textes
 confidentiels ou sans autorisation de transfert, choisir Ollama dans la version
-locale. Aucun partage externe du scénario n'est déclenché par l'application.
+locale. L'envoi au modèle correspond à une action de l'utilisateur ; le produit
+ne publie pas le scénario et n'envoie pas de message à un tiers de façon autonome.
+
+Un import MovieSum dépend des conditions du jeu et des droits des œuvres
+sous-jacentes. La licence déclarée du dataset et la confirmation de lecture
+dans l'interface ne garantissent pas une autorisation de réutilisation de chaque
+scénario. L'équipe vérifie l'utilisation prévue et conserve la provenance.
 
 Chaque alerte doit avoir deux citations présentes dans les scènes. Un résultat
 sans preuve est rejeté. Les instructions incluses dans les scénarios sont des

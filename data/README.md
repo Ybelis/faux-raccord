@@ -24,3 +24,38 @@ Les imports de l'utilisateur restent sur son appareil, sauf les passages envoyé
 au fournisseur de modèle qu'il choisit pour l'analyse. La clé du fournisseur est
 conservée côté serveur. Ne pas importer de scénario confidentiel dans une API
 externe sans autorisation ; choisir le mode local dans ce cas.
+
+## Questions réelles d'évaluation
+
+`eval/qa-real.json` contient 24 questions sur les dix premières scènes non
+modifiées de Valkaama : vingt faits présents et quatre informations absentes.
+Les questions et les grilles de réponse ont été proposées avec assistance IA.
+Le script vérifie que les citations de référence existent ; cette vérification
+ne remplace pas la relecture du jugement attendu par les étudiants.
+
+Ce jeu ne crée pas de faux raccords dans Valkaama. Il évalue les questions
+sourcées et l'abstention, séparément des cas synthétiques de continuité.
+Les citations et références dérivées conservent l'attribution et la licence
+CC BY-SA 3.0 de leur source.
+
+## Bibliothèque externe MovieSum
+
+La bibliothèque permet de consulter les métadonnées et d'importer explicitement
+un scénario de [MovieSum](https://huggingface.co/datasets/rohitsaxena/MovieSum),
+décrit dans le [dépôt des auteurs](https://github.com/saxenarohit/MovieSum).
+La source annonce 2 200 scénarios XML : 1 800 dans `train`, 200 dans
+`validation`, 200 dans `test`. Ces partitions appartiennent au dataset ; elles
+ne sont pas les partitions du benchmark de Faux Raccord.
+
+Les auteurs déclarent une licence **CC BY-NC 4.0** pour le jeu. Cela ne garantit
+pas que tous les droits des films ou scénarios sous-jacents sont couverts.
+L'application affiche cette réserve et demande de lire les conditions avant
+un import. Cette confirmation ne constitue pas une autorisation juridique.
+MovieSum n'est pas fourni intégralement dans ce dépôt et n'est pas utilisé
+pour les scores de référence actuels.
+
+L'import télécharge le XML à la demande, conserve source, partition, titre,
+identifiant disponible et SHA-256. Les textes longs sont bornés à 60 scènes
+et 180 000 caractères, avec une portée signalée. Les repères XML ne sont pas
+des pages du PDF original. Le catalogue dépend de la disponibilité du service
+externe ; Valkaama reste embarqué pour une utilisation sans ce catalogue.

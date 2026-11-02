@@ -10,7 +10,7 @@ La baseline reçoit le texte intégral de chaque cas avec un prompt simple. Le s
 
 ## Métriques et résultats
 
-Précision = vrais positifs / alertes émises ; rappel = vrais positifs / cas positifs ; F1 = moyenne harmonique. Intervalles à 95 % calculés par Wilson sur les proportions, sans affirmer que les cas synthétiques sont représentatifs des tournages.
+L'unité est le cas : une prédiction est positive dès qu'au moins une alerte est produite. Précision = cas positifs correctement signalés / cas signalés ; rappel = cas positifs signalés / cas positifs ; F1 = moyenne harmonique. Intervalles à 95 % calculés par Wilson sur les proportions. Ils ne corrigent ni la proximité de certains cas synthétiques ni l'absence d'échantillonnage représentatif des tournages.
 
 | Méthode | Précision [IC 95 %] | Rappel [IC 95 %] | F1 | Latence médiane / cas |
 |---|---|---|---|---|
@@ -24,10 +24,14 @@ Système : 17 vrais positifs, 1 faux positif, 4 faux négatifs et 28 vrais néga
 ## Analyse des échecs
 
 - Quatre points de possession manqués : C013, C024, C032, C059. Exemple : un passeport conservé par un agent réapparaît chez sa propriétaire sans restitution décrite. Le suivi des transferts reste à améliorer ; l'extraction et les actions doivent être inspectées avant de choisir la correction.
-- Une fausse alerte temporelle : C051. Une horloge brisée est vue intacte dans une séquence explicitement située cinq ans plus tôt.
+- Une fausse alerte temporelle : C051. Un lecteur cassette cassé est vu intact dans une séquence explicitement située cinq ans plus tôt.
 - Les erreurs JSON initiales et la fusion d'objets génériques ont des tests de régression ; ce ne sont pas des échecs masqués du benchmark final.
 
-## Corpus réel, coût et limites
+## Questions sur le corpus réel
+
+La comparaison QA réelle est **incomplète** : 10/24 questions ont leurs deux sorties fournisseur disponibles ; erreurs d'infrastructure : 14 baseline, 10 système. Un quota journalier a arrêté l’exécution. Aucun score global de qualité n'est revendiqué sur cet essai. Les sorties obtenues, y compris les réponses incorrectes, sont conservées ; voir [le journal brut](../eval/qa-real-report.json). La commande de reprise est `node --env-file=.env eval/qa-real.mjs --live` ; les nouveaux checkpoints n'autorisent une réutilisation qu'à empreintes de code, données, modèle et paramètres identiques. Une erreur fournisseur peut être retentée, une réponse valide mais fausse ne doit pas être rééchantillonnée pour améliorer le score.
+
+## Recherche, coût et limites
 
 Sur **12 recherches de référence dans Valkaama**, la bonne scène est retrouvée dans les cinq premiers résultats : 100,0 %. Les citations de référence ont été contrôlées dans le texte. Cette mesure porte uniquement sur la recherche, pas sur la justesse d'une analyse de continuité ou d'une réponse générée.
 

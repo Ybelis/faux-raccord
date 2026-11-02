@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Faux Raccord — rapport d’évaluation</title><style>
+@page { size: A4; margin: 15mm; }
+* { box-sizing: border-box; }
+html { color-scheme: light; background: #e9ebed; }
+body { margin: 0; color: #18242d; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; line-height: 1.42; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.page { width: 180mm; height: 266mm; margin: 12mm auto; padding: 0 0 13mm; position: relative; background: white; break-after: page; }
+.page:last-child { break-after: auto; }
+.screen-page { padding: 15mm; width: 210mm; height: 296mm; }
+.screen-page .page { margin: 0; }
+header { border-top: 3pt solid #233e49; padding-top: 5mm; margin-bottom: 6mm; }
+.brand { display: flex; justify-content: space-between; align-items: baseline; gap: 8mm; font-size: 8.5pt; letter-spacing: .04em; color: #4b606a; }
+.brand strong { letter-spacing: .11em; color: #233e49; }
+h1 { font-size: 23pt; line-height: 1.12; margin: 4mm 0 2mm; font-weight: 700; letter-spacing: -.035em; }
+.subtitle { color: #53636b; margin: 0; max-width: 166mm; }
+h2 { font-size: 12pt; margin: 5.5mm 0 2mm; line-height: 1.25; color: #233e49; }
+h3 { font-size: 10pt; margin: 3mm 0 1mm; }
+p { margin: 0 0 2.5mm; }
+ul { margin: 1mm 0 3mm; padding-left: 4.5mm; }
+li { margin: 0 0 1.2mm; }
+table { width: 100%; border-collapse: collapse; margin: 2.5mm 0; font-size: 9pt; }
+th { font-weight: 700; color: #324b56; background: #edf2f3; text-align: left; }
+th, td { border-bottom: .5pt solid #cdd6da; padding: 2.1mm 2mm; vertical-align: top; }
+.metric-table th:first-child, .metric-table td:first-child { width: 32%; }
+.metric-table th:not(:first-child), .metric-table td:not(:first-child) { text-align: right; }
+.note { background: #f0f4f4; border-left: 2pt solid #607b82; padding: 3mm 3.5mm; margin: 3mm 0; }
+.warning { background: #fbf4e8; border-left-color: #ae7a2c; }
+.small { font-size: 8.5pt; color: #52636c; line-height: 1.4; }
+.mono { font-family: Consolas, 'Courier New', monospace; font-size: 8.5pt; overflow-wrap: anywhere; }
+.two-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 6mm; }
+.two-columns h2:first-child { margin-top: 0; }
+.rule { border-top: .5pt solid #cdd6da; padding-top: 3mm; margin-top: 3mm; }
+footer { position: absolute; bottom: 0; left: 0; right: 0; border-top: .5pt solid #cdd6da; padding-top: 2.5mm; display: flex; justify-content: space-between; gap: 8mm; color: #607078; font-size: 8pt; }
+a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+.card h1 { font-size: 22pt; }
+.card h2 { margin-top: 4mm; font-size: 11pt; }
+.card header { margin-bottom: 4mm; }
+.card { font-size: 9.5pt; }
+.card .small { font-size: 8.2pt; }
+.card table { font-size: 8.6pt; }
+@media screen { .page { box-shadow: 0 5px 30px #14232d1a; outline: 15mm solid white; margin-top: 27mm; margin-bottom: 35mm; } }
+@media print { html { background: white; } .page { margin: 0; } a { text-decoration: none; } }
+</style></head><body>
+<main class="page">
+<header><div class="brand"><strong>FAUX RACCORD</strong><span>2 novembre 2026</span></div><h1>Rapport d’évaluation</h1><p class="subtitle">Continuité textuelle des accessoires · résultats du prototype et limites de leur interprétation</p></header>
+<h2>1. Protocole de continuité</h2>
+<p>Le jeu comporte <strong>60 cas synthétiques contrôlés</strong> : dix de développement et cinquante réservés au test (21 positifs, 29 négatifs). États, possession, réparations, objets homonymes, ellipses, absences de mention et injections sont représentés. Les annotations assistées par IA <strong>attendent une validation étudiante</strong>.</p>
+<p>Le prompt simple reçoit le texte intégral du cas. Le système reçoit les mêmes scènes : extraction JSON, validation des citations, suivi d’objets, recherche BM25 puis comparaison LLM. Modèle et température identiques ; tous les appels du système sont comptés.</p>
+<p class="small">Référence : openai/gpt-oss-20b sur groq · prompts v1.0.0 · température 0 · raisonnement low · code <span class="mono">fc3b8d431ac6</span>. Les nouveaux réglages du produit n’héritent pas de ces scores.</p>
+<h2>2. Résultats et incertitude</h2>
+<p>L’unité est le <strong>cas</strong> : au moins une alerte rend la prédiction positive. Précision = VP / (VP + FP) ; rappel = VP / (VP + FN) ; F1 = moyenne harmonique. Les intervalles de Wilson à 95 % rendent visible le petit effectif.</p>
+<table class="metric-table"><thead><tr><th>Méthode</th><th>Précision [IC 95 %]</th><th>Rappel</th><th>F1</th><th>Médiane</th></tr></thead><tbody><tr><td>Prompt simple</td><td>84,0 %<br><span class="small">65,3 %–93,6 %</span></td><td>100,0 %</td><td>91,3 %</td><td>0,508 s</td></tr><tr><td>Extraction + RAG + comparaison</td><td>94,4 %<br><span class="small">74,2 %–99,0 %</span></td><td>81,0 %</td><td>87,2 %</td><td>6,426 s</td></tr></tbody></table>
+<p class="small">Système : 17 VP · 1 FP · 4 FN · 28 VN. Baseline : 21 VP · 4 FP · 0 FN · 25 VN. Erreurs fournisseur : 0 système, 0 baseline. IC du rappel : 60,0 %–92,3 % système ; 84,5 %–100,0 % baseline.</p>
+<div class="note"><strong>Le prompt simple obtient le meilleur F1.</strong> Le pipeline réduit les fausses alertes de 4 à 1, mais manque 4 cas positifs. Sa supériorité globale n’est pas démontrée. La borne basse de la précision ne confirme pas un seuil de 80 %.</div>
+<h2>3. Échecs à expliquer</h2>
+<ul><li><strong>Quatre faux négatifs de possession</strong> : C013, C024, C032, C059. Un passeport conservé par un agent réapparaît chez sa propriétaire sans restitution décrite.</li><li><strong>Un faux positif temporel</strong> : C051. Un lecteur cassette cassé est vu intact dans une séquence située cinq ans plus tôt.</li></ul>
+<p>Les cas sont courts, synthétiques et parfois proches. Leurs intervalles ne corrigent pas ce biais et ne prédisent pas la performance sur un film. Après lecture des erreurs, toute correction doit être évaluée sur de nouveaux cas indépendants.</p>
+<footer><span>Rapport d’évaluation · équipe de trois — noms à renseigner</span><span>1 / 2</span></footer>
+</main>
+<main class="page">
+<header><div class="brand"><strong>FAUX RACCORD</strong><span>2 novembre 2026</span></div><h1>Données réelles et limites</h1><p class="subtitle">Mesures complémentaires · coût · sécurité · travail restant</p></header>
+<h2>4. Questions sur un vrai scénario</h2>
+<div class="note warning"><strong>Mesure QA réelle à terminer.</strong> 24 erreurs fournisseur ont empêché une comparaison complète. Les échecs réseau ne permettent pas de conclure sur la qualité du modèle.</div>
+<h2>5. Recherche, tokens et coût</h2>
+<p>Sur 12 recherches lexicales dans Valkaama, la scène de référence apparaît dans les cinq premiers résultats dans <strong>100,0 %</strong> des cas. Les citations sont contrôlées dans le texte. Ce résultat mesure la recherche seule.</p>
+<table><thead><tr><th>50 cas synthétiques</th><th>Tokens entrée / sortie</th><th>Coût estimé / cas</th></tr></thead><tbody><tr><td>Prompt simple</td><td>12 977 / 4 449</td><td>0,000046 USD</td></tr><tr><td>Pipeline</td><td>45 405 / 16 483</td><td>0,000167 USD</td></tr></tbody></table>
+<p class="small">Tarif catalogue openai/gpt-oss-20b, vérifié le 2 novembre 2026 : 0.075 USD/M en entrée et 0.3 USD/M en sortie. Estimation hors cache, remises et plan gratuit, distincte d’une facture. Les quotas et le volume d’un scénario modifient coût et latence.</p>
+<h2>6. Sécurité et portée</h2>
+<p>3/3 essais adversariaux réels ont résisté aux attaques testées : instruction dans le scénario, demande de secret et détournement de la question. Cet échantillon ne garantit pas la résistance générale aux injections.</p>
+<p>Les citations extraites sont recherchées après normalisation ; les identifiants inventés sont rejetés. Un passage présent ne garantit pas une interprétation correcte. La validation humaine reste nécessaire.</p>
+<div class="note warning"><strong>Avant le rendu :</strong> faire relire les références ; tester avec une personne concernée et convenir d’une cible utile ; vérifier la démo sur les trois machines ; réserver de nouveaux cas avant de modifier le détecteur. Aucun gain de temps utilisateur ni benchmark multi-productions n’est établi.</div>
+<p class="small rule">Sources et preuves : <span class="mono">eval/report.json</span>, <span class="mono">eval/qa-real-report.json</span>, <span class="mono">eval/retrieval-real.json</span>, <span class="mono">eval/red-team-results.json</span>. Méthodes reproductibles dans <span class="mono">eval/</span>. Tarifs : <a href="https://console.groq.com/docs/model/openai/gpt-oss-20b">documentation Groq</a>. Attribution du scénario et droits : <span class="mono">data/README.md</span>.</p>
+<footer><span>Rapport d’évaluation · équipe de trois — noms à renseigner</span><span>2 / 2</span></footer>
+</main></body></html>

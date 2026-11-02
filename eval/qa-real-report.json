@@ -1,0 +1,981 @@
+{
+  "status": "completed_with_errors",
+  "kind": "real-source-qa",
+  "dataset": "eval/qa-real.json",
+  "datasetHash": "dde74914a1cc",
+  "codeHash": "9ffae16196ba",
+  "scope": {
+    "firstScene": 1,
+    "lastScene": 10
+  },
+  "completedAt": "2026-11-02T11:35:47.400Z",
+  "model": "openai/gpt-oss-20b",
+  "provider": "groq",
+  "n": 24,
+  "annotationStatus": "proposed-by-AI; source-quotes-verified-by-script; student-review-pending",
+  "metric": "Lexical answer grid + expected scene citation; exact NOT FOUND on unanswerable questions",
+  "note": "Questions sur de vrais passages de Valkaama, sans altérer le scénario. Grille automatique approximative, validation humaine en attente. Ce score ne mesure ni la détection de continuité ni une généralisation à d’autres scénarios. La baseline reçoit les dix scènes intégrales ; le système effectue sa recherche sur ces mêmes dix scènes.",
+  "baseline": {
+    "passed": 2,
+    "n": 24,
+    "correctAndCitedOrCorrectAbstention": 0.08333333333333333,
+    "confidence95": [
+      0.023,
+      0.258
+    ],
+    "answerablePassed": 2,
+    "answerableTotal": 20,
+    "correctAbstentions": 0,
+    "unanswerableTotal": 4,
+    "abstentionRate": 0,
+    "errors": 14,
+    "medianSeconds": 42.7425,
+    "inputTokens": 55870,
+    "outputTokens": 725
+  },
+  "system": {
+    "passed": 7,
+    "n": 24,
+    "correctAndCitedOrCorrectAbstention": 0.2916666666666667,
+    "confidence95": [
+      0.149,
+      0.492
+    ],
+    "answerablePassed": 7,
+    "answerableTotal": 20,
+    "correctAbstentions": 0,
+    "unanswerableTotal": 4,
+    "abstentionRate": 0.041666666666666664,
+    "errors": 10,
+    "medianSeconds": 11.917,
+    "inputTokens": 25876,
+    "outputTokens": 960
+  },
+  "rows": [
+    {
+      "id": "QA001",
+      "question": "What does Runa light in the park?",
+      "expected": "answer",
+      "expectedSceneId": "S001",
+      "expectedQuote": "Runa lights a cigarette.",
+      "baseline": {
+        "answer": "Runa lights a cigarette [S001]",
+        "citations": [
+          "S001"
+        ],
+        "usage": {
+          "inputTokens": 5579,
+          "outputTokens": 52,
+          "milliseconds": 1044,
+          "provider": "groq",
+          "model": "openai/gpt-oss-20b",
+          "promptVersion": "1.0.0",
+          "settings": {
+            "temperature": 0,
+            "maxOutputTokens": 5000,
+            "reasoningEffort": "low"
+          },
+          "outputLimit": 1200
+        },
+        "milliseconds": 1044,
+        "passed": true,
+        "abstained": false,
+        "lexicalMatch": true,
+        "sourceMatch": true,
+        "validCitations": true
+      },
+      "system": {
+        "answer": "Runa lights a cigarette [S001-C1]",
+        "citations": [
+          "S001-C1"
+        ],
+        "usage": {
+          "inputTokens": 2070,
+          "outputTokens": 62,
+          "milliseconds": 829,
+          "provider": "groq",
+          "model": "openai/gpt-oss-20b",
+          "promptVersion": "1.0.0",
+          "settings": {
+            "temperature": 0,
+            "maxOutputTokens": 5000,
+            "reasoningEffort": "low"
+          },
+          "outputLimit": 1200
+        },
+        "milliseconds": 834,
+        "passed": true,
+        "abstained": false,
+        "lexicalMatch": true,
+        "sourceMatch": true,
+        "validCitations": true
+      }
+    },
+    {
+      "id": "QA002",
+      "question": "Que boit Runa au café dans la scène 2 ?",
+      "expected": "answer",
+      "expectedSceneId": "S002",
+      "expectedQuote": "Runa drinks a glass of red wine",
+      "baseline": {
+        "answer": "Runa boit un verre de vin rouge [S002]",
+        "citations": [
+          "S002"
+        ],
+        "usage": {
+          "inputTokens": 5583,
+          "outputTokens": 61,
+          "milliseconds": 40172,
+          "provider": "groq",
+          "model": "openai/gpt-oss-20b",
+          "promptVersion": "1.0.0",
+          "settings": {
+            "temperature": 0,
+            "maxOutputTokens": 5000,
+            "reasoningEffort": "low"
+          },
+          "outputLimit": 1200
+        },
+        "milliseconds": 40172,
+        "passed": true,
+        "abstained": false,
+        "lexicalMatch": true,
+        "sourceMatch": true,
+        "validCitations": true
+      },
+      "system": {
+        "answer": "Runa boit un verre de vin rouge [S002-C1]",
+        "citations": [
+          "S002-C1"
+        ],
+        "usage": {
+          "inputTokens": 1907,
+          "outputTokens": 57,
+          "milliseconds": 15701,
+          "provider": "groq",
+          "model": "openai/gpt-oss-20b",
+          "promptVersion": "1.0.0",
+          "settings": {
+            "temperature": 0,
+            "maxOutputTokens": 5000,
+            "reasoningEffort": "low"
+          },
+          "outputLimit": 1200
+        },
+        "milliseconds": 15706,
+        "passed": true,
+        "abstained": false,
+        "lexicalMatch": true,
+        "sourceMatch": true,
+        "validCitations": true
+      }
+    },
+    {
+      "id": "QA003",
+      "question": "What sort of paper is Lasse writing on at the cafe?",
+      "expected": "answer",
+      "expectedSceneId": "S002",
+      "expectedQuote": "a piece of crinkled paper.",
+      "baseline": {
+        "passed": false,
+        "error": "Limite Groq atteinte. Réessayez dans une minute ou utilisez Ollama.",
+        "milliseconds": 41152
+      },
+      "system": {
+        "answer": "Lasse writes on a piece of crinkled paper [S002-C1]",
+        "citations": [
+          "S002-C1"
+        ],
+        "usage": {
+          "inputTokens": 2051,
+          "outputTokens": 68,
+          "milliseconds": 479,
+          "provider": "groq",
+          "model": "openai/gpt-oss-20b",
+          "promptVersion": "1.0.0",
+          "settings": {
+            "temperature": 0,
+            "maxOutputTokens": 5000,
+            "reasoningEffort": "low"
+          },
+          "outputLimit": 1200
+        },
+        "milliseconds": 483,
+        "passed": true,
+        "abstained": false,
+        "lexicalMatch": true,
+        "sourceMatch": true,
+        "validCitations": true
+      }
+    },
+    {
+      "id": "QA004",
+      "question": "Qui laisse de l'argent sur la table du café à la fin de la scène 2 ?",
+      "expected": "answer",
+      "expectedSceneId": "S002",
+      "expectedQuote": "Runa is disappointed. She puts some money on the table",
+      "baseline": {
+        "answer": "Runa",
+        "citations": [
+          "S002"
+        ],
+        "usage": {
+          "inputTokens": 5589,
+          "outputTokens": 58,
+          "milliseconds": 17781,
+          "provider": "groq",
+          "model": "openai/gpt-oss-20b",
+          "promptVersion": "1.0.0",
+          "settings": {
+            "temperature": 0,
+            "maxOutputTokens": 5000,
+            "reasoningEffort": "low"
+          },
+          "outputLimit": 1200
+        },
+        "milliseconds": 17781,
+        "passed": false,
+        "abstained": false,
+        "lexicalMatch": true,
+        "sourceMatch": false,
+        "validCitations": false
+      },
+      "system": {
+        "answer": "Runa laisse de l'argent sur la table du café à la fin de la scène 2 [S002-C3]",
+        "citations": [
+          "S002-C3"
+        ],
+        "usage": {
+          "inputTokens": 1667,
+          "outputTokens": 86,
+          "milliseconds": 10384,
+          "provider": "groq",
+          "model": "openai/gpt-oss-20b",
+          "promptVersion": "1.0.0",
+          "settings": {
+            "temperature": 0,
+            "maxOutputTokens": 5000,
+            "reasoningEffort": "low"
+          },
+          "outputLimit": 1200
+        },
+        "milliseconds": 10386,
+        "passed": true,
+        "abstained": false,
+        "lexicalMatch": true,
+        "sourceMatch": true,
+        "validCitations": true
+      }
+    },
+    {
+      "id": "QA005",
+      "question": "What can be seen inside Leila's half-open purse?",
+      "expected": "answer",
+      "expectedSceneId": "S004",
+      "expectedQuote": "pepper spray can be seen inside.",
+      "baseline": {
+        "answer": "Une bombe de spray épicé",
+        "citations": [
+          "S004"
+        ],
+        "usage": {
+          "inputTokens": 5582,
+          "outputTokens": 72,
+          "milliseconds": 43022,
+          "provider": "groq",
+          "model": "openai/gpt-oss-20b",
+          "promptVersion": "1.0.0",
+          "settings": {
+            "temperature": 0,
+            "maxOutputTokens": 5000,
+            "reasoningEffort": "low"
+          },
+          "outputLimit": 1200
+        },
+        "milliseconds": 43022,
+        "passed": false,
+        "abstained": false,
+        "lexicalMatch": false,
+        "sourceMatch": false,
+        "validCitations": false
+      },
+      "system": {
+        "answer": "Un spray de poivre peut être vu à l'intérieur du porte-monnaie à moitié ouvert de Leila.",
+        "citations": [
+          "S004-C2"
+        ],
+        "usage": {
+          "inputTokens": 1924,
+          "outputTokens": 48,
+          "milliseconds": 14657,
+          "provider": "groq",
+          "model": "openai/gpt-oss-20b",
+          "promptVersion": "1.0.0",
+          "settings": {
+            "temperature": 0,
+            "maxOutputTokens": 5000,
+            "reasoningEffort": "low"
+          },
+          "outputLimit": 1200
+        },
+        "milliseconds": 14660,
+        "passed": false,
+        "abstained": false,
+        "lexicalMatch": true,
+        "sourceMatch": false,
+        "validCitations": false
+      }
+    },
+    {
+      "id": "QA006",
+      "question": "Dans quel état est le verre de Scotch de Magnus au début de la scène 4 ?",
+      "expected": "answer",
+      "expectedSceneId": "S004",
+      "expectedQuote": "MAGNUS is standing with an almost empty glass of Scotch",
+      "baseline": {
+        "answer": "almost empty",
+        "citations": [
+          "S004"
+        ],
+        "usage": {
+          "inputTokens": 5588,
+          "outputTokens": 69,
+          "milliseconds": 42863,
+          "provider": "groq",
+          "model": "openai/gpt-oss-20b",
+          "promptVersion": "1.0.0",
+          "settings": {
+            "temperature": 0,
+            "maxOutputTokens": 5000,
+            "reasoningEffort": "low"
+          },
+          "outputLimit": 1200
+        },
+        "milliseconds": 42863,
+        "passed": false,
+        "abstained": false,
+        "lexicalMatch": true,
+        "sourceMatch": false,
+        "validCitations": false
+      },
+      "system": {
+        "answer": "Le verre de Scotch de Magnus est presque vide au début de la scène 4.",
+        "citations": [
+          "S004-C1"
+        ],
+        "usage": {
+          "inputTokens": 1844,
+          "outputTokens": 78,
+          "milliseconds": 13443,
+          "provider": "groq",
+          "model": "openai/gpt-oss-20b",
+          "promptVersion": "1.0.0",
+          "settings": {
+            "temperature": 0,
+            "maxOutputTokens": 5000,
+            "reasoningEffort": "low"
+          },
+          "outputLimit": 1200
+        },
+        "milliseconds": 13448,
+        "passed": false,
+        "abstained": false,
+        "lexicalMatch": true,
+        "sourceMatch": false,
+        "validCitations": false
+      }
+    },
+    {
+      "id": "QA007",
+      "question": "Where is the half-empty bottle next to Leila in scene 4?",
+      "expected": "answer",
+      "expectedSceneId": "S004",
+      "expectedQuote": "Next to her the half-empty bottle is standing on the\nbedside locker.",
+      "baseline": {
+        "answer": "Leila se trouve dans la chambre d'hôtel, et la bouteille à moitié vide se trouve sur le tiroir de la commode de côté du lit.",
+        "citations": [
+          "S004"
+        ],
+        "usage": {
+          "inputTokens": 5585,
+          "outputTokens": 92,
+          "milliseconds": 50291,
+          "provider": "groq",
+          "model": "openai/gpt-oss-20b",
+          "promptVersion": "1.0.0",
+          "settings": {
+            "temperature": 0,
+            "maxOutputTokens": 5000,
+            "reasoningEffort": "low"
+          },
+          "outputLimit": 1200
+        },
+        "milliseconds": 50292,
+        "passed": false,
+        "abstained": false,
+        "lexicalMatch": false,
+        "sourceMatch": false,
+        "validCitations": false
+      },
+      "system": {
+        "answer": "Leila a la bouteille à moitié vide sur le tiroir de la commode de côté de son lit [S004-C1]",
+        "citations": [
+          "S004-C1"
+        ],
+        "usage": {
+          "inputTokens": 1732,
+          "outputTokens": 90,
+          "milliseconds": 6722,
+          "provider": "groq",
+          "model": "openai/gpt-oss-20b",
+          "promptVersion": "1.0.0",
+          "settings": {
+            "temperature": 0,
+            "maxOutputTokens": 5000,
+            "reasoningEffort": "low"
+          },
+          "outputLimit": 1200
+        },
+        "milliseconds": 6726,
+        "passed": false,
+        "abstained": false,
+        "lexicalMatch": false,
+        "sourceMatch": true,
+        "validCitations": true
+      }
+    },
+    {
+      "id": "QA008",
+      "question": "Le verre de Scotch de Leila est-il encore plein quand Magnus s'approche de son côté du lit dans la scène 5 ?",
+      "expected": "answer",
+      "expectedSceneId": "S005",
+      "expectedQuote": "her glass of Scotch is standing. It is still\nfull.",
+      "baseline": {
+        "answer": "Oui, le verre de Scotch de Leila est encore plein quand Magnus s'approche de son côté du lit dans la scène 5.",
+        "citations": [
+          "S005"
+        ],
+        "usage": {
+          "inputTokens": 5597,
+          "outputTokens": 95,
+          "milliseconds": 42733,
+          "provider": "groq",
+          "model": "openai/gpt-oss-20b",
+          "promptVersion": "1.0.0",
+          "settings": {
+            "temperature": 0,
+            "maxOutputTokens": 5000,
+            "reasoningEffort": "low"
+          },
+          "outputLimit": 1200
+        },
+        "milliseconds": 42733,
+        "passed": false,
+        "abstained": false,
+        "lexicalMatch": true,
+        "sourceMatch": false,
+        "validCitations": false
+      },
+      "system": {
+        "answer": "Oui, le verre de Scotch de Leila est encore plein quand Magnus s'approche de son côté du lit dans la scène 5.",
+        "citations": [
+          "S005-C2"
+        ],
+        "usage": {
+          "inputTokens": 1848,
+          "outputTokens": 81,
+          "milliseconds": 14495,
+          "provider": "groq",
+          "model": "openai/gpt-oss-20b",
+          "promptVersion": "1.0.0",
+          "settings": {
+            "temperature": 0,
+            "maxOutputTokens": 5000,
+            "reasoningEffort": "low"
+          },
+          "outputLimit": 1200
+        },
+        "milliseconds": 14497,
+        "passed": false,
+        "abstained": false,
+        "lexicalMatch": true,
+        "sourceMatch": false,
+        "validCitations": false
+      }
+    },
+    {
+      "id": "QA009",
+      "question": "Qui saisit le verre de Scotch de Leila et le boit d'un trait dans la scène 5 ?",
+      "expected": "answer",
+      "expectedSceneId": "S005",
+      "expectedQuote": "Magnus grabs the glass and\ndowns it in one swig.",
+      "baseline": {
+        "answer": "Magnus saisit le verre de Scotch de Leila et le boit d'un trait dans la scène 5.",
+        "citations": [
+          "S005"
+        ],
+        "usage": {
+          "inputTokens": 5593,
+          "outputTokens": 77,
+          "milliseconds": 43074,
+          "provider": "groq",
+          "model": "openai/gpt-oss-20b",
+          "promptVersion": "1.0.0",
+          "settings": {
+            "temperature": 0,
+            "maxOutputTokens": 5000,
+            "reasoningEffort": "low"
+          },
+          "outputLimit": 1200
+        },
+        "milliseconds": 43075,
+        "passed": false,
+        "abstained": false,
+        "lexicalMatch": true,
+        "sourceMatch": false,
+        "validCitations": false
+      },
+      "system": {
+        "answer": "Magnus saisit le verre de Scotch de Leila et le boit d'un trait dans la scène 5.",
+        "citations": [
+          "S005-C2"
+        ],
+        "usage": {
+          "inputTokens": 1844,
+          "outputTokens": 79,
+          "milliseconds": 13513,
+          "provider": "groq",
+          "model": "openai/gpt-oss-20b",
+          "promptVersion": "1.0.0",
+          "settings": {
+            "temperature": 0,
+            "maxOutputTokens": 5000,
+            "reasoningEffort": "low"
+          },
+          "outputLimit": 1200
+        },
+        "milliseconds": 13516,
+        "passed": false,
+        "abstained": false,
+        "lexicalMatch": true,
+        "sourceMatch": false,
+        "validCitations": false
+      }
+    },
+    {
+      "id": "QA010",
+      "question": "Is Runa's laptop still turned on when she sees it in the kitchen in scene 6?",
+      "expected": "answer",
+      "expectedSceneId": "S006",
+      "expectedQuote": "her laptop which is still turned on.",
+      "baseline": {
+        "answer": "Oui, le laptop est encore allumé lorsqu’elle le voit dans la scène 6.",
+        "citations": [
+          "S006"
+        ],
+        "usage": {
+          "inputTokens": 5590,
+          "outputTokens": 81,
+          "milliseconds": 42752,
+          "provider": "groq",
+          "model": "openai/gpt-oss-20b",
+          "promptVersion": "1.0.0",
+          "settings": {
+            "temperature": 0,
+            "maxOutputTokens": 5000,
+            "reasoningEffort": "low"
+          },
+          "outputLimit": 1200
+        },
+        "milliseconds": 42752,
+        "passed": false,
+        "abstained": false,
+        "lexicalMatch": true,
+        "sourceMatch": false,
+        "validCitations": false
+      },
+      "system": {
+        "answer": "Runa trouve son ordinateur portable encore allumé dans la cuisine [S006-C1]",
+        "citations": [
+          "S006-C1"
+        ],
+        "usage": {
+          "inputTokens": 1783,
+          "outputTokens": 68,
+          "milliseconds": 13876,
+          "provider": "groq",
+          "model": "openai/gpt-oss-20b",
+          "promptVersion": "1.0.0",
+          "settings": {
+            "temperature": 0,
+            "maxOutputTokens": 5000,
+            "reasoningEffort": "low"
+          },
+          "outputLimit": 1200
+        },
+        "milliseconds": 13909,
+        "passed": true,
+        "abstained": false,
+        "lexicalMatch": true,
+        "sourceMatch": true,
+        "validCitations": true
+      }
+    },
+    {
+      "id": "QA011",
+      "question": "What flickers next to Runa's laptop in scene 6?",
+      "expected": "answer",
+      "expectedSceneId": "S006",
+      "expectedQuote": "an\nalmost burnt down candle is flickering.",
+      "baseline": {
+        "answer": "une bougie presque brûlée",
+        "citations": [
+          "S006"
+        ],
+        "usage": {
+          "inputTokens": 5584,
+          "outputTokens": 68,
+          "milliseconds": 42395,
+          "provider": "groq",
+          "model": "openai/gpt-oss-20b",
+          "promptVersion": "1.0.0",
+          "settings": {
+            "temperature": 0,
+            "maxOutputTokens": 5000,
+            "reasoningEffort": "low"
+          },
+          "outputLimit": 1200
+        },
+        "milliseconds": 42395,
+        "passed": false,
+        "abstained": false,
+        "lexicalMatch": true,
+        "sourceMatch": false,
+        "validCitations": false
+      },
+      "system": {
+        "answer": "une bougie presque brûlée qui vacille [S006-C1]",
+        "citations": [
+          "S006-C1"
+        ],
+        "usage": {
+          "inputTokens": 1817,
+          "outputTokens": 81,
+          "milliseconds": 15129,
+          "provider": "groq",
+          "model": "openai/gpt-oss-20b",
+          "promptVersion": "1.0.0",
+          "settings": {
+            "temperature": 0,
+            "maxOutputTokens": 5000,
+            "reasoningEffort": "low"
+          },
+          "outputLimit": 1200
+        },
+        "milliseconds": 15132,
+        "passed": true,
+        "abstained": false,
+        "lexicalMatch": true,
+        "sourceMatch": true,
+        "validCitations": true
+      }
+    },
+    {
+      "id": "QA012",
+      "question": "Quel mot Runa lit-elle sur le papier posé sur la table dans la scène 6 ?",
+      "expected": "answer",
+      "expectedSceneId": "S006",
+      "expectedQuote": "the word HOMECOMING is written.",
+      "baseline": {
+        "passed": false,
+        "error": "Limite Groq atteinte. Réessayez dans une minute ou utilisez Ollama.",
+        "milliseconds": 60593
+      },
+      "system": {
+        "answer": "HOMECOMING [S006-C2]",
+        "citations": [
+          "S006-C2"
+        ],
+        "usage": {
+          "inputTokens": 1696,
+          "outputTokens": 52,
+          "milliseconds": 434,
+          "provider": "groq",
+          "model": "openai/gpt-oss-20b",
+          "promptVersion": "1.0.0",
+          "settings": {
+            "temperature": 0,
+            "maxOutputTokens": 5000,
+            "reasoningEffort": "low"
+          },
+          "outputLimit": 1200
+        },
+        "milliseconds": 438,
+        "passed": true,
+        "abstained": false,
+        "lexicalMatch": true,
+        "sourceMatch": true,
+        "validCitations": true
+      }
+    },
+    {
+      "id": "QA013",
+      "question": "Quel objet Runa serre-t-elle une fois revenue au lit dans la scène 6 ?",
+      "expected": "answer",
+      "expectedSceneId": "S006",
+      "expectedQuote": "Runa grabs one of her cuddly toys and holds it\ntight",
+      "baseline": {
+        "passed": false,
+        "error": "Limite Groq atteinte. Réessayez dans une minute ou utilisez Ollama.",
+        "milliseconds": 60503
+      },
+      "system": {
+        "answer": "NOT FOUND",
+        "citations": [],
+        "usage": {
+          "inputTokens": 1912,
+          "outputTokens": 43,
+          "milliseconds": 424,
+          "provider": "groq",
+          "model": "openai/gpt-oss-20b",
+          "promptVersion": "1.0.0",
+          "settings": {
+            "temperature": 0,
+            "maxOutputTokens": 5000,
+            "reasoningEffort": "low"
+          },
+          "outputLimit": 1200
+        },
+        "milliseconds": 428,
+        "passed": false,
+        "abstained": true,
+        "lexicalMatch": false,
+        "sourceMatch": false,
+        "validCitations": false
+      }
+    },
+    {
+      "id": "QA014",
+      "question": "What kind of music does the radio play at breakfast in scene 7?",
+      "expected": "answer",
+      "expectedSceneId": "S007",
+      "expectedQuote": "The radio plays pop music.",
+      "baseline": {
+        "passed": false,
+        "error": "Limite Groq atteinte. Réessayez dans une minute ou utilisez Ollama.",
+        "milliseconds": 60715
+      },
+      "system": {
+        "passed": false,
+        "error": "Limite Groq atteinte. Réessayez dans une minute ou utilisez Ollama.",
+        "milliseconds": 60591
+      }
+    },
+    {
+      "id": "QA015",
+      "question": "Quelle boisson Runa boit-elle au petit déjeuner dans la scène 7 ?",
+      "expected": "answer",
+      "expectedSceneId": "S007",
+      "expectedQuote": "she takes a sip of her coffee.",
+      "baseline": {
+        "passed": false,
+        "error": "Limite Groq atteinte. Réessayez dans une minute ou utilisez Ollama.",
+        "milliseconds": 60360
+      },
+      "system": {
+        "passed": false,
+        "error": "Limite Groq atteinte. Réessayez dans une minute ou utilisez Ollama.",
+        "milliseconds": 60574
+      }
+    },
+    {
+      "id": "QA016",
+      "question": "Quel alcool contient la bouteille trouvée par Magnus dans son placard dans la scène 8 ?",
+      "expected": "answer",
+      "expectedSceneId": "S008",
+      "expectedQuote": "half-full bottle of vodka in his cupboard.",
+      "baseline": {
+        "passed": false,
+        "error": "Limite Groq atteinte. Réessayez dans une minute ou utilisez Ollama.",
+        "milliseconds": 60555
+      },
+      "system": {
+        "passed": false,
+        "error": "Limite Groq atteinte. Réessayez dans une minute ou utilisez Ollama.",
+        "milliseconds": 60378
+      }
+    },
+    {
+      "id": "QA017",
+      "question": "How full is the vodka bottle in Magnus's cupboard in scene 8?",
+      "expected": "answer",
+      "expectedSceneId": "S008",
+      "expectedQuote": "half-full bottle of vodka in his cupboard.",
+      "baseline": {
+        "passed": false,
+        "error": "Limite Groq atteinte. Réessayez dans une minute ou utilisez Ollama.",
+        "milliseconds": 60469
+      },
+      "system": {
+        "passed": false,
+        "error": "Limite Groq atteinte. Réessayez dans une minute ou utilisez Ollama.",
+        "milliseconds": 60536
+      }
+    },
+    {
+      "id": "QA018",
+      "question": "Quel pseudonyme Magnus utilise-t-il sur le forum dans la scène 9 ?",
+      "expected": "answer",
+      "expectedSceneId": "S009",
+      "expectedQuote": "His alias is\nLAZARUS.",
+      "baseline": {
+        "passed": false,
+        "error": "Limite Groq atteinte. Réessayez dans une minute ou utilisez Ollama.",
+        "milliseconds": 60875
+      },
+      "system": {
+        "passed": false,
+        "error": "Limite Groq atteinte. Réessayez dans une minute ou utilisez Ollama.",
+        "milliseconds": 60505
+      }
+    },
+    {
+      "id": "QA019",
+      "question": "Sur quel meuble Svenja dort-elle à l'arrivée de Magnus dans la scène 8 ?",
+      "expected": "answer",
+      "expectedSceneId": "S008",
+      "expectedQuote": "SVENJA, sleeping on the sofa",
+      "baseline": {
+        "passed": false,
+        "error": "Limite Groq atteinte. Réessayez dans une minute ou utilisez Ollama.",
+        "milliseconds": 60537
+      },
+      "system": {
+        "passed": false,
+        "error": "Limite Groq atteinte. Réessayez dans une minute ou utilisez Ollama.",
+        "milliseconds": 60401
+      }
+    },
+    {
+      "id": "QA020",
+      "question": "Les deux paquets de cigarettes trouvés par Svenja dans la scène 10 contiennent-ils encore des cigarettes ?",
+      "expected": "answer",
+      "expectedSceneId": "S010",
+      "expectedQuote": "two\npackages of cigarettes. They are empty.",
+      "baseline": {
+        "passed": false,
+        "error": "Limite Groq atteinte. Réessayez dans une minute ou utilisez Ollama.",
+        "milliseconds": 61147
+      },
+      "system": {
+        "answer": "Les deux paquets de cigarettes trouvés par Svenja sont vides.",
+        "citations": [
+          "S010-C1"
+        ],
+        "usage": {
+          "inputTokens": 1781,
+          "outputTokens": 67,
+          "milliseconds": 512,
+          "provider": "groq",
+          "model": "openai/gpt-oss-20b",
+          "promptVersion": "1.0.0",
+          "settings": {
+            "temperature": 0,
+            "maxOutputTokens": 5000,
+            "reasoningEffort": "low"
+          },
+          "outputLimit": 1200
+        },
+        "milliseconds": 516,
+        "passed": false,
+        "abstained": false,
+        "lexicalMatch": true,
+        "sourceMatch": false,
+        "validCitations": false
+      }
+    },
+    {
+      "id": "QA021",
+      "question": "Quelle est la marque de l'ordinateur portable de Runa dans la scène 6 ?",
+      "expected": "abstain",
+      "expectedSceneId": null,
+      "expectedQuote": null,
+      "baseline": {
+        "passed": false,
+        "error": "Limite Groq atteinte. Réessayez dans une minute ou utilisez Ollama.",
+        "milliseconds": 60493
+      },
+      "system": {
+        "passed": false,
+        "error": "Limite Groq atteinte. Réessayez dans une minute ou utilisez Ollama.",
+        "milliseconds": 60415
+      }
+    },
+    {
+      "id": "QA022",
+      "question": "What exact amount of money does Runa leave on the cafe table in scene 2?",
+      "expected": "abstain",
+      "expectedSceneId": null,
+      "expectedQuote": null,
+      "baseline": {
+        "passed": false,
+        "error": "Limite Groq atteinte. Réessayez dans une minute ou utilisez Ollama.",
+        "milliseconds": 60505
+      },
+      "system": {
+        "passed": false,
+        "error": "Limite Groq atteinte. Réessayez dans une minute ou utilisez Ollama.",
+        "milliseconds": 60210
+      }
+    },
+    {
+      "id": "QA023",
+      "question": "De quelle couleur est le sac à main de Leila dans la scène 4 ?",
+      "expected": "abstain",
+      "expectedSceneId": null,
+      "expectedQuote": null,
+      "baseline": {
+        "passed": false,
+        "error": "Limite Groq atteinte. Réessayez dans une minute ou utilisez Ollama.",
+        "milliseconds": 60352
+      },
+      "system": {
+        "passed": false,
+        "error": "Limite Groq atteinte. Réessayez dans une minute ou utilisez Ollama.",
+        "milliseconds": 60353
+      }
+    },
+    {
+      "id": "QA024",
+      "question": "What brand is the vodka in Magnus's cupboard in scene 8?",
+      "expected": "abstain",
+      "expectedSceneId": null,
+      "expectedQuote": null,
+      "baseline": {
+        "passed": false,
+        "error": "Limite Groq atteinte. Réessayez dans une minute ou utilisez Ollama.",
+        "milliseconds": 60379
+      },
+      "system": {
+        "passed": false,
+        "error": "Limite Groq atteinte. Réessayez dans une minute ou utilisez Ollama.",
+        "milliseconds": 60379
+      }
+    }
+  ],
+  "legacyStatus": "completed",
+  "nPlanned": 24,
+  "nCompleted": 10,
+  "qualityComparable": false,
+  "quotaReached": true,
+  "stopReason": "daily_quota",
+  "reportAnnotation": "Statut et périmètre clarifiés après exécution ; prédictions et mesures brutes conservées. Un diagnostic séparé a confirmé la limite quotidienne Groq. Aucun score global de qualité revendiqué sur cet essai incomplet.",
+  "quotaDiagnostic": {
+    "code": "RATE_LIMIT",
+    "kind": "tokens_per_day",
+    "limit": 200000,
+    "used": 198617,
+    "requested": 5605,
+    "credentialRedacted": true
+  }
+}
