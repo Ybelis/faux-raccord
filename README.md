@@ -135,6 +135,8 @@ Ces exemples sont synthétiques, parfois proches des cas de développement, et l
 
 Rapports : [évaluation complète](docs/evaluation_report.md), [benchmark de continuité](eval/report.json), [questions réelles](eval/qa-real-report.json). Le rapport QA indique sa propre configuration ; ses résultats ne doivent pas être mélangés à ceux du benchmark de continuité.
 
+La comparaison QA 120B est complète : **19/24 réponses conformes avec RAG, 16/24 avec le prompt simple**, quatre abstentions correctes dans chaque méthode. La grille automatique reste limitée ; les latences incluent les attentes de quota. Les réponses fausses ont été conservées lors de la reprise.
+
 ```powershell
 npm test
 npm run eval

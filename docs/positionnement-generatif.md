@@ -33,3 +33,15 @@ Le programme actuel appelle les étapes dans un ordre fixé. Il ne choisit pas u
 « Nous avons employé le mot agent trop largement. Notre implémentation est un pipeline d’IA générative avec RAG : extraction structurée, recherche de passages et génération d’explications, puis validation humaine. C’est ce fonctionnement que nous montrons pour le rendu Generative AI. »
 
 Le système peut manquer un objet ou mal interpréter un changement. La démonstration doit montrer une sortie générée, sa source et un échec connu, plutôt que promettre une autonomie ou une fiabilité qui n’ont pas été mesurées.
+
+## Pourquoi le rendu actuel est textuel
+
+Le tableau du brief indique une modalité **encouragée**, « image, audio ou vidéo » lorsqu’elle apporte une valeur réelle. Le périmètre retenu porte sur la relecture préparatoire du scénario ; ses données sont du texte. Un PDF contenant du texte et la vidéo de secours ne sont pas présentés comme une fonctionnalité multimodale.
+
+Une dictée de question est techniquement une entrée audio, mais son utilité n’a pas été démontrée pour ce parcours. La comparaison d’une photo d’accessoire à l’état décrit dans une scène serait une extension plus proche du sujet, à condition de disposer de photos autorisées, d’un modèle de vision et d’une évaluation spécifique. Comparer des prises vidéo élargirait davantage le projet.
+
+La recommandation n’est donc pas annoncée comme réalisée. Si une consigne orale la rend obligatoire, elle devra être ajoutée au périmètre ; l’implémentation actuelle ne peut pas en tenir lieu par simple changement de vocabulaire.
+
+## Différence avec la suite du projet
+
+Voir [l’évolution proposée](evolution-projet.md). Le type de données et l’autonomie sont deux axes distincts : traiter une image ne rend pas une application agentique ; un système agentique peut travailler uniquement avec du texte.

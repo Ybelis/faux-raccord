@@ -29,7 +29,14 @@ Système : 17 vrais positifs, 1 faux positif, 4 faux négatifs et 28 vrais néga
 
 ## Questions sur le corpus réel
 
-La comparaison QA réelle est **incomplète** : 10/24 questions ont leurs deux sorties fournisseur disponibles ; erreurs d'infrastructure : 14 baseline, 10 système. Un quota journalier a arrêté l’exécution. Aucun score global de qualité n'est revendiqué sur cet essai. Les sorties obtenues, y compris les réponses incorrectes, sont conservées ; voir [le journal brut](../eval/qa-real-report.json). La commande de reprise est `node --env-file=.env eval/qa-real.mjs --live` ; les nouveaux checkpoints n'autorisent une réutilisation qu'à empreintes de code, données, modèle et paramètres identiques. Une erreur fournisseur peut être retentée, une réponse valide mais fausse ne doit pas être rééchantillonnée pour améliorer le score.
+Exécution réelle du 02/11/2026, modèle `openai/gpt-oss-120b`, code `317d4f315597`. **24 questions** sur les scènes 1–10 de Valkaama : vingt réponses appuyées par un passage inchangé et quatre informations absentes. Cette configuration QA est distincte du benchmark de continuité `openai/gpt-oss-20b`. Le profil 120B a été choisi pour son quota disponible après saturation du profil 20B ; il ne remplace pas rétroactivement les anciens scores. Les questions et grilles ont été proposées avec assistance IA ; citations contrôlées par script, relecture étudiante en attente. La baseline reçoit les dix scènes intégrales ; le système cherche sur les mêmes dix scènes.
+
+| Méthode | Réponse conforme et scène citée, ou abstention correcte [IC 95 %] | Abstentions correctes | Durée médiane observée |
+|---|---|---|---|
+| Prompt simple | 16/24 · 66,7 % [46,7 %–82,0 %] | 4/4 | 57.003 s |
+| Questions avec RAG | 19/24 · 79,2 % [59,5 %–90,8 %] | 4/4 | 0.573 s |
+
+Les durées QA incluent la régulation des quotas de tokens ; elles ne comparent pas la vitesse intrinsèque des modèles. La grille exige les éléments lexicaux attendus, la scène dans le champ des citations et une référence dans le texte, ou `NOT FOUND` sans citation. Des synonymes valables peuvent être rejetés et une négation peut échapper à cette grille. C'est un indicateur automatique approximatif, pas un jugement sémantique indépendant. Les échecs observés du système sont : QA008, QA012, QA013, QA016, QA018. Tokens système : 44044 entrée, 1789 sortie ; baseline : 134090, 1711. [Résultats détaillés](../eval/qa-real-report.json). Cette mesure porte sur les questions, pas sur la continuité ; elle ne démontre pas une généralisation à d'autres œuvres.
 
 ## Recherche, coût et limites
 

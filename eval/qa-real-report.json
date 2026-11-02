@@ -1,55 +1,82 @@
 {
-  "status": "completed_with_errors",
+  "status": "completed",
+  "stopReason": null,
+  "quotaReached": false,
+  "qualityComparable": true,
   "kind": "real-source-qa",
+  "executionCommand": "node --env-file=.env eval/qa-real.mjs --live --model=openai/gpt-oss-120b",
+  "latencyScope": "Durée opérationnelle comprenant la régulation des quotas TPM ; ce n’est pas une mesure isolée de vitesse du modèle et cette durée ne permet pas de comparer la vitesse intrinsèque des deux méthodes.",
   "dataset": "eval/qa-real.json",
+  "codeHash": "317d4f315597",
   "datasetHash": "dde74914a1cc",
-  "codeHash": "9ffae16196ba",
+  "corpusHash": "5b2a0eed3e6b",
+  "protocolHash": "ac08037366f6",
+  "checkpointProtocolVersion": "2.0.0",
+  "provider": "groq",
+  "model": "openai/gpt-oss-120b",
+  "settings": {
+    "temperature": 0,
+    "maxOutputTokens": 5000,
+    "reasoningEffort": "low"
+  },
   "scope": {
     "firstScene": 1,
     "lastScene": 10
   },
-  "completedAt": "2026-11-02T11:35:47.400Z",
-  "model": "openai/gpt-oss-20b",
-  "provider": "groq",
+  "startedAt": "2026-11-02T13:25:01.004Z",
+  "updatedAt": "2026-11-02T13:28:03.727Z",
+  "completedAt": "2026-11-02T13:28:03.727Z",
   "n": 24,
+  "nPlanned": 24,
+  "nAttempted": 24,
+  "nCompleted": 24,
+  "currentCalls": 8,
+  "cachedCalls": 40,
   "annotationStatus": "proposed-by-AI; source-quotes-verified-by-script; student-review-pending",
   "metric": "Lexical answer grid + expected scene citation; exact NOT FOUND on unanswerable questions",
-  "note": "Questions sur de vrais passages de Valkaama, sans altérer le scénario. Grille automatique approximative, validation humaine en attente. Ce score ne mesure ni la détection de continuité ni une généralisation à d’autres scénarios. La baseline reçoit les dix scènes intégrales ; le système effectue sa recherche sur ces mêmes dix scènes.",
+  "note": "Questions sur de vrais passages de Valkaama, sans altérer le scénario. Grille automatique approximative, validation humaine en attente. La baseline reçoit les dix scènes intégrales ; le système cherche sur ces mêmes scènes. Un rapport incomplet ne mesure pas la qualité du modèle : scores et intervalles restent nuls au sens JSON (null), distincts d’un score de zéro. Un JSON invalide constitue un échec de contenu figé, sans rééchantillonnage ; ses tokens indisponibles sont signalés séparément.",
+  "resumption": "Les sorties fournisseur réussies, même incorrectes selon la grille, sont réutilisées uniquement à empreintes identiques. Les erreurs sont retentées. Tokens et latences des réponses reprises conservent leur mesure originale ; cachedCalls ne consomme pas de nouvel appel.",
   "baseline": {
-    "passed": 2,
+    "passed": 16,
     "n": 24,
-    "correctAndCitedOrCorrectAbstention": 0.08333333333333333,
+    "completed": 24,
+    "correctAndCitedOrCorrectAbstention": 0.6666666666666666,
     "confidence95": [
-      0.023,
-      0.258
+      0.467,
+      0.82
     ],
-    "answerablePassed": 2,
+    "answerablePassed": 12,
     "answerableTotal": 20,
-    "correctAbstentions": 0,
+    "correctAbstentions": 4,
     "unanswerableTotal": 4,
-    "abstentionRate": 0,
-    "errors": 14,
-    "medianSeconds": 42.7425,
-    "inputTokens": 55870,
-    "outputTokens": 725
+    "abstentionRate": 0.16666666666666666,
+    "errors": 0,
+    "formatErrors": 0,
+    "usageUnavailable": 0,
+    "medianSeconds": 57.003,
+    "inputTokens": 134090,
+    "outputTokens": 1711
   },
   "system": {
-    "passed": 7,
+    "passed": 19,
     "n": 24,
-    "correctAndCitedOrCorrectAbstention": 0.2916666666666667,
+    "completed": 24,
+    "correctAndCitedOrCorrectAbstention": 0.7916666666666666,
     "confidence95": [
-      0.149,
-      0.492
+      0.595,
+      0.908
     ],
-    "answerablePassed": 7,
+    "answerablePassed": 15,
     "answerableTotal": 20,
-    "correctAbstentions": 0,
+    "correctAbstentions": 4,
     "unanswerableTotal": 4,
-    "abstentionRate": 0.041666666666666664,
-    "errors": 10,
-    "medianSeconds": 11.917,
-    "inputTokens": 25876,
-    "outputTokens": 960
+    "abstentionRate": 0.25,
+    "errors": 0,
+    "formatErrors": 0,
+    "usageUnavailable": 0,
+    "medianSeconds": 0.5725,
+    "inputTokens": 44044,
+    "outputTokens": 1789
   },
   "rows": [
     {
@@ -59,16 +86,17 @@
       "expectedSceneId": "S001",
       "expectedQuote": "Runa lights a cigarette.",
       "baseline": {
-        "answer": "Runa lights a cigarette [S001]",
+        "providerSucceeded": true,
+        "answer": "Runa allume une cigarette dans le parc [S001]",
         "citations": [
           "S001"
         ],
         "usage": {
           "inputTokens": 5579,
-          "outputTokens": 52,
-          "milliseconds": 1044,
+          "outputTokens": 64,
+          "milliseconds": 1039,
           "provider": "groq",
-          "model": "openai/gpt-oss-20b",
+          "model": "openai/gpt-oss-120b",
           "promptVersion": "1.0.0",
           "settings": {
             "temperature": 0,
@@ -77,7 +105,9 @@
           },
           "outputLimit": 1200
         },
-        "milliseconds": 1044,
+        "milliseconds": 1040,
+        "measuredAt": "2026-11-02T11:52:04.166Z",
+        "fromCache": true,
         "passed": true,
         "abstained": false,
         "lexicalMatch": true,
@@ -85,16 +115,17 @@
         "validCitations": true
       },
       "system": {
-        "answer": "Runa lights a cigarette [S001-C1]",
+        "providerSucceeded": true,
+        "answer": "Runa allume une cigarette dans le parc [S001-C1]",
         "citations": [
           "S001-C1"
         ],
         "usage": {
           "inputTokens": 2070,
-          "outputTokens": 62,
-          "milliseconds": 829,
+          "outputTokens": 66,
+          "milliseconds": 44518,
           "provider": "groq",
-          "model": "openai/gpt-oss-20b",
+          "model": "openai/gpt-oss-120b",
           "promptVersion": "1.0.0",
           "settings": {
             "temperature": 0,
@@ -103,7 +134,9 @@
           },
           "outputLimit": 1200
         },
-        "milliseconds": 834,
+        "milliseconds": 44527,
+        "measuredAt": "2026-11-02T11:52:48.707Z",
+        "fromCache": true,
         "passed": true,
         "abstained": false,
         "lexicalMatch": true,
@@ -118,16 +151,17 @@
       "expectedSceneId": "S002",
       "expectedQuote": "Runa drinks a glass of red wine",
       "baseline": {
+        "providerSucceeded": true,
         "answer": "Runa boit un verre de vin rouge [S002]",
         "citations": [
           "S002"
         ],
         "usage": {
           "inputTokens": 5583,
-          "outputTokens": 61,
-          "milliseconds": 40172,
+          "outputTokens": 70,
+          "milliseconds": 18907,
           "provider": "groq",
-          "model": "openai/gpt-oss-20b",
+          "model": "openai/gpt-oss-120b",
           "promptVersion": "1.0.0",
           "settings": {
             "temperature": 0,
@@ -136,7 +170,9 @@
           },
           "outputLimit": 1200
         },
-        "milliseconds": 40172,
+        "milliseconds": 18909,
+        "measuredAt": "2026-11-02T11:53:07.629Z",
+        "fromCache": true,
         "passed": true,
         "abstained": false,
         "lexicalMatch": true,
@@ -144,16 +180,17 @@
         "validCitations": true
       },
       "system": {
-        "answer": "Runa boit un verre de vin rouge [S002-C1]",
+        "providerSucceeded": true,
+        "answer": "Runa boit un verre de vin rouge au café dans la scène 2 [S002-C1]",
         "citations": [
           "S002-C1"
         ],
         "usage": {
           "inputTokens": 1907,
-          "outputTokens": 57,
-          "milliseconds": 15701,
+          "outputTokens": 91,
+          "milliseconds": 693,
           "provider": "groq",
-          "model": "openai/gpt-oss-20b",
+          "model": "openai/gpt-oss-120b",
           "promptVersion": "1.0.0",
           "settings": {
             "temperature": 0,
@@ -162,7 +199,9 @@
           },
           "outputLimit": 1200
         },
-        "milliseconds": 15706,
+        "milliseconds": 700,
+        "measuredAt": "2026-11-02T11:53:08.347Z",
+        "fromCache": true,
         "passed": true,
         "abstained": false,
         "lexicalMatch": true,
@@ -177,21 +216,17 @@
       "expectedSceneId": "S002",
       "expectedQuote": "a piece of crinkled paper.",
       "baseline": {
-        "passed": false,
-        "error": "Limite Groq atteinte. Réessayez dans une minute ou utilisez Ollama.",
-        "milliseconds": 41152
-      },
-      "system": {
-        "answer": "Lasse writes on a piece of crinkled paper [S002-C1]",
+        "providerSucceeded": true,
+        "answer": "Lasse écrit sur un morceau de papier froissé [S002]",
         "citations": [
-          "S002-C1"
+          "S002"
         ],
         "usage": {
-          "inputTokens": 2051,
-          "outputTokens": 68,
-          "milliseconds": 479,
+          "inputTokens": 5583,
+          "outputTokens": 78,
+          "milliseconds": 59075,
           "provider": "groq",
-          "model": "openai/gpt-oss-20b",
+          "model": "openai/gpt-oss-120b",
           "promptVersion": "1.0.0",
           "settings": {
             "temperature": 0,
@@ -200,7 +235,38 @@
           },
           "outputLimit": 1200
         },
-        "milliseconds": 483,
+        "milliseconds": 59075,
+        "measuredAt": "2026-11-02T11:54:07.437Z",
+        "fromCache": true,
+        "passed": true,
+        "abstained": false,
+        "lexicalMatch": true,
+        "sourceMatch": true,
+        "validCitations": true
+      },
+      "system": {
+        "providerSucceeded": true,
+        "answer": "Lasse écrit sur un morceau de papier froissé [S002-C1]",
+        "citations": [
+          "S002-C1"
+        ],
+        "usage": {
+          "inputTokens": 2051,
+          "outputTokens": 72,
+          "milliseconds": 630,
+          "provider": "groq",
+          "model": "openai/gpt-oss-120b",
+          "promptVersion": "1.0.0",
+          "settings": {
+            "temperature": 0,
+            "maxOutputTokens": 5000,
+            "reasoningEffort": "low"
+          },
+          "outputLimit": 1200
+        },
+        "milliseconds": 639,
+        "measuredAt": "2026-11-02T11:54:08.093Z",
+        "fromCache": true,
         "passed": true,
         "abstained": false,
         "lexicalMatch": true,
@@ -215,16 +281,17 @@
       "expectedSceneId": "S002",
       "expectedQuote": "Runa is disappointed. She puts some money on the table",
       "baseline": {
-        "answer": "Runa",
+        "providerSucceeded": true,
+        "answer": "Runa laisse de l'argent sur la table du café à la fin de la scène 2",
         "citations": [
           "S002"
         ],
         "usage": {
           "inputTokens": 5589,
-          "outputTokens": 58,
-          "milliseconds": 17781,
+          "outputTokens": 86,
+          "milliseconds": 58590,
           "provider": "groq",
-          "model": "openai/gpt-oss-20b",
+          "model": "openai/gpt-oss-120b",
           "promptVersion": "1.0.0",
           "settings": {
             "temperature": 0,
@@ -233,7 +300,9 @@
           },
           "outputLimit": 1200
         },
-        "milliseconds": 17781,
+        "milliseconds": 58591,
+        "measuredAt": "2026-11-02T11:55:06.697Z",
+        "fromCache": true,
         "passed": false,
         "abstained": false,
         "lexicalMatch": true,
@@ -241,16 +310,17 @@
         "validCitations": false
       },
       "system": {
+        "providerSucceeded": true,
         "answer": "Runa laisse de l'argent sur la table du café à la fin de la scène 2 [S002-C3]",
         "citations": [
           "S002-C3"
         ],
         "usage": {
           "inputTokens": 1667,
-          "outputTokens": 86,
-          "milliseconds": 10384,
+          "outputTokens": 109,
+          "milliseconds": 390,
           "provider": "groq",
-          "model": "openai/gpt-oss-20b",
+          "model": "openai/gpt-oss-120b",
           "promptVersion": "1.0.0",
           "settings": {
             "temperature": 0,
@@ -259,7 +329,9 @@
           },
           "outputLimit": 1200
         },
-        "milliseconds": 10386,
+        "milliseconds": 398,
+        "measuredAt": "2026-11-02T11:55:07.109Z",
+        "fromCache": true,
         "passed": true,
         "abstained": false,
         "lexicalMatch": true,
@@ -274,16 +346,17 @@
       "expectedSceneId": "S004",
       "expectedQuote": "pepper spray can be seen inside.",
       "baseline": {
-        "answer": "Une bombe de spray épicé",
+        "providerSucceeded": true,
+        "answer": "Une bombe de poivre est visible dans son sac à moitié ouvert [S004]",
         "citations": [
           "S004"
         ],
         "usage": {
           "inputTokens": 5582,
-          "outputTokens": 72,
-          "milliseconds": 43022,
+          "outputTokens": 70,
+          "milliseconds": 57041,
           "provider": "groq",
-          "model": "openai/gpt-oss-20b",
+          "model": "openai/gpt-oss-120b",
           "promptVersion": "1.0.0",
           "settings": {
             "temperature": 0,
@@ -292,24 +365,27 @@
           },
           "outputLimit": 1200
         },
-        "milliseconds": 43022,
-        "passed": false,
+        "milliseconds": 57041,
+        "measuredAt": "2026-11-02T11:56:04.174Z",
+        "fromCache": true,
+        "passed": true,
         "abstained": false,
-        "lexicalMatch": false,
-        "sourceMatch": false,
-        "validCitations": false
+        "lexicalMatch": true,
+        "sourceMatch": true,
+        "validCitations": true
       },
       "system": {
-        "answer": "Un spray de poivre peut être vu à l'intérieur du porte-monnaie à moitié ouvert de Leila.",
+        "providerSucceeded": true,
+        "answer": "Une bombe de spray au poivre est visible dans son sac à moitié ouvert [S004-C2]",
         "citations": [
           "S004-C2"
         ],
         "usage": {
           "inputTokens": 1924,
-          "outputTokens": 48,
-          "milliseconds": 14657,
+          "outputTokens": 82,
+          "milliseconds": 403,
           "provider": "groq",
-          "model": "openai/gpt-oss-20b",
+          "model": "openai/gpt-oss-120b",
           "promptVersion": "1.0.0",
           "settings": {
             "temperature": 0,
@@ -318,12 +394,14 @@
           },
           "outputLimit": 1200
         },
-        "milliseconds": 14660,
-        "passed": false,
+        "milliseconds": 411,
+        "measuredAt": "2026-11-02T11:56:04.597Z",
+        "fromCache": true,
+        "passed": true,
         "abstained": false,
         "lexicalMatch": true,
-        "sourceMatch": false,
-        "validCitations": false
+        "sourceMatch": true,
+        "validCitations": true
       }
     },
     {
@@ -333,16 +411,17 @@
       "expectedSceneId": "S004",
       "expectedQuote": "MAGNUS is standing with an almost empty glass of Scotch",
       "baseline": {
-        "answer": "almost empty",
+        "providerSucceeded": true,
+        "answer": "Le verre de Scotch de Magnus est presque vide au début de la scène 4 [S004]",
         "citations": [
           "S004"
         ],
         "usage": {
           "inputTokens": 5588,
-          "outputTokens": 69,
-          "milliseconds": 42863,
+          "outputTokens": 88,
+          "milliseconds": 57687,
           "provider": "groq",
-          "model": "openai/gpt-oss-20b",
+          "model": "openai/gpt-oss-120b",
           "promptVersion": "1.0.0",
           "settings": {
             "temperature": 0,
@@ -351,24 +430,27 @@
           },
           "outputLimit": 1200
         },
-        "milliseconds": 42863,
-        "passed": false,
+        "milliseconds": 57687,
+        "measuredAt": "2026-11-02T11:57:02.302Z",
+        "fromCache": true,
+        "passed": true,
         "abstained": false,
         "lexicalMatch": true,
-        "sourceMatch": false,
-        "validCitations": false
+        "sourceMatch": true,
+        "validCitations": true
       },
       "system": {
-        "answer": "Le verre de Scotch de Magnus est presque vide au début de la scène 4.",
+        "providerSucceeded": true,
+        "answer": "Le verre de Scotch de Magnus est presque vide au début de la scène 4 [S004-C1]",
         "citations": [
           "S004-C1"
         ],
         "usage": {
           "inputTokens": 1844,
-          "outputTokens": 78,
-          "milliseconds": 13443,
+          "outputTokens": 95,
+          "milliseconds": 550,
           "provider": "groq",
-          "model": "openai/gpt-oss-20b",
+          "model": "openai/gpt-oss-120b",
           "promptVersion": "1.0.0",
           "settings": {
             "temperature": 0,
@@ -377,12 +459,14 @@
           },
           "outputLimit": 1200
         },
-        "milliseconds": 13448,
-        "passed": false,
+        "milliseconds": 557,
+        "measuredAt": "2026-11-02T11:57:02.874Z",
+        "fromCache": true,
+        "passed": true,
         "abstained": false,
         "lexicalMatch": true,
-        "sourceMatch": false,
-        "validCitations": false
+        "sourceMatch": true,
+        "validCitations": true
       }
     },
     {
@@ -392,16 +476,17 @@
       "expectedSceneId": "S004",
       "expectedQuote": "Next to her the half-empty bottle is standing on the\nbedside locker.",
       "baseline": {
-        "answer": "Leila se trouve dans la chambre d'hôtel, et la bouteille à moitié vide se trouve sur le tiroir de la commode de côté du lit.",
+        "providerSucceeded": true,
+        "answer": "Le ila’s half‑empty bottle is on the bedside locker next to her in the hotel room [S004]",
         "citations": [
           "S004"
         ],
         "usage": {
           "inputTokens": 5585,
-          "outputTokens": 92,
-          "milliseconds": 50291,
+          "outputTokens": 96,
+          "milliseconds": 57299,
           "provider": "groq",
-          "model": "openai/gpt-oss-20b",
+          "model": "openai/gpt-oss-120b",
           "promptVersion": "1.0.0",
           "settings": {
             "temperature": 0,
@@ -410,24 +495,27 @@
           },
           "outputLimit": 1200
         },
-        "milliseconds": 50292,
-        "passed": false,
+        "milliseconds": 57299,
+        "measuredAt": "2026-11-02T11:58:00.203Z",
+        "fromCache": true,
+        "passed": true,
         "abstained": false,
-        "lexicalMatch": false,
-        "sourceMatch": false,
-        "validCitations": false
+        "lexicalMatch": true,
+        "sourceMatch": true,
+        "validCitations": true
       },
       "system": {
-        "answer": "Leila a la bouteille à moitié vide sur le tiroir de la commode de côté de son lit [S004-C1]",
+        "providerSucceeded": true,
+        "answer": "Le bouteille à moitié vide se trouve sur la table de chevet à côté de Leila [S004-C1]",
         "citations": [
           "S004-C1"
         ],
         "usage": {
           "inputTokens": 1732,
-          "outputTokens": 90,
-          "milliseconds": 6722,
+          "outputTokens": 99,
+          "milliseconds": 609,
           "provider": "groq",
-          "model": "openai/gpt-oss-20b",
+          "model": "openai/gpt-oss-120b",
           "promptVersion": "1.0.0",
           "settings": {
             "temperature": 0,
@@ -436,10 +524,12 @@
           },
           "outputLimit": 1200
         },
-        "milliseconds": 6726,
-        "passed": false,
+        "milliseconds": 623,
+        "measuredAt": "2026-11-02T11:58:00.842Z",
+        "fromCache": true,
+        "passed": true,
         "abstained": false,
-        "lexicalMatch": false,
+        "lexicalMatch": true,
         "sourceMatch": true,
         "validCitations": true
       }
@@ -451,16 +541,17 @@
       "expectedSceneId": "S005",
       "expectedQuote": "her glass of Scotch is standing. It is still\nfull.",
       "baseline": {
-        "answer": "Oui, le verre de Scotch de Leila est encore plein quand Magnus s'approche de son côté du lit dans la scène 5.",
+        "providerSucceeded": true,
+        "answer": "Leila's glass de Scotch est encore plein lorsqu'il s'approche de son côté du lit dans la scène 5.",
         "citations": [
           "S005"
         ],
         "usage": {
           "inputTokens": 5597,
-          "outputTokens": 95,
-          "milliseconds": 42733,
+          "outputTokens": 117,
+          "milliseconds": 56206,
           "provider": "groq",
-          "model": "openai/gpt-oss-20b",
+          "model": "openai/gpt-oss-120b",
           "promptVersion": "1.0.0",
           "settings": {
             "temperature": 0,
@@ -469,7 +560,9 @@
           },
           "outputLimit": 1200
         },
-        "milliseconds": 42733,
+        "milliseconds": 56206,
+        "measuredAt": "2026-11-02T11:58:57.065Z",
+        "fromCache": true,
         "passed": false,
         "abstained": false,
         "lexicalMatch": true,
@@ -477,16 +570,17 @@
         "validCitations": false
       },
       "system": {
-        "answer": "Oui, le verre de Scotch de Leila est encore plein quand Magnus s'approche de son côté du lit dans la scène 5.",
+        "providerSucceeded": true,
+        "answer": "Oui, le verre de Scotch de Leila est encore plein lorsqu'Magnus s'approche de son côté du lit dans la scène 5.",
         "citations": [
           "S005-C2"
         ],
         "usage": {
           "inputTokens": 1848,
-          "outputTokens": 81,
-          "milliseconds": 14495,
+          "outputTokens": 95,
+          "milliseconds": 834,
           "provider": "groq",
-          "model": "openai/gpt-oss-20b",
+          "model": "openai/gpt-oss-120b",
           "promptVersion": "1.0.0",
           "settings": {
             "temperature": 0,
@@ -495,7 +589,9 @@
           },
           "outputLimit": 1200
         },
-        "milliseconds": 14497,
+        "milliseconds": 842,
+        "measuredAt": "2026-11-02T11:58:57.930Z",
+        "fromCache": true,
         "passed": false,
         "abstained": false,
         "lexicalMatch": true,
@@ -510,16 +606,17 @@
       "expectedSceneId": "S005",
       "expectedQuote": "Magnus grabs the glass and\ndowns it in one swig.",
       "baseline": {
-        "answer": "Magnus saisit le verre de Scotch de Leila et le boit d'un trait dans la scène 5.",
+        "providerSucceeded": true,
+        "answer": "Magnus saisit le verre de Scotch de Leila et le boit d'un trait dans la scène 5 [S005]",
         "citations": [
           "S005"
         ],
         "usage": {
           "inputTokens": 5593,
-          "outputTokens": 77,
-          "milliseconds": 43074,
+          "outputTokens": 95,
+          "milliseconds": 59579,
           "provider": "groq",
-          "model": "openai/gpt-oss-20b",
+          "model": "openai/gpt-oss-120b",
           "promptVersion": "1.0.0",
           "settings": {
             "temperature": 0,
@@ -528,24 +625,27 @@
           },
           "outputLimit": 1200
         },
-        "milliseconds": 43075,
-        "passed": false,
+        "milliseconds": 59579,
+        "measuredAt": "2026-11-02T11:59:57.534Z",
+        "fromCache": true,
+        "passed": true,
         "abstained": false,
         "lexicalMatch": true,
-        "sourceMatch": false,
-        "validCitations": false
+        "sourceMatch": true,
+        "validCitations": true
       },
       "system": {
-        "answer": "Magnus saisit le verre de Scotch de Leila et le boit d'un trait dans la scène 5.",
+        "providerSucceeded": true,
+        "answer": "Magnus saisit le verre de Scotch de Leila et le boit d'un trait dans la scène 5 [S005-C2]",
         "citations": [
           "S005-C2"
         ],
         "usage": {
           "inputTokens": 1844,
-          "outputTokens": 79,
-          "milliseconds": 13513,
+          "outputTokens": 111,
+          "milliseconds": 482,
           "provider": "groq",
-          "model": "openai/gpt-oss-20b",
+          "model": "openai/gpt-oss-120b",
           "promptVersion": "1.0.0",
           "settings": {
             "temperature": 0,
@@ -554,12 +654,14 @@
           },
           "outputLimit": 1200
         },
-        "milliseconds": 13516,
-        "passed": false,
+        "milliseconds": 487,
+        "measuredAt": "2026-11-02T11:59:58.046Z",
+        "fromCache": true,
+        "passed": true,
         "abstained": false,
         "lexicalMatch": true,
-        "sourceMatch": false,
-        "validCitations": false
+        "sourceMatch": true,
+        "validCitations": true
       }
     },
     {
@@ -569,16 +671,17 @@
       "expectedSceneId": "S006",
       "expectedQuote": "her laptop which is still turned on.",
       "baseline": {
-        "answer": "Oui, le laptop est encore allumé lorsqu’elle le voit dans la scène 6.",
+        "providerSucceeded": true,
+        "answer": "Oui, l'ordinateur portable de Runa est encore allumé lorsqu'elle le voit dans la cuisine [S006]",
         "citations": [
           "S006"
         ],
         "usage": {
           "inputTokens": 5590,
-          "outputTokens": 81,
-          "milliseconds": 42752,
+          "outputTokens": 75,
+          "milliseconds": 55426,
           "provider": "groq",
-          "model": "openai/gpt-oss-20b",
+          "model": "openai/gpt-oss-120b",
           "promptVersion": "1.0.0",
           "settings": {
             "temperature": 0,
@@ -587,24 +690,27 @@
           },
           "outputLimit": 1200
         },
-        "milliseconds": 42752,
-        "passed": false,
+        "milliseconds": 55426,
+        "measuredAt": "2026-11-02T12:00:53.512Z",
+        "fromCache": true,
+        "passed": true,
         "abstained": false,
         "lexicalMatch": true,
-        "sourceMatch": false,
-        "validCitations": false
+        "sourceMatch": true,
+        "validCitations": true
       },
       "system": {
-        "answer": "Runa trouve son ordinateur portable encore allumé dans la cuisine [S006-C1]",
+        "providerSucceeded": true,
+        "answer": "Oui, l'ordinateur portable de Runa est encore allumé lorsqu'elle le voit dans la cuisine [S006-C1]",
         "citations": [
           "S006-C1"
         ],
         "usage": {
           "inputTokens": 1783,
-          "outputTokens": 68,
-          "milliseconds": 13876,
+          "outputTokens": 66,
+          "milliseconds": 514,
           "provider": "groq",
-          "model": "openai/gpt-oss-20b",
+          "model": "openai/gpt-oss-120b",
           "promptVersion": "1.0.0",
           "settings": {
             "temperature": 0,
@@ -613,7 +719,9 @@
           },
           "outputLimit": 1200
         },
-        "milliseconds": 13909,
+        "milliseconds": 545,
+        "measuredAt": "2026-11-02T12:00:54.075Z",
+        "fromCache": true,
         "passed": true,
         "abstained": false,
         "lexicalMatch": true,
@@ -628,16 +736,17 @@
       "expectedSceneId": "S006",
       "expectedQuote": "an\nalmost burnt down candle is flickering.",
       "baseline": {
-        "answer": "une bougie presque brûlée",
+        "providerSucceeded": true,
+        "answer": "Une bougie presque consumée vacille à côté de l'ordinateur portable de Runa [S006]",
         "citations": [
           "S006"
         ],
         "usage": {
           "inputTokens": 5584,
-          "outputTokens": 68,
-          "milliseconds": 42395,
+          "outputTokens": 89,
+          "milliseconds": 56701,
           "provider": "groq",
-          "model": "openai/gpt-oss-20b",
+          "model": "openai/gpt-oss-120b",
           "promptVersion": "1.0.0",
           "settings": {
             "temperature": 0,
@@ -646,24 +755,27 @@
           },
           "outputLimit": 1200
         },
-        "milliseconds": 42395,
-        "passed": false,
+        "milliseconds": 56701,
+        "measuredAt": "2026-11-02T12:01:50.789Z",
+        "fromCache": true,
+        "passed": true,
         "abstained": false,
         "lexicalMatch": true,
-        "sourceMatch": false,
-        "validCitations": false
+        "sourceMatch": true,
+        "validCitations": true
       },
       "system": {
-        "answer": "une bougie presque brûlée qui vacille [S006-C1]",
+        "providerSucceeded": true,
+        "answer": "Une bougie presque consumée vacille à côté de son ordinateur portable [S006-C1]",
         "citations": [
           "S006-C1"
         ],
         "usage": {
           "inputTokens": 1817,
-          "outputTokens": 81,
-          "milliseconds": 15129,
+          "outputTokens": 84,
+          "milliseconds": 527,
           "provider": "groq",
-          "model": "openai/gpt-oss-20b",
+          "model": "openai/gpt-oss-120b",
           "promptVersion": "1.0.0",
           "settings": {
             "temperature": 0,
@@ -672,7 +784,9 @@
           },
           "outputLimit": 1200
         },
-        "milliseconds": 15132,
+        "milliseconds": 531,
+        "measuredAt": "2026-11-02T12:01:51.351Z",
+        "fromCache": true,
         "passed": true,
         "abstained": false,
         "lexicalMatch": true,
@@ -687,21 +801,17 @@
       "expectedSceneId": "S006",
       "expectedQuote": "the word HOMECOMING is written.",
       "baseline": {
-        "passed": false,
-        "error": "Limite Groq atteinte. Réessayez dans une minute ou utilisez Ollama.",
-        "milliseconds": 60593
-      },
-      "system": {
-        "answer": "HOMECOMING [S006-C2]",
+        "providerSucceeded": true,
+        "answer": "HOMECOMING",
         "citations": [
-          "S006-C2"
+          "S006"
         ],
         "usage": {
-          "inputTokens": 1696,
-          "outputTokens": 52,
-          "milliseconds": 434,
+          "inputTokens": 5589,
+          "outputTokens": 64,
+          "milliseconds": 56965,
           "provider": "groq",
-          "model": "openai/gpt-oss-20b",
+          "model": "openai/gpt-oss-120b",
           "promptVersion": "1.0.0",
           "settings": {
             "temperature": 0,
@@ -710,12 +820,43 @@
           },
           "outputLimit": 1200
         },
-        "milliseconds": 438,
-        "passed": true,
+        "milliseconds": 56965,
+        "measuredAt": "2026-11-02T12:02:48.340Z",
+        "fromCache": true,
+        "passed": false,
         "abstained": false,
         "lexicalMatch": true,
-        "sourceMatch": true,
-        "validCitations": true
+        "sourceMatch": false,
+        "validCitations": false
+      },
+      "system": {
+        "providerSucceeded": true,
+        "answer": "HOMECOMING",
+        "citations": [
+          "S006-C2"
+        ],
+        "usage": {
+          "inputTokens": 1696,
+          "outputTokens": 68,
+          "milliseconds": 379,
+          "provider": "groq",
+          "model": "openai/gpt-oss-120b",
+          "promptVersion": "1.0.0",
+          "settings": {
+            "temperature": 0,
+            "maxOutputTokens": 5000,
+            "reasoningEffort": "low"
+          },
+          "outputLimit": 1200
+        },
+        "milliseconds": 386,
+        "measuredAt": "2026-11-02T12:02:48.748Z",
+        "fromCache": true,
+        "passed": false,
+        "abstained": false,
+        "lexicalMatch": true,
+        "sourceMatch": false,
+        "validCitations": false
       }
     },
     {
@@ -725,19 +866,17 @@
       "expectedSceneId": "S006",
       "expectedQuote": "Runa grabs one of her cuddly toys and holds it\ntight",
       "baseline": {
-        "passed": false,
-        "error": "Limite Groq atteinte. Réessayez dans une minute ou utilisez Ollama.",
-        "milliseconds": 60503
-      },
-      "system": {
-        "answer": "NOT FOUND",
-        "citations": [],
+        "providerSucceeded": true,
+        "answer": "Runa serre un de ses doudous (câlin) une fois revenue au lit [S006]",
+        "citations": [
+          "S006"
+        ],
         "usage": {
-          "inputTokens": 1912,
-          "outputTokens": 43,
-          "milliseconds": 424,
+          "inputTokens": 5588,
+          "outputTokens": 89,
+          "milliseconds": 55798,
           "provider": "groq",
-          "model": "openai/gpt-oss-20b",
+          "model": "openai/gpt-oss-120b",
           "promptVersion": "1.0.0",
           "settings": {
             "temperature": 0,
@@ -746,7 +885,36 @@
           },
           "outputLimit": 1200
         },
-        "milliseconds": 428,
+        "milliseconds": 55798,
+        "measuredAt": "2026-11-02T12:03:44.567Z",
+        "fromCache": true,
+        "passed": true,
+        "abstained": false,
+        "lexicalMatch": true,
+        "sourceMatch": true,
+        "validCitations": true
+      },
+      "system": {
+        "providerSucceeded": true,
+        "answer": "NOT FOUND",
+        "citations": [],
+        "usage": {
+          "inputTokens": 1912,
+          "outputTokens": 49,
+          "milliseconds": 581,
+          "provider": "groq",
+          "model": "openai/gpt-oss-120b",
+          "promptVersion": "1.0.0",
+          "settings": {
+            "temperature": 0,
+            "maxOutputTokens": 5000,
+            "reasoningEffort": "low"
+          },
+          "outputLimit": 1200
+        },
+        "milliseconds": 588,
+        "measuredAt": "2026-11-02T12:03:45.185Z",
+        "fromCache": true,
         "passed": false,
         "abstained": true,
         "lexicalMatch": false,
@@ -761,14 +929,62 @@
       "expectedSceneId": "S007",
       "expectedQuote": "The radio plays pop music.",
       "baseline": {
+        "providerSucceeded": true,
+        "answer": "pop music",
+        "citations": [
+          "S007"
+        ],
+        "usage": {
+          "inputTokens": 5585,
+          "outputTokens": 37,
+          "milliseconds": 57481,
+          "provider": "groq",
+          "model": "openai/gpt-oss-120b",
+          "promptVersion": "1.0.0",
+          "settings": {
+            "temperature": 0,
+            "maxOutputTokens": 5000,
+            "reasoningEffort": "low"
+          },
+          "outputLimit": 1200
+        },
+        "milliseconds": 57481,
+        "measuredAt": "2026-11-02T12:04:42.721Z",
+        "fromCache": true,
         "passed": false,
-        "error": "Limite Groq atteinte. Réessayez dans une minute ou utilisez Ollama.",
-        "milliseconds": 60715
+        "abstained": false,
+        "lexicalMatch": true,
+        "sourceMatch": false,
+        "validCitations": false
       },
       "system": {
-        "passed": false,
-        "error": "Limite Groq atteinte. Réessayez dans une minute ou utilisez Ollama.",
-        "milliseconds": 60591
+        "providerSucceeded": true,
+        "answer": "La radio joue de la musique pop au petit‑déjeuner [S007-C1]",
+        "citations": [
+          "S007-C1"
+        ],
+        "usage": {
+          "inputTokens": 1927,
+          "outputTokens": 56,
+          "milliseconds": 682,
+          "provider": "groq",
+          "model": "openai/gpt-oss-120b",
+          "promptVersion": "1.0.0",
+          "settings": {
+            "temperature": 0,
+            "maxOutputTokens": 5000,
+            "reasoningEffort": "low"
+          },
+          "outputLimit": 1200
+        },
+        "milliseconds": 689,
+        "measuredAt": "2026-11-02T12:04:43.438Z",
+        "fromCache": true,
+        "passed": true,
+        "abstained": false,
+        "lexicalMatch": true,
+        "sourceMatch": true,
+        "validCitations": true
       }
     },
     {
@@ -778,14 +994,62 @@
       "expectedSceneId": "S007",
       "expectedQuote": "she takes a sip of her coffee.",
       "baseline": {
+        "providerSucceeded": true,
+        "answer": "Runa boit du café au petit déjeuner dans la scène 7",
+        "citations": [
+          "S007"
+        ],
+        "usage": {
+          "inputTokens": 5587,
+          "outputTokens": 87,
+          "milliseconds": 57635,
+          "provider": "groq",
+          "model": "openai/gpt-oss-120b",
+          "promptVersion": "1.0.0",
+          "settings": {
+            "temperature": 0,
+            "maxOutputTokens": 5000,
+            "reasoningEffort": "low"
+          },
+          "outputLimit": 1200
+        },
+        "milliseconds": 57635,
+        "measuredAt": "2026-11-02T12:05:41.088Z",
+        "fromCache": true,
         "passed": false,
-        "error": "Limite Groq atteinte. Réessayez dans une minute ou utilisez Ollama.",
-        "milliseconds": 60360
+        "abstained": false,
+        "lexicalMatch": true,
+        "sourceMatch": false,
+        "validCitations": false
       },
       "system": {
-        "passed": false,
-        "error": "Limite Groq atteinte. Réessayez dans une minute ou utilisez Ollama.",
-        "milliseconds": 60574
+        "providerSucceeded": true,
+        "answer": "Runa boit du café au petit déjeuner dans la scène 7 [S007-C1]",
+        "citations": [
+          "S007-C1"
+        ],
+        "usage": {
+          "inputTokens": 1911,
+          "outputTokens": 88,
+          "milliseconds": 688,
+          "provider": "groq",
+          "model": "openai/gpt-oss-120b",
+          "promptVersion": "1.0.0",
+          "settings": {
+            "temperature": 0,
+            "maxOutputTokens": 5000,
+            "reasoningEffort": "low"
+          },
+          "outputLimit": 1200
+        },
+        "milliseconds": 694,
+        "measuredAt": "2026-11-02T12:05:41.806Z",
+        "fromCache": true,
+        "passed": true,
+        "abstained": false,
+        "lexicalMatch": true,
+        "sourceMatch": true,
+        "validCitations": true
       }
     },
     {
@@ -795,14 +1059,60 @@
       "expectedSceneId": "S008",
       "expectedQuote": "half-full bottle of vodka in his cupboard.",
       "baseline": {
+        "providerSucceeded": true,
+        "answer": "vodka",
+        "citations": [
+          "S008"
+        ],
+        "usage": {
+          "inputTokens": 5589,
+          "outputTokens": 57,
+          "milliseconds": 57726,
+          "provider": "groq",
+          "model": "openai/gpt-oss-120b",
+          "promptVersion": "1.0.0",
+          "settings": {
+            "temperature": 0,
+            "maxOutputTokens": 5000,
+            "reasoningEffort": "low"
+          },
+          "outputLimit": 1200
+        },
+        "milliseconds": 57726,
+        "measuredAt": "2026-11-02T12:06:39.557Z",
+        "fromCache": true,
         "passed": false,
-        "error": "Limite Groq atteinte. Réessayez dans une minute ou utilisez Ollama.",
-        "milliseconds": 60555
+        "abstained": false,
+        "lexicalMatch": true,
+        "sourceMatch": false,
+        "validCitations": false
       },
       "system": {
+        "providerSucceeded": true,
+        "answer": "NOT FOUND",
+        "citations": [],
+        "usage": {
+          "inputTokens": 1841,
+          "outputTokens": 50,
+          "milliseconds": 391,
+          "provider": "groq",
+          "model": "openai/gpt-oss-120b",
+          "promptVersion": "1.0.0",
+          "settings": {
+            "temperature": 0,
+            "maxOutputTokens": 5000,
+            "reasoningEffort": "low"
+          },
+          "outputLimit": 1200
+        },
+        "milliseconds": 396,
+        "measuredAt": "2026-11-02T12:06:39.969Z",
+        "fromCache": true,
         "passed": false,
-        "error": "Limite Groq atteinte. Réessayez dans une minute ou utilisez Ollama.",
-        "milliseconds": 60378
+        "abstained": true,
+        "lexicalMatch": false,
+        "sourceMatch": false,
+        "validCitations": false
       }
     },
     {
@@ -812,14 +1122,62 @@
       "expectedSceneId": "S008",
       "expectedQuote": "half-full bottle of vodka in his cupboard.",
       "baseline": {
-        "passed": false,
-        "error": "Limite Groq atteinte. Réessayez dans une minute ou utilisez Ollama.",
-        "milliseconds": 60469
+        "providerSucceeded": true,
+        "answer": "Le flacon de vodka est à moitié plein [S008]",
+        "citations": [
+          "S008"
+        ],
+        "usage": {
+          "inputTokens": 5585,
+          "outputTokens": 71,
+          "milliseconds": 57331,
+          "provider": "groq",
+          "model": "openai/gpt-oss-120b",
+          "promptVersion": "1.0.0",
+          "settings": {
+            "temperature": 0,
+            "maxOutputTokens": 5000,
+            "reasoningEffort": "low"
+          },
+          "outputLimit": 1200
+        },
+        "milliseconds": 57331,
+        "measuredAt": "2026-11-02T12:07:37.312Z",
+        "fromCache": true,
+        "passed": true,
+        "abstained": false,
+        "lexicalMatch": true,
+        "sourceMatch": true,
+        "validCitations": true
       },
       "system": {
-        "passed": false,
-        "error": "Limite Groq atteinte. Réessayez dans une minute ou utilisez Ollama.",
-        "milliseconds": 60536
+        "providerSucceeded": true,
+        "answer": "Le flacon de vodka dans le placard de Magnus est à moitié plein [S008-C1]",
+        "citations": [
+          "S008-C1"
+        ],
+        "usage": {
+          "inputTokens": 1775,
+          "outputTokens": 81,
+          "milliseconds": 490,
+          "provider": "groq",
+          "model": "openai/gpt-oss-120b",
+          "promptVersion": "1.0.0",
+          "settings": {
+            "temperature": 0,
+            "maxOutputTokens": 5000,
+            "reasoningEffort": "low"
+          },
+          "outputLimit": 1200
+        },
+        "milliseconds": 495,
+        "measuredAt": "2026-11-02T12:07:37.826Z",
+        "fromCache": true,
+        "passed": true,
+        "abstained": false,
+        "lexicalMatch": true,
+        "sourceMatch": true,
+        "validCitations": true
       }
     },
     {
@@ -829,14 +1187,62 @@
       "expectedSceneId": "S009",
       "expectedQuote": "His alias is\nLAZARUS.",
       "baseline": {
+        "providerSucceeded": true,
+        "answer": "Lazarus",
+        "citations": [
+          "S009"
+        ],
+        "usage": {
+          "inputTokens": 5586,
+          "outputTokens": 44,
+          "milliseconds": 56506,
+          "provider": "groq",
+          "model": "openai/gpt-oss-120b",
+          "promptVersion": "1.0.0",
+          "settings": {
+            "temperature": 0,
+            "maxOutputTokens": 5000,
+            "reasoningEffort": "low"
+          },
+          "outputLimit": 1200
+        },
+        "milliseconds": 56506,
+        "measuredAt": "2026-11-02T12:08:34.348Z",
+        "fromCache": true,
         "passed": false,
-        "error": "Limite Groq atteinte. Réessayez dans une minute ou utilisez Ollama.",
-        "milliseconds": 60875
+        "abstained": false,
+        "lexicalMatch": true,
+        "sourceMatch": false,
+        "validCitations": false
       },
       "system": {
+        "providerSucceeded": true,
+        "answer": "Magnus utilise le pseudonyme LAZARUS sur le forum dans la scène 9",
+        "citations": [
+          "S009-C1"
+        ],
+        "usage": {
+          "inputTokens": 1869,
+          "outputTokens": 71,
+          "milliseconds": 721,
+          "provider": "groq",
+          "model": "openai/gpt-oss-120b",
+          "promptVersion": "1.0.0",
+          "settings": {
+            "temperature": 0,
+            "maxOutputTokens": 5000,
+            "reasoningEffort": "low"
+          },
+          "outputLimit": 1200
+        },
+        "milliseconds": 725,
+        "measuredAt": "2026-11-02T12:08:35.093Z",
+        "fromCache": true,
         "passed": false,
-        "error": "Limite Groq atteinte. Réessayez dans une minute ou utilisez Ollama.",
-        "milliseconds": 60505
+        "abstained": false,
+        "lexicalMatch": true,
+        "sourceMatch": false,
+        "validCitations": false
       }
     },
     {
@@ -846,14 +1252,62 @@
       "expectedSceneId": "S008",
       "expectedQuote": "SVENJA, sleeping on the sofa",
       "baseline": {
-        "passed": false,
-        "error": "Limite Groq atteinte. Réessayez dans une minute ou utilisez Ollama.",
-        "milliseconds": 60537
+        "providerSucceeded": true,
+        "answer": "Svenja dort sur le canapé [S008]",
+        "citations": [
+          "S008"
+        ],
+        "usage": {
+          "inputTokens": 5588,
+          "outputTokens": 67,
+          "milliseconds": 57399,
+          "provider": "groq",
+          "model": "openai/gpt-oss-120b",
+          "promptVersion": "1.0.0",
+          "settings": {
+            "temperature": 0,
+            "maxOutputTokens": 5000,
+            "reasoningEffort": "low"
+          },
+          "outputLimit": 1200
+        },
+        "milliseconds": 57399,
+        "measuredAt": "2026-11-02T12:09:32.512Z",
+        "fromCache": true,
+        "passed": true,
+        "abstained": false,
+        "lexicalMatch": true,
+        "sourceMatch": true,
+        "validCitations": true
       },
       "system": {
-        "passed": false,
-        "error": "Limite Groq atteinte. Réessayez dans une minute ou utilisez Ollama.",
-        "milliseconds": 60401
+        "providerSucceeded": true,
+        "answer": "Svenja dortait sur le canapé [S008-C1]",
+        "citations": [
+          "S008-C1"
+        ],
+        "usage": {
+          "inputTokens": 1678,
+          "outputTokens": 88,
+          "milliseconds": 485,
+          "provider": "groq",
+          "model": "openai/gpt-oss-120b",
+          "promptVersion": "1.0.0",
+          "settings": {
+            "temperature": 0,
+            "maxOutputTokens": 5000,
+            "reasoningEffort": "low"
+          },
+          "outputLimit": 1200
+        },
+        "milliseconds": 492,
+        "measuredAt": "2026-11-02T12:09:33.025Z",
+        "fromCache": true,
+        "passed": true,
+        "abstained": false,
+        "lexicalMatch": true,
+        "sourceMatch": true,
+        "validCitations": true
       }
     },
     {
@@ -863,21 +1317,17 @@
       "expectedSceneId": "S010",
       "expectedQuote": "two\npackages of cigarettes. They are empty.",
       "baseline": {
-        "passed": false,
-        "error": "Limite Groq atteinte. Réessayez dans une minute ou utilisez Ollama.",
-        "milliseconds": 61147
-      },
-      "system": {
-        "answer": "Les deux paquets de cigarettes trouvés par Svenja sont vides.",
+        "providerSucceeded": true,
+        "answer": "Non, les deux paquets de cigarettes sont vides.",
         "citations": [
-          "S010-C1"
+          "S010"
         ],
         "usage": {
-          "inputTokens": 1781,
-          "outputTokens": 67,
-          "milliseconds": 512,
+          "inputTokens": 5593,
+          "outputTokens": 68,
+          "milliseconds": 55787,
           "provider": "groq",
-          "model": "openai/gpt-oss-20b",
+          "model": "openai/gpt-oss-120b",
           "promptVersion": "1.0.0",
           "settings": {
             "temperature": 0,
@@ -886,12 +1336,43 @@
           },
           "outputLimit": 1200
         },
-        "milliseconds": 516,
+        "milliseconds": 55787,
+        "measuredAt": "2026-11-02T12:10:28.834Z",
+        "fromCache": true,
         "passed": false,
         "abstained": false,
         "lexicalMatch": true,
         "sourceMatch": false,
         "validCitations": false
+      },
+      "system": {
+        "providerSucceeded": true,
+        "answer": "Les deux paquets de cigarettes sont vides, ils ne contiennent plus de cigarettes [S010-C1]",
+        "citations": [
+          "S010-C1"
+        ],
+        "usage": {
+          "inputTokens": 1781,
+          "outputTokens": 82,
+          "milliseconds": 656,
+          "provider": "groq",
+          "model": "openai/gpt-oss-120b",
+          "promptVersion": "1.0.0",
+          "settings": {
+            "temperature": 0,
+            "maxOutputTokens": 5000,
+            "reasoningEffort": "low"
+          },
+          "outputLimit": 1200
+        },
+        "milliseconds": 661,
+        "measuredAt": "2026-11-02T12:10:29.516Z",
+        "fromCache": true,
+        "passed": true,
+        "abstained": false,
+        "lexicalMatch": true,
+        "sourceMatch": true,
+        "validCitations": true
       }
     },
     {
@@ -901,14 +1382,58 @@
       "expectedSceneId": null,
       "expectedQuote": null,
       "baseline": {
-        "passed": false,
-        "error": "Limite Groq atteinte. Réessayez dans une minute ou utilisez Ollama.",
-        "milliseconds": 60493
+        "providerSucceeded": true,
+        "answer": "NOT FOUND",
+        "citations": [],
+        "usage": {
+          "inputTokens": 5588,
+          "outputTokens": 45,
+          "milliseconds": 802,
+          "provider": "groq",
+          "model": "openai/gpt-oss-120b",
+          "promptVersion": "1.0.0",
+          "settings": {
+            "temperature": 0,
+            "maxOutputTokens": 5000,
+            "reasoningEffort": "low"
+          },
+          "outputLimit": 1200
+        },
+        "milliseconds": 803,
+        "measuredAt": "2026-11-02T13:25:01.816Z",
+        "fromCache": false,
+        "passed": true,
+        "abstained": true,
+        "lexicalMatch": false,
+        "sourceMatch": false,
+        "validCitations": false
       },
       "system": {
-        "passed": false,
-        "error": "Limite Groq atteinte. Réessayez dans une minute ou utilisez Ollama.",
-        "milliseconds": 60415
+        "providerSucceeded": true,
+        "answer": "NOT FOUND",
+        "citations": [],
+        "usage": {
+          "inputTokens": 1912,
+          "outputTokens": 42,
+          "milliseconds": 48151,
+          "provider": "groq",
+          "model": "openai/gpt-oss-120b",
+          "promptVersion": "1.0.0",
+          "settings": {
+            "temperature": 0,
+            "maxOutputTokens": 5000,
+            "reasoningEffort": "low"
+          },
+          "outputLimit": 1200
+        },
+        "milliseconds": 48155,
+        "measuredAt": "2026-11-02T13:25:49.987Z",
+        "fromCache": false,
+        "passed": true,
+        "abstained": true,
+        "lexicalMatch": false,
+        "sourceMatch": false,
+        "validCitations": false
       }
     },
     {
@@ -918,14 +1443,58 @@
       "expectedSceneId": null,
       "expectedQuote": null,
       "baseline": {
-        "passed": false,
-        "error": "Limite Groq atteinte. Réessayez dans une minute ou utilisez Ollama.",
-        "milliseconds": 60505
+        "providerSucceeded": true,
+        "answer": "NOT FOUND",
+        "citations": [],
+        "usage": {
+          "inputTokens": 5588,
+          "outputTokens": 54,
+          "milliseconds": 17521,
+          "provider": "groq",
+          "model": "openai/gpt-oss-120b",
+          "promptVersion": "1.0.0",
+          "settings": {
+            "temperature": 0,
+            "maxOutputTokens": 5000,
+            "reasoningEffort": "low"
+          },
+          "outputLimit": 1200
+        },
+        "milliseconds": 17521,
+        "measuredAt": "2026-11-02T13:26:07.518Z",
+        "fromCache": false,
+        "passed": true,
+        "abstained": true,
+        "lexicalMatch": false,
+        "sourceMatch": false,
+        "validCitations": false
       },
       "system": {
-        "passed": false,
-        "error": "Limite Groq atteinte. Réessayez dans une minute ou utilisez Ollama.",
-        "milliseconds": 60210
+        "providerSucceeded": true,
+        "answer": "NOT FOUND",
+        "citations": [],
+        "usage": {
+          "inputTokens": 1887,
+          "outputTokens": 68,
+          "milliseconds": 946,
+          "provider": "groq",
+          "model": "openai/gpt-oss-120b",
+          "promptVersion": "1.0.0",
+          "settings": {
+            "temperature": 0,
+            "maxOutputTokens": 5000,
+            "reasoningEffort": "low"
+          },
+          "outputLimit": 1200
+        },
+        "milliseconds": 950,
+        "measuredAt": "2026-11-02T13:26:08.477Z",
+        "fromCache": false,
+        "passed": true,
+        "abstained": true,
+        "lexicalMatch": false,
+        "sourceMatch": false,
+        "validCitations": false
       }
     },
     {
@@ -935,14 +1504,58 @@
       "expectedSceneId": null,
       "expectedQuote": null,
       "baseline": {
-        "passed": false,
-        "error": "Limite Groq atteinte. Réessayez dans une minute ou utilisez Ollama.",
-        "milliseconds": 60352
+        "providerSucceeded": true,
+        "answer": "NOT FOUND",
+        "citations": [],
+        "usage": {
+          "inputTokens": 5587,
+          "outputTokens": 52,
+          "milliseconds": 56875,
+          "provider": "groq",
+          "model": "openai/gpt-oss-120b",
+          "promptVersion": "1.0.0",
+          "settings": {
+            "temperature": 0,
+            "maxOutputTokens": 5000,
+            "reasoningEffort": "low"
+          },
+          "outputLimit": 1200
+        },
+        "milliseconds": 56875,
+        "measuredAt": "2026-11-02T13:27:05.362Z",
+        "fromCache": false,
+        "passed": true,
+        "abstained": true,
+        "lexicalMatch": false,
+        "sourceMatch": false,
+        "validCitations": false
       },
       "system": {
-        "passed": false,
-        "error": "Limite Groq atteinte. Réessayez dans une minute ou utilisez Ollama.",
-        "milliseconds": 60353
+        "providerSucceeded": true,
+        "answer": "NOT FOUND",
+        "citations": [],
+        "usage": {
+          "inputTokens": 1601,
+          "outputTokens": 44,
+          "milliseconds": 476,
+          "provider": "groq",
+          "model": "openai/gpt-oss-120b",
+          "promptVersion": "1.0.0",
+          "settings": {
+            "temperature": 0,
+            "maxOutputTokens": 5000,
+            "reasoningEffort": "low"
+          },
+          "outputLimit": 1200
+        },
+        "milliseconds": 479,
+        "measuredAt": "2026-11-02T13:27:05.854Z",
+        "fromCache": false,
+        "passed": true,
+        "abstained": true,
+        "lexicalMatch": false,
+        "sourceMatch": false,
+        "validCitations": false
       }
     },
     {
@@ -952,30 +1565,68 @@
       "expectedSceneId": null,
       "expectedQuote": null,
       "baseline": {
-        "passed": false,
-        "error": "Limite Groq atteinte. Réessayez dans une minute ou utilisez Ollama.",
-        "milliseconds": 60379
+        "providerSucceeded": true,
+        "answer": "NOT FOUND",
+        "citations": [],
+        "usage": {
+          "inputTokens": 5584,
+          "outputTokens": 48,
+          "milliseconds": 57586,
+          "provider": "groq",
+          "model": "openai/gpt-oss-120b",
+          "promptVersion": "1.0.0",
+          "settings": {
+            "temperature": 0,
+            "maxOutputTokens": 5000,
+            "reasoningEffort": "low"
+          },
+          "outputLimit": 1200
+        },
+        "milliseconds": 57586,
+        "measuredAt": "2026-11-02T13:28:03.454Z",
+        "fromCache": false,
+        "passed": true,
+        "abstained": true,
+        "lexicalMatch": false,
+        "sourceMatch": false,
+        "validCitations": false
       },
       "system": {
-        "passed": false,
-        "error": "Limite Groq atteinte. Réessayez dans une minute ou utilisez Ollama.",
-        "milliseconds": 60379
+        "providerSucceeded": true,
+        "answer": "NOT FOUND",
+        "citations": [],
+        "usage": {
+          "inputTokens": 1767,
+          "outputTokens": 32,
+          "milliseconds": 246,
+          "provider": "groq",
+          "model": "openai/gpt-oss-120b",
+          "promptVersion": "1.0.0",
+          "settings": {
+            "temperature": 0,
+            "maxOutputTokens": 5000,
+            "reasoningEffort": "low"
+          },
+          "outputLimit": 1200
+        },
+        "milliseconds": 248,
+        "measuredAt": "2026-11-02T13:28:03.713Z",
+        "fromCache": false,
+        "passed": true,
+        "abstained": true,
+        "lexicalMatch": false,
+        "sourceMatch": false,
+        "validCitations": false
       }
     }
   ],
-  "legacyStatus": "completed",
-  "nPlanned": 24,
-  "nCompleted": 10,
-  "qualityComparable": false,
-  "quotaReached": true,
-  "stopReason": "daily_quota",
-  "reportAnnotation": "Statut et périmètre clarifiés après exécution ; prédictions et mesures brutes conservées. Un diagnostic séparé a confirmé la limite quotidienne Groq. Aucun score global de qualité revendiqué sur cet essai incomplet.",
-  "quotaDiagnostic": {
-    "code": "RATE_LIMIT",
-    "kind": "tokens_per_day",
-    "limit": 200000,
-    "used": 198617,
-    "requested": 5605,
-    "credentialRedacted": true
+  "sourceCommit": "3268d2adcf6d9c6a7cd2c7bf1a22d24de938cd6d",
+  "attemptHistory": {
+    "logicalAttempts": 51,
+    "successfulOutputs": 48,
+    "infrastructureFailures": 3,
+    "fromCacheOnLastRun": 40,
+    "newCallsOnLastRun": 8,
+    "note": "Les trois tentatives réseau échouées ont été reprises ; les quarante sorties déjà obtenues, y compris les réponses fausses, n’ont pas été rééchantillonnées."
   }
 }

@@ -42,7 +42,9 @@ Sur les 50 cas réservés : précision **par cas signalé** 94,4 % [74,2–99,0]
 87,2 %. Baseline : précision 84,0 %, rappel 100 %, F1 91,3 %. Le système émet
 moins de fausses alertes, mais n'est pas globalement supérieur à la baseline.
 Les questions réelles testent séparément éléments de réponse, source et
-abstention ; elles ne mesurent pas la continuité. Aucun gain de temps observé.
+abstention : 19/24 conformes avec RAG contre 16/24 avec le prompt simple sur le
+profil 120B, abstentions correctes 4/4 pour les deux. Elles ne mesurent pas la
+continuité. Aucun gain de temps métier observé.
 
 **Protections.** Pas de clé dans le navigateur ; limites de taille et de pages ;
 PDF sans exécution de scripts ; recherche des citations après normalisation ; citations

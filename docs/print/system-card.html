@@ -3,7 +3,7 @@
 @page { size: A4; margin: 15mm; }
 * { box-sizing: border-box; }
 html { color-scheme: light; background: #e9ebed; }
-body { margin: 0; color: #18242d; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; line-height: 1.42; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body { margin: 0; color: #18242d; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; line-height: 1.4; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 .page { width: 180mm; height: 266mm; margin: 12mm auto; padding: 0 0 13mm; position: relative; background: white; break-after: page; }
 .page:last-child { break-after: auto; }
 .screen-page { padding: 15mm; width: 210mm; height: 296mm; }
@@ -13,7 +13,7 @@ header { border-top: 3pt solid #233e49; padding-top: 5mm; margin-bottom: 6mm; }
 .brand strong { letter-spacing: .11em; color: #233e49; }
 h1 { font-size: 23pt; line-height: 1.12; margin: 4mm 0 2mm; font-weight: 700; letter-spacing: -.035em; }
 .subtitle { color: #53636b; margin: 0; max-width: 166mm; }
-h2 { font-size: 12pt; margin: 5.5mm 0 2mm; line-height: 1.25; color: #233e49; }
+h2 { font-size: 12pt; margin: 5mm 0 2mm; line-height: 1.25; color: #233e49; }
 h3 { font-size: 10pt; margin: 3mm 0 1mm; }
 p { margin: 0 0 2.5mm; }
 ul { margin: 1mm 0 3mm; padding-left: 4.5mm; }
@@ -56,7 +56,7 @@ a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
 </section><section>
 <h2>Données et droits</h2>
 <p>Valkaama, Tim Baumann d’après Hendrik Behnisch, version 2007-06-30 : 56 scènes, CC BY-SA 3.0, pages conservées. Les Heures Creuses et le benchmark de continuité sont synthétiques.</p>
-<p>MovieSum : catalogue externe facultatif, hors benchmark. Sa licence de jeu déclarée CC BY-NC 4.0 ne garantit pas les droits des œuvres sous-jacentes. Imports avec provenance et portée explicites.</p>
+<p>MovieSum : index local de titres, import en ligne, hors benchmark. Sa licence de jeu déclarée CC BY-NC 4.0 ne garantit pas les droits des œuvres sous-jacentes. Provenance et portée conservées.</p>
 <h2>Protections et confidentialité</h2>
 <p>Clés côté serveur ; limites de fichier, pages et texte ; citations et identifiants contrôlés ; documents traités comme données ; sorties non exécutées. Groq reçoit les scènes ou extraits utiles ; Ollama permet l’inférence locale. Les projets restent sur l’appareil, sans synchronisation d’équipe.</p>
 <h2>Hors périmètre et limites</h2>
@@ -64,7 +64,7 @@ a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
 </section></div>
 <h2>Évaluation disponible</h2>
 <p>50 cas synthétiques réservés, annotations assistées par IA à relire. <strong>Précision par cas signalé 94,4 % [74,2 %–99,0 %], rappel 81,0 %, F1 87,2 %.</strong> Baseline : précision 84,0 %, rappel 100,0 %, F1 91,3 %. Le pipeline réduit les fausses alertes mais n’est pas globalement supérieur.</p>
-<p>Le jeu de 24 questions réelles existe ; sa comparaison complète reste à vérifier. Recherche seule : 12 requêtes, rappel de scène à 5 de 100,0 %. Red team : 3/3 essais réussis ; portée limitée.</p>
+<p>QA openai/gpt-oss-120b : 19/24 questions conformes selon la grille [59,5 %–90,8 %], contre 16/24 pour la baseline ; relecture humaine en attente. Recherche seule : 12 requêtes, rappel de scène à 5 de 100,0 %. Red team : 3/3 essais réussis ; portée limitée.</p>
 <p class="small rule">Responsables et contact : <strong>équipe de trois — à renseigner</strong>. Détails : <span class="mono">docs/evaluation_report.md</span>, <span class="mono">docs/use_policy.md</span>, <span class="mono">docs/red_team_log.md</span>, <span class="mono">data/README.md</span>. Les rapports bruts conservent leurs dates, modèles et références de code.</p>
 <footer><span>Fiche système · équipe de trois — noms à renseigner</span><span>1 / 1</span></footer>
 </main></body></html>

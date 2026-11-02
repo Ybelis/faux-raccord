@@ -250,6 +250,12 @@ export function Evaluation({ report, analysis }) {
                 {qaComplete ? 'Exécution complète' : 'Comparaison incomplète'}
               </Badge>
             </h3>
+            {qa?.model && (
+              <p className="body-note">
+                Profil QA : <code>{qa.model}</code>. Cette expérience est distincte du benchmark de
+                continuité.
+              </p>
+            )}
             <p>
               {qaFinished} / {qaPlanned} questions disposent des deux sorties nécessaires. Les
               questions utilisent de vrais passages du scénario, dont quatre informations absentes.

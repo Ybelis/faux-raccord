@@ -3,7 +3,7 @@
 @page { size: A4; margin: 15mm; }
 * { box-sizing: border-box; }
 html { color-scheme: light; background: #e9ebed; }
-body { margin: 0; color: #18242d; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; line-height: 1.42; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body { margin: 0; color: #18242d; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; line-height: 1.4; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 .page { width: 180mm; height: 266mm; margin: 12mm auto; padding: 0 0 13mm; position: relative; background: white; break-after: page; }
 .page:last-child { break-after: auto; }
 .screen-page { padding: 15mm; width: 210mm; height: 296mm; }
@@ -13,7 +13,7 @@ header { border-top: 3pt solid #233e49; padding-top: 5mm; margin-bottom: 6mm; }
 .brand strong { letter-spacing: .11em; color: #233e49; }
 h1 { font-size: 23pt; line-height: 1.12; margin: 4mm 0 2mm; font-weight: 700; letter-spacing: -.035em; }
 .subtitle { color: #53636b; margin: 0; max-width: 166mm; }
-h2 { font-size: 12pt; margin: 5.5mm 0 2mm; line-height: 1.25; color: #233e49; }
+h2 { font-size: 12pt; margin: 5mm 0 2mm; line-height: 1.25; color: #233e49; }
 h3 { font-size: 10pt; margin: 3mm 0 1mm; }
 p { margin: 0 0 2.5mm; }
 ul { margin: 1mm 0 3mm; padding-left: 4.5mm; }
@@ -60,7 +60,12 @@ a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
 <main class="page">
 <header><div class="brand"><strong>FAUX RACCORD</strong><span>2 novembre 2026</span></div><h1>Données réelles et limites</h1><p class="subtitle">Mesures complémentaires · coût · sécurité · travail restant</p></header>
 <h2>4. Questions sur un vrai scénario</h2>
-<div class="note warning"><strong>Mesure QA réelle à terminer.</strong> 24 erreurs fournisseur ont empêché une comparaison complète. Les échecs réseau ne permettent pas de conclure sur la qualité du modèle.</div>
+
+<p><strong>24 questions sur Valkaama</strong> : vingt informations présentes et quatre absentes. Même corpus : dix scènes intégrales pour la baseline, passages retrouvés pour le RAG. Profil QA <span class="mono">openai/gpt-oss-120b</span>, distinct de la continuité 20B.</p>
+<table class="metric-table"><thead><tr><th>Méthode</th><th>Réussite [IC 95 %]</th><th>Abstentions correctes</th><th>Médiane</th></tr></thead><tbody><tr><td>Prompt simple</td><td>16/24 · 66,7 %<br><span class="small">46,7 %–82,0 %</span></td><td>4/4</td><td>57,003 s</td></tr><tr><td>Questions avec RAG</td><td>19/24 · 79,2 %<br><span class="small">59,5 %–90,8 %</span></td><td>4/4</td><td>0,573 s</td></tr></tbody></table>
+<p>Grille : éléments lexicaux, scène et référence dans la réponse, ou <span class="mono">NOT FOUND</span> sans citation. Synonymes et négations limitent ce contrôle ; relecture nécessaire. Les durées incluent la régulation du quota.</p>
+<p class="small">Exécution : 2 novembre 2026, openai/gpt-oss-120b, code 317d4f315597. Erreurs fournisseur : 0. Échecs système : QA008, QA012, QA013, QA016, QA018. Cette mesure concerne les réponses, pas la détection de continuité.</p>
+
 <h2>5. Recherche, tokens et coût</h2>
 <p>Sur 12 recherches lexicales dans Valkaama, la scène de référence apparaît dans les cinq premiers résultats dans <strong>100,0 %</strong> des cas. Les citations sont contrôlées dans le texte. Ce résultat mesure la recherche seule.</p>
 <table><thead><tr><th>50 cas synthétiques</th><th>Tokens entrée / sortie</th><th>Coût estimé / cas</th></tr></thead><tbody><tr><td>Prompt simple</td><td>12 977 / 4 449</td><td>0,000046 USD</td></tr><tr><td>Pipeline</td><td>45 405 / 16 483</td><td>0,000167 USD</td></tr></tbody></table>
@@ -68,7 +73,7 @@ a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
 <h2>6. Sécurité et portée</h2>
 <p>3/3 essais adversariaux réels ont résisté aux attaques testées : instruction dans le scénario, demande de secret et détournement de la question. Cet échantillon ne garantit pas la résistance générale aux injections.</p>
 <p>Les citations extraites sont recherchées après normalisation ; les identifiants inventés sont rejetés. Un passage présent ne garantit pas une interprétation correcte. La validation humaine reste nécessaire.</p>
-<div class="note warning"><strong>Avant le rendu :</strong> faire relire les références ; tester avec une personne concernée et convenir d’une cible utile ; vérifier la démo sur les trois machines ; réserver de nouveaux cas avant de modifier le détecteur. Aucun gain de temps utilisateur ni benchmark multi-productions n’est établi.</div>
+<div class="note warning"><strong>Validation d’usage :</strong> les retours internes ont guidé le parcours et les explications. Le test entre les trois membres reste à consigner ; il ne prouve pas un gain de temps en tournage. Faire relire les références et réserver de nouveaux cas avant de modifier le détecteur.</div>
 <p class="small rule">Sources et preuves : <span class="mono">eval/report.json</span>, <span class="mono">eval/qa-real-report.json</span>, <span class="mono">eval/retrieval-real.json</span>, <span class="mono">eval/red-team-results.json</span>. Méthodes reproductibles dans <span class="mono">eval/</span>. Tarifs : <a href="https://console.groq.com/docs/model/openai/gpt-oss-20b">documentation Groq</a>. Attribution du scénario et droits : <span class="mono">data/README.md</span>.</p>
 <footer><span>Rapport d’évaluation · équipe de trois — noms à renseigner</span><span>2 / 2</span></footer>
 </main></body></html>

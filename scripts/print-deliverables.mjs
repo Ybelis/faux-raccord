@@ -50,7 +50,7 @@ const css = `
 @page { size: A4; margin: 15mm; }
 * { box-sizing: border-box; }
 html { color-scheme: light; background: #e9ebed; }
-body { margin: 0; color: #18242d; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; line-height: 1.42; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body { margin: 0; color: #18242d; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; line-height: 1.4; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 .page { width: 180mm; height: 266mm; margin: 12mm auto; padding: 0 0 13mm; position: relative; background: white; break-after: page; }
 .page:last-child { break-after: auto; }
 .screen-page { padding: 15mm; width: 210mm; height: 296mm; }
@@ -60,7 +60,7 @@ header { border-top: 3pt solid #233e49; padding-top: 5mm; margin-bottom: 6mm; }
 .brand strong { letter-spacing: .11em; color: #233e49; }
 h1 { font-size: 23pt; line-height: 1.12; margin: 4mm 0 2mm; font-weight: 700; letter-spacing: -.035em; }
 .subtitle { color: #53636b; margin: 0; max-width: 166mm; }
-h2 { font-size: 12pt; margin: 5.5mm 0 2mm; line-height: 1.25; color: #233e49; }
+h2 { font-size: 12pt; margin: 5mm 0 2mm; line-height: 1.25; color: #233e49; }
 h3 { font-size: 10pt; margin: 3mm 0 1mm; }
 p { margin: 0 0 2.5mm; }
 ul { margin: 1mm 0 3mm; padding-left: 4.5mm; }
@@ -108,9 +108,9 @@ const qaRows = qaMeasured
   : '';
 const qaSection = qaMeasured
   ? `
-<p><strong>${qa.n} questions sur les scènes 1–10 de Valkaama</strong> : vingt informations présentes et quatre absentes. Profil QA <span class="mono">${html(qa.model)}</span>, distinct du benchmark de continuité 20B. La baseline reçoit les dix scènes intégrales ; le système recherche sur ces mêmes scènes.</p>
+<p><strong>${qa.n} questions sur Valkaama</strong> : vingt informations présentes et quatre absentes. Même corpus : dix scènes intégrales pour la baseline, passages retrouvés pour le RAG. Profil QA <span class="mono">${html(qa.model)}</span>, distinct de la continuité 20B.</p>
 <table class="metric-table"><thead><tr><th>Méthode</th><th>Réussite [IC 95 %]</th><th>Abstentions correctes</th><th>Médiane</th></tr></thead><tbody>${qaRows}</tbody></table>
-<p>La réussite exige des éléments lexicaux, la scène attendue et une référence dans la réponse, ou <span class="mono">NOT FOUND</span> sans citation. Synonymes et négations limitent cette grille ; les références restent à relire. Les durées incluent la régulation du quota, pas seulement l’inférence.</p>
+<p>Grille : éléments lexicaux, scène et référence dans la réponse, ou <span class="mono">NOT FOUND</span> sans citation. Synonymes et négations limitent ce contrôle ; relecture nécessaire. Les durées incluent la régulation du quota.</p>
 <p class="small">Exécution : ${html(date(qa.completedAt))}, ${html(qa.model)}, code ${html(qa.codeHash)}. Erreurs fournisseur : 0. Échecs système : ${html(
       qa.rows
         .filter((row) => !row.system.passed)
@@ -174,7 +174,7 @@ ${header('Fiche système', 'Aide à la relecture de continuité des accessoires 
 </section><section>
 <h2>Données et droits</h2>
 <p>Valkaama, Tim Baumann d’après Hendrik Behnisch, version 2007-06-30 : 56 scènes, CC BY-SA 3.0, pages conservées. Les Heures Creuses et le benchmark de continuité sont synthétiques.</p>
-<p>MovieSum : catalogue externe facultatif, hors benchmark. Sa licence de jeu déclarée CC BY-NC 4.0 ne garantit pas les droits des œuvres sous-jacentes. Imports avec provenance et portée explicites.</p>
+<p>MovieSum : index local de titres, import en ligne, hors benchmark. Sa licence de jeu déclarée CC BY-NC 4.0 ne garantit pas les droits des œuvres sous-jacentes. Provenance et portée conservées.</p>
 <h2>Protections et confidentialité</h2>
 <p>Clés côté serveur ; limites de fichier, pages et texte ; citations et identifiants contrôlés ; documents traités comme données ; sorties non exécutées. Groq reçoit les scènes ou extraits utiles ; Ollama permet l’inférence locale. Les projets restent sur l’appareil, sans synchronisation d’équipe.</p>
 <h2>Hors périmètre et limites</h2>
@@ -182,7 +182,7 @@ ${header('Fiche système', 'Aide à la relecture de continuité des accessoires 
 </section></div>
 <h2>Évaluation disponible</h2>
 <p>50 cas synthétiques réservés, annotations assistées par IA à relire. <strong>Précision par cas signalé ${percentage(report.system.precision)} [${interval(report.system.precisionCI)}], rappel ${percentage(report.system.recall)}, F1 ${percentage(report.system.f1)}.</strong> Baseline : précision ${percentage(report.baseline.precision)}, rappel ${percentage(report.baseline.recall)}, F1 ${percentage(report.baseline.f1)}. Le pipeline réduit les fausses alertes mais n’est pas globalement supérieur.</p>
-<p>${qaMeasured ? `QA réel : ${qa.system.passed}/${qa.n} questions réussies selon la grille automatique [${interval(qa.system.confidence95)}], contre ${qa.baseline.passed}/${qa.n} pour la baseline ; validation humaine en attente.` : 'Le jeu de 24 questions réelles existe ; sa comparaison complète reste à vérifier.'} Recherche seule : ${retrieval.n} requêtes, rappel de scène à 5 de ${percentage(retrieval.value)}. Red team : ${redPassed}/${red.rows.length} essais réussis ; portée limitée.</p>
+<p>${qaMeasured ? `QA ${html(qa.model)} : ${qa.system.passed}/${qa.n} questions conformes selon la grille [${interval(qa.system.confidence95)}], contre ${qa.baseline.passed}/${qa.n} pour la baseline ; relecture humaine en attente.` : 'Le jeu de 24 questions réelles existe ; sa comparaison complète reste à vérifier.'} Recherche seule : ${retrieval.n} requêtes, rappel de scène à 5 de ${percentage(retrieval.value)}. Red team : ${redPassed}/${red.rows.length} essais réussis ; portée limitée.</p>
 <p class="small rule">Responsables et contact : <strong>équipe de trois — à renseigner</strong>. Détails : <span class="mono">docs/evaluation_report.md</span>, <span class="mono">docs/use_policy.md</span>, <span class="mono">docs/red_team_log.md</span>, <span class="mono">data/README.md</span>. Les rapports bruts conservent leurs dates, modèles et références de code.</p>
 ${footer('Fiche système', '1 / 1')}
 </main>`,

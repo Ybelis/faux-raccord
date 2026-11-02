@@ -4,6 +4,8 @@ Le logiciel peut fonctionner sans que ses conclusions soient toujours justes. C�
 
 ## Commencer par l’unité de mesure
 
+La comparaison QA réelle a été exécutée séparément avec `openai/gpt-oss-120b` : **19/24 réponses conformes avec recherche, contre 16/24 pour le prompt simple**. Les quatre informations absentes entraînent une abstention correcte dans chaque méthode. Cette grille mesure réponse, citation et format ; elle ne mesure pas la continuité et ne doit pas être mélangée aux chiffres 20B expliqués ci-dessous. Ses durées incluent la régulation du quota.
+
 Le benchmark de continuité contient 60 petites histoires synthétiques : dix cas de développement et **50 cas réservés au test**. Chaque cas possède une référence proposée : « au moins un point à relire » ou « aucun point attendu ».
 
 La prédiction devient positive dès que le système produit au moins une alerte dans ce cas. Le score mesure donc des **cas signalés**, pas la justesse individuelle de toutes les alertes d’un long scénario.
