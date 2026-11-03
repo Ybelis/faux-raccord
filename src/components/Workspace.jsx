@@ -16,6 +16,7 @@ import {
   RotateCcw,
   Search,
   Send,
+  Sparkles,
   X,
 } from 'lucide-react';
 import { fold } from '../core/parser.js';
@@ -71,7 +72,111 @@ function AnalysisWarnings({ analysis }) {
   );
 }
 
-export function ScriptWorkspace({ project, activeScene, onScene, onReview, onAnalyze }) {
+function SceneEditor({ scene, onPropose, onApply }) {
+  const { t } = useI18n();
+  const [instruction, setInstruction] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [proposal, setProposal] = useState(null);
+  const [error, setError] = useState('');
+  async function propose(event) {
+    event.preventDefault();
+    setBusy(true);
+    setError('');
+    setProposal(null);
+    try {
+      const result = await onPropose(scene, instruction.trim());
+      if (result.changed) setProposal(result);
+      else
+        setError(
+          result.summary === 'invalid'
+            ? t('La proposition a été rejetée : l’en-tête de la scène a disparu.')
+            : t('Aucune modification proposée.') + (result.summary ? ` ${result.summary}` : ''),
+        );
+    } catch (failure) {
+      setError(failure.message);
+    } finally {
+      setBusy(false);
+    }
+  }
+  return (
+    <section className="scene-editor" aria-label={t('Modifier la scène avec le modèle')}>
+      <form onSubmit={propose}>
+        <label className="field-label" htmlFor="scene-instruction">
+          {t('Modifier cette scène')}
+        </label>
+        <div className="question-form">
+          <input
+            id="scene-instruction"
+            value={instruction}
+            onChange={(event) => setInstruction(event.target.value)}
+            placeholder={t('Ex. : la montre de Clara fonctionne encore à la fin de la scène')}
+            minLength={3}
+            maxLength={800}
+            required
+          />
+          <button className="button secondary" disabled={busy}>
+            {busy ? <LoaderCircle className="spin" size={17} /> : <Sparkles size={17} />}
+            {t('Proposer une modification')}
+          </button>
+        </div>
+        <p className="field-help">
+          {t(
+            'Le texte de cette scène est transmis au modèle. Rien n’est changé avant votre validation.',
+          )}
+        </p>
+      </form>
+      {error && (
+        <p className="warning-text" role="alert">
+          {error}
+        </p>
+      )}
+      {proposal && (
+        <div className="answer-box" role="status">
+          <Badge tone="amber">{t('Proposition à valider')}</Badge>
+          {proposal.summary && <p>{proposal.summary}</p>}
+          <div className="edit-compare">
+            <div>
+              <span className="paper-label">{t('ACTUEL')}</span>
+              <pre>{scene.text}</pre>
+            </div>
+            <div>
+              <span className="paper-label">{t('PROPOSÉ')}</span>
+              <pre>{proposal.text}</pre>
+            </div>
+          </div>
+          <div className="edit-actions">
+            <button
+              className="button primary"
+              onClick={() => {
+                onApply(scene.id, proposal.text);
+                setProposal(null);
+                setInstruction('');
+              }}
+            >
+              <Check size={17} />
+              {t('Appliquer à la scène')}
+            </button>
+            <button className="button secondary" onClick={() => setProposal(null)}>
+              <X size={17} />
+              {t('Ignorer')}
+            </button>
+          </div>
+        </div>
+      )}
+    </section>
+  );
+}
+
+export function ScriptWorkspace({
+  project,
+  activeScene,
+  onScene,
+  onReview,
+  onAnalyze,
+  onPropose,
+  onApplyEdit,
+  canEdit,
+}) {
   const { t } = useI18n();
   const [query, setQuery] = useState('');
   const selected = project.scenes.find((scene) => scene.id === activeScene) || project.scenes[0];
@@ -112,7 +217,7 @@ export function ScriptWorkspace({ project, activeScene, onScene, onReview, onAna
         </div>
         <p className="document-purpose">
           {t(
-            'Faux Raccord compare les passages où un accessoire change d’état ou de propriétaire. Vous relisez les changements signalés ; le texte du scénario reste inchangé.',
+            'Faux Raccord compare les passages où un accessoire change d’état ou de propriétaire. Vous relisez les changements signalés ; le texte du scénario reste inchangé tant que vous n’appliquez pas une modification proposée.',
           )}
         </p>
         <details className="provenance">
@@ -247,6 +352,21 @@ export function ScriptWorkspace({ project, activeScene, onScene, onReview, onAna
             <span className="paper-label">{t('TEXTE DU SCÉNARIO')}</span>
             <pre>{selected?.text}</pre>
           </div>
+          {selected?.edited && (
+            <p className="field-help">
+              {t(
+                'Cette scène a été modifiée depuis l’import. Relancez l’analyse pour la prendre en compte.',
+              )}
+            </p>
+          )}
+          {canEdit && selected && (
+            <SceneEditor
+              key={selected.id}
+              scene={selected}
+              onPropose={onPropose}
+              onApply={onApplyEdit}
+            />
+          )}
           {sceneAlerts.map((alert) => (
             <button className="scene-alert-link" key={alert.id} onClick={() => onReview(alert.id)}>
               <CircleHelp size={17} />

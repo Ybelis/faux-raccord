@@ -1,6 +1,6 @@
 import { parseScreenplay } from '../src/core/parser.js';
 import { retrieve } from '../src/core/retrieval.js';
-import { analyze, answerQuestion } from '../src/core/pipeline.js';
+import { analyze, answerQuestion, editScene } from '../src/core/pipeline.js';
 import {
   callModel,
   modelConfig,
@@ -183,6 +183,17 @@ export async function api(request, env = {}) {
     const config = modelConfig(env, body.provider || 'groq', body.model, body.settings);
     const language = responseLanguage(body.language);
     const generate = withResponseLanguage(callModel, language);
+    if (path === '/api/edit') {
+      const instruction = String(body.instruction || '').trim();
+      if (body.scenes.length !== 1)
+        return json({ error: 'Une seule scène peut être modifiée à la fois.' }, 400);
+      if (instruction.length < 3 || instruction.length > 800)
+        return json({ error: 'La consigne doit contenir entre 3 et 800 caractères.' }, 400);
+      return json({
+        ...(await editScene(body.scenes[0], instruction, config, { model: generate })),
+        ...languageMetadata(language),
+      });
+    }
     if (path === '/api/ask') {
       const question = String(body.question || '').trim();
       if (question.length < 3 || question.length > 800)

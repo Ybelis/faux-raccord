@@ -16,7 +16,7 @@
 
 **Évaluation.** Mesure réelle du système et de la baseline disponible. Sur les quinze injections : précision contrôlée 100,0 % [IC 95 % 64,6 %–100,0 %], rappel 46,7 % [24,8 %–69,9 %], F1 63,6 %. 0 alertes sur des objets non annotés sont exclues de ce score et restent à relire. Les annotations sont proposées avec assistance IA, sans relecture humaine attestée ; jeu visible, œuvre unique, intervalles descriptifs. Les 50 vignettes, les 24 questions et les 12 recherches sont des expériences distinctes, pas un score global.
 
-**Protections et confidentialité.** Clés côté serveur ; limites de taille, pages et texte ; citations et identifiants vérifiés ; documents traités comme données ; sorties non exécutées. Groq reçoit les scènes ou extraits utiles après confirmation d’envoi ; Ollama permet de les traiter localement. Trois essais adversariaux réels documentés, portée limitée. Chaque décision finale appartient à l’utilisateur.
+**Protections et confidentialité.** Clés côté serveur ; limites de taille, pages et texte ; citations et identifiants vérifiés ; documents traités comme données ; sorties non exécutées. Groq reçoit les scènes ou extraits utiles après confirmation d’envoi ; Ollama permet de les traiter localement. 20 essais adversariaux réels documentés (questions et éditions de scène), portée limitée. Chaque décision finale appartient à l’utilisateur.
 
 **Hors périmètre et limites.** Pas d’analyse image, audio ou vidéo, d’OCR ni de planning de tournage. Pas de reconstruction fiable de l’ordre narratif. Identité des objets, flashbacks et transferts implicites difficiles ; recherche lexicale limitée sur les paraphrases et les langues croisées. Une citation exacte ne prouve pas la justesse d’une alerte. Aucune promesse de détection exhaustive.
 

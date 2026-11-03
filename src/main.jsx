@@ -16,6 +16,7 @@ import {
   TriangleAlert,
   X,
 } from 'lucide-react';
+import { guessCharacters } from './core/parser.js';
 import { allProjects, saveProject, downloadFile, reportMarkdown } from './storage.js';
 import { Empty } from './components/ui.jsx';
 import { GuidedTour, TOUR_STEPS } from './components/GuidedTour.jsx';
@@ -341,6 +342,34 @@ function App() {
       setAsking(false);
     }
   }
+  function proposeSceneEdit(scene, instruction) {
+    return api('edit', { scenes: [scene], instruction, ...selection, language });
+  }
+  // Le texte modifié remplace la scène ; l'analyse existante est conservée mais
+  // marquée comme antérieure à la modification, car ses citations peuvent changer.
+  function applySceneEdit(sceneId, text) {
+    setProject((previous) => ({
+      ...previous,
+      scenes: previous.scenes.map((scene) =>
+        scene.id === sceneId
+          ? {
+              ...scene,
+              text,
+              pageSegments: [{ page: scene.pages[0] || 1, text }],
+              characters: guessCharacters(text),
+              edited: true,
+            }
+          : scene,
+      ),
+      analysis: previous.analysis
+        ? {
+            ...previous.analysis,
+            editedSceneIds: [...new Set([...(previous.analysis.editedSceneIds || []), sceneId])],
+          }
+        : previous.analysis,
+    }));
+    setToast('Scène modifiée. Relancez l’analyse pour mettre à jour les points signalés.');
+  }
   function exportProject() {
     downloadFile(
       `${project.title}-faux-raccord.json`,
@@ -624,6 +653,9 @@ function App() {
                     project={project}
                     activeScene={activeScene}
                     onScene={setActiveScene}
+                    onPropose={proposeSceneEdit}
+                    onApplyEdit={applySceneEdit}
+                    canEdit={tourStep === null && !busy}
                     onAnalyze={() => navigate('analysis')}
                     onReview={(id) => {
                       setActiveAlert(id);

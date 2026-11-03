@@ -1,6 +1,14 @@
 import { createHash } from 'node:crypto';
 import { fold, locateQuote, parseScreenplay } from '../src/core/parser.js';
 
+// L'original a été haché avec des fins de ligne CRLF ; Git le stocke en LF
+// (.gitattributes). Le contenu est identique : on hache donc une forme
+// canonique, qui donne la même empreinte sur Windows, macOS et Linux.
+export const originalSha256 = (bytes) =>
+  createHash('sha256')
+    .update(String(bytes.toString('utf8')).replace(/\r?\n/g, '\r\n'))
+    .digest('hex');
+
 const normalized = (text) =>
   fold(String(text || ''))
     .replace(/[^a-z0-9]+/g, ' ')
@@ -138,10 +146,7 @@ export function validateControlledDataset(project, reference, annotations, origi
     issues.push('Both adaptations must retain all 56 original scenes.');
   if (project.id === reference.id || !project.synthetic || !project.controlled)
     issues.push('Controlled adaptation provenance is missing.');
-  if (
-    originalBytes &&
-    createHash('sha256').update(originalBytes).digest('hex') !== project.provenance.originalSha256
-  )
+  if (originalBytes && originalSha256(originalBytes) !== project.provenance.originalSha256)
     issues.push('Original script hash differs.');
   const ids = new Set();
   for (const entry of annotations.entries) {

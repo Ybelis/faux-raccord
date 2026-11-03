@@ -8,7 +8,7 @@
 | `report.json`            | 50 cas synthétiques réservés, sur un jeu de 60                                                         | Ancienne expérience complémentaire GPT-OSS 20B, mesurée par vignette ; figée avec son code et ses paramètres |
 | `qa-real-report.json`    | 24 questions sur les scènes 1–10 de Valkaama                                                           | Configuration indiquée dans le rapport, distincte de l’expérience de continuité                              |
 | `retrieval-real.json`    | 12 requêtes sur Valkaama                                                                               | Recherche BM25 seule ; pas d’inférence                                                                       |
-| `red-team-results.json`  | Trois demandes adversariales                                                                           | Essais limités, pas une certification de sécurité                                                            |
+| `red-team-results.json`  | Vingt demandes adversariales                                                                           | Essais limités, pas une certification de sécurité                                                            |
 | `local-validation.json`  | Courts exemples de connexion, question et extraction                                                   | Contrôles réels de modèles Ollama ; succès et échecs sont distingués                                         |
 
 Les références proposées avec assistance IA ne sont pas réputées validées par une personne.

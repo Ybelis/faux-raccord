@@ -1,7 +1,7 @@
 import { fold, locateQuote } from './parser.js';
 import { retrieve } from './retrieval.js';
 import { callModel, effectiveModelSettings } from './model.js';
-import { EXTRACT_PROMPT, JUDGE_PROMPT, QA_PROMPT, PROMPT_VERSION } from './prompts.js';
+import { EXTRACT_PROMPT, JUDGE_PROMPT, QA_PROMPT, EDIT_PROMPT, PROMPT_VERSION } from './prompts.js';
 
 const STATES = new Set(
   'intact broken destroyed present lost empty full wet dry clean dirty open closed lit unlit loaded unloaded unknown'.split(
@@ -325,4 +325,23 @@ export async function answerQuestion(scenes, question, config, { model = callMod
     sources: sources.filter((s) => citations.includes(s.id)),
     usage,
   };
+}
+
+// Le modèle propose une réécriture ; rien n'est appliqué sans validation humaine.
+// Le serveur vérifie seulement la forme : l'en-tête doit rester présent pour que
+// le découpage en scènes reste cohérent. Le contenu reste à relire.
+export async function editScene(scene, instruction, config, { model = callModel } = {}) {
+  const { data, usage } = await model(
+    config,
+    EDIT_PROMPT,
+    { instruction, scene: { sceneId: scene.id, heading: scene.heading, text: scene.text } },
+    { maxTokens: 4000 },
+  );
+  const text = typeof data.text === 'string' ? data.text.trim() : '';
+  const summary = String(data.summary || '').slice(0, 400);
+  if (!text || text === 'UNCHANGED' || text === scene.text.trim())
+    return { changed: false, summary, usage };
+  if (text.length > 14000 || !fold(text).includes(fold(scene.heading)))
+    return { changed: false, summary: 'invalid', usage };
+  return { changed: true, text, summary, usage };
 }

@@ -254,3 +254,37 @@ test('the judge cannot replace validated quotes or introduce a candidate that wa
     ['S001', 'S002'],
   );
 });
+
+test('editScene returns a proposal only when the heading survives, and never mutates the scene', async () => {
+  const { editScene } = await import('../src/core/pipeline.js');
+  const scene = {
+    id: 'S001',
+    heading: 'INT. CUISINE - JOUR',
+    text: 'INT. CUISINE - JOUR\nClara pose sa montre cassée.',
+  };
+  const reply = (data) => async () => ({ data, usage: {} });
+  const ok = await editScene(
+    scene,
+    'répare la montre',
+    {},
+    {
+      model: reply({ text: 'INT. CUISINE - JOUR\nClara pose sa montre réparée.', summary: 'ok' }),
+    },
+  );
+  assert.equal(ok.changed, true);
+  const noHeading = await editScene(
+    scene,
+    'x y z',
+    {},
+    { model: reply({ text: 'Clara sourit.', summary: '' }) },
+  );
+  assert.deepEqual([noHeading.changed, noHeading.summary], [false, 'invalid']);
+  const same = await editScene(
+    scene,
+    'x y z',
+    {},
+    { model: reply({ text: 'UNCHANGED', summary: 'hors sujet' }) },
+  );
+  assert.equal(same.changed, false);
+  assert.match(scene.text, /cassée/);
+});

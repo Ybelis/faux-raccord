@@ -56,7 +56,7 @@ L’ancien jeu séparé de **50 courtes vignettes synthétiques** reste disponib
 
 **24 questions sur de vrais passages inchangés** des dix premières scènes de Valkaama, modèle `openai/gpt-oss-120b` : 19/24 conformes avec RAG [IC 95 % 59,5 %–90,8 %], contre 16/24 avec prompt simple [46,7 %–82,0 %]. Abstentions correctes : 4/4 et 4/4. La grille lexicale vérifie réponse et citation, ou `NOT FOUND` ; synonymes et négations peuvent la tromper. Ce résultat mesure les réponses, pas la continuité. [Rapport QA](../eval/qa-real-report.json).
 
-Recherche seule : 12 requêtes lexicales sur Valkaama, scène attendue dans les cinq premiers résultats dans 100,0 % des cas. Sécurité : 3/3 tests adversariaux réels réussis ; échantillon limité. [Journal](red_team_log.md).
+Recherche seule : 12 requêtes lexicales sur Valkaama, scène attendue dans les cinq premiers résultats dans 100,0 % des cas. Sécurité : 20/20 tests adversariaux réels réussis ; échantillon limité. [Journal](red_team_log.md).
 
 L’utilité pour une équipe de tournage et le gain de temps ne sont pas validés. Le jeu principal est visible et ses annotations attendent une relecture humaine. Objets homonymes, possession implicite et flashbacks restent difficiles. L’analyse porte uniquement sur le texte ; images, audio et vidéo ne sont pas pris en charge. Réserver un autre scénario annoté avant de conclure sur la généralisation.
 
