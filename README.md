@@ -44,6 +44,13 @@ relançable utilise une copie séparée de la démonstration. Les projets resten
 sur cet appareil ; exporter le projet JSON pour sauvegarder ou partager notes
 et décisions. Il n’y a pas de synchronisation entre les membres.
 
+Dans l’onglet **Scénario**, le champ **Modifier cette scène** demande au modèle
+de réécrire la scène affichée selon une consigne (route `/api/edit`). La
+proposition s’affiche à côté du texte actuel et n’est appliquée qu’après votre
+validation ; une proposition sans l’en-tête de scène est rejetée. Une scène
+modifiée est signalée et les alertes existantes sont conservées : relancez
+l’analyse pour les mettre à jour. Le champ est masqué pendant le tutoriel.
+
 La **[documentation utilisateur](http://127.0.0.1:4173/#/docs/utiliser)** rassemble
 l’utilisation, les données et le fonctionnement, les résultats et tests,
 ainsi que les limites et la confidentialité. Sa source unique est
@@ -135,13 +142,13 @@ La fonction de questions suit un parcours plus court : **question → BM25 →
 réponse citée ou `NOT FOUND`**. Le code contrôle les identifiants des citations ;
 leur présence ne garantit pas non plus la justesse de la réponse.
 
-| Fichier                               | Responsabilité                                                                    |
-| ------------------------------------- | --------------------------------------------------------------------------------- |
-| [parser.js](src/core/parser.js)       | Découper les scènes et retrouver les citations.                                   |
-| [prompts.js](src/core/prompts.js)     | Définir les instructions d’extraction, de comparaison et de réponse.              |
-| [pipeline.js](src/core/pipeline.js)   | Valider et regrouper les mentions, créer les candidats et construire les alertes. |
-| [retrieval.js](src/core/retrieval.js) | Découper les passages et les classer avec BM25.                                   |
-| [model.js](src/core/model.js)         | Appeler Groq ou Ollama et lire le JSON retourné.                                  |
+| Fichier                               | Responsabilité                                                                            |
+| ------------------------------------- | ----------------------------------------------------------------------------------------- |
+| [parser.js](src/core/parser.js)       | Découper les scènes et retrouver les citations.                                           |
+| [prompts.js](src/core/prompts.js)     | Définir les instructions d’extraction, de comparaison, de réponse et d’édition.           |
+| [pipeline.js](src/core/pipeline.js)   | Valider les mentions, créer les alertes, répondre aux questions et proposer des éditions. |
+| [retrieval.js](src/core/retrieval.js) | Découper les passages et les classer avec BM25.                                           |
+| [model.js](src/core/model.js)         | Appeler Groq ou Ollama et lire le JSON retourné.                                          |
 
 `npm run explain` déroule ce parcours avec des sorties de modèle **simulées et
 annoncées**. Cette commande explique le code sans appeler ni mesurer un LLM.
@@ -192,6 +199,7 @@ expériences complémentaires, distinctes de ce benchmark.
 npm test
 node eval/controlled-run.mjs
 node --env-file=.env eval/controlled-run.mjs --live
+node --env-file=.env eval/red-team.mjs
 npm run format:check
 npm run build
 ```
@@ -200,7 +208,10 @@ La commande sans `--live` valide les références et les résultats enregistrés
 elle n’invente aucun score. `--live` appelle le modèle et consomme un quota.
 Sans `--model`, une nouvelle mesure reprend le modèle du rapport existant.
 Les tests du code utilisent des fournisseurs simulés lorsque nécessaire ; ils
-ne mesurent pas la qualité réelle du modèle. Détails et commandes historiques :
+ne mesurent pas la qualité réelle du modèle. `eval/red-team.mjs` envoie 20 demandes
+malveillantes (17 questions, 3 éditions de scène) au vrai modèle et consomme un
+quota ; la grille est mécanique et n’évalue pas la qualité des réponses
+([journal](docs/red_team_log.md)). Détails et commandes historiques :
 [eval/README.md](eval/README.md).
 
 L’application propose aussi un import utilisateur et une bibliothèque MovieSum.
@@ -212,7 +223,7 @@ Sources, transformations et licences : [data/README.md](data/README.md).
 
 - [Rapport d’évaluation](docs/evaluation_report.md) · [PDF, deux pages](docs/print/evaluation.pdf).
 - [Fiche système](docs/system_card.md) · [PDF, une page](docs/print/system-card.pdf).
-- [Politique d’utilisation](docs/use_policy.md) · [Journal de red team](docs/red_team_log.md).
+- [Politique d’utilisation](docs/use_policy.md) · [Journal de red team, 20 essais](docs/red_team_log.md).
 
 Groq reçoit les scènes ou extraits nécessaires aux appels ; Ollama permet un
 traitement local. Les clés restent côté serveur, les preuves introuvables sont
