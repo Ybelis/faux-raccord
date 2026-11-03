@@ -53,15 +53,98 @@ change l’interface et la documentation utilisateur ; le choix est conservé su
 cet appareil. Les scénarios, citations et résultats déjà enregistrés gardent
 leur langue d’origine. Les documents PDF restent en français.
 
-```text
-Scénario → scènes → extraction LLM → contrôle des citations
-         → suivi des accessoires → candidats → recherche BM25
-         → comparaison LLM → passages sources → décision humaine
+## Fonctionnement technique
+
+L’interface React envoie les scènes sélectionnées au serveur Node.js. Les routes
+de `worker/api.js` appellent le pipeline ; le serveur contacte Groq ou Ollama.
+La clé Groq sert à l’authentification côté serveur et n’entre pas dans les messages
+du modèle. Le découpage, les contrôles et la recherche s’exécutent dans le code.
+
+```mermaid
+flowchart TD
+    A["Scènes du scénario"] --> B["LLM : extraction des objets en JSON"]
+    B --> C["Code : citations, regroupement et candidats"]
+    C --> D["BM25 : recherche du contexte"]
+    D --> E["LLM : comparaison et explication"]
+    E -->|contradiction ou ambiguïté| F["Alerte avec deux passages sources"]
+    E -->|changement expliqué| G["Aucune alerte"]
+    F --> H["Relecture et décision humaine"]
 ```
 
-Le cœur est dans `src/core/`, l’interface React dans `src/components/`, les routes
-dans `worker/`. `npm run explain` déroule un exemple avec des sorties de modèle
-**simulées et annoncées** : il explique le code, sans mesurer un LLM.
+1. **Découper le texte.** Le parseur reconnaît les en-têtes de scène, comme
+   `INT.` et `EXT.`, puis conserve texte, identifiants et pages. Un PDF doit
+   contenir du texte sélectionnable. Sans en-têtes reconnus, un découpage de
+   secours est signalé ; cette étape n’utilise pas de LLM.
+2. **Extraire les mentions.** Le modèle lit des lots de **trois scènes complètes**.
+   Le prompt lui demande un JSON : nom et alias de chaque accessoire, puis ses
+   mentions avec scène, citation, état, propriétaire, action et repère temporel.
+   Les noms et alias des 40 dernières entrées extraites l’aident à réutiliser
+   des noms cohérents ; ce n’est pas une mémoire complète du scénario.
+
+   Exemple simplifié d’une mention extraite :
+
+   ```json
+   {
+     "name": "montre de Runa",
+     "aliases": ["brass pocket watch"],
+     "mentions": [
+       {
+         "sceneId": "S001",
+         "quote": "Runa drops her brass pocket watch. Its glass breaks and its mechanism stops.",
+         "state": "broken",
+         "owner": "Runa",
+         "action": "break",
+         "temporal": "continuous"
+       }
+     ]
+   }
+   ```
+
+3. **Contrôler et regrouper.** Le code lit le JSON et vérifie que chaque citation
+   existe dans la scène annoncée du lot. La comparaison normalise casse, accents,
+   espaces et guillemets, sans accepter une paraphrase. Les états ou actions non
+   reconnus deviennent `unknown`. Les mentions sont regroupées par nom normalisé,
+   avec des précautions sur le propriétaire, puis classées dans l’ordre des scènes.
+   L’identité des objets reste une heuristique : deux objets peuvent être confondus.
+4. **Créer des candidats.** Les règles comparent les mentions successives d’un
+   même objet : par exemple `broken → intact`, `empty → full` ou un changement
+   de propriétaire sans transfert reconnu. Une réparation ou un remplissage
+   extrait peut expliquer le changement et supprimer le candidat. Toutes les
+   transitions possibles ne sont pas couvertes ; une absence de mention ne
+   constitue pas une disparition.
+5. **Retrouver le contexte.** Pour chaque candidat, BM25 recherche le nom de
+   l’objet et ses alias dans les scènes situées entre les deux mentions, bornes
+   incluses. Il classe les passages par correspondance lexicale, fréquence des
+   mots et longueur, puis en conserve jusqu’à **cinq**. Ces passages font au plus
+   **1 000 caractères**, avec **150 caractères de recouvrement**, sans mélanger
+   deux scènes. Ces passages de recherche sont distincts des lots d’extraction.
+   La recherche n’utilise ni embeddings ni base vectorielle.
+6. **Interpréter et présenter.** Le modèle reçoit le candidat, ses deux mentions
+   vérifiées et le contexte retrouvé. Il génère un verdict (`contradiction`,
+   `ambiguous` ou `explained`), un titre, une explication et une question. Un
+   changement expliqué ne produit pas d’alerte. Les autres points sont présentés
+   à la relecture avec les deux preuves déjà validées ; le modèle ne peut pas les
+   remplacer. L’utilisateur confirme ou écarte le point et peut ajouter une note.
+
+**Limite du contrôle :** retrouver une citation ne prouve pas que son état ou son
+action ont été bien compris. Dans E03, la gourde est interprétée comme remplie
+malgré la négation « It has not been refilled ». La règle de remplissage élimine
+alors le candidat avant la recherche : le RAG ne peut plus rattraper cette erreur.
+
+La fonction de questions suit un parcours plus court : **question → BM25 →
+réponse citée ou `NOT FOUND`**. Le code contrôle les identifiants des citations ;
+leur présence ne garantit pas non plus la justesse de la réponse.
+
+| Fichier                               | Responsabilité                                                                    |
+| ------------------------------------- | --------------------------------------------------------------------------------- |
+| [parser.js](src/core/parser.js)       | Découper les scènes et retrouver les citations.                                   |
+| [prompts.js](src/core/prompts.js)     | Définir les instructions d’extraction, de comparaison et de réponse.              |
+| [pipeline.js](src/core/pipeline.js)   | Valider et regrouper les mentions, créer les candidats et construire les alertes. |
+| [retrieval.js](src/core/retrieval.js) | Découper les passages et les classer avec BM25.                                   |
+| [model.js](src/core/model.js)         | Appeler Groq ou Ollama et lire le JSON retourné.                                  |
+
+`npm run explain` déroule ce parcours avec des sorties de modèle **simulées et
+annoncées**. Cette commande explique le code sans appeler ni mesurer un LLM.
 
 ## Choix des modèles
 
