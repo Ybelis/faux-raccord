@@ -4,6 +4,29 @@ Faux Raccord aide à relire la continuité textuelle d'accessoires d'un scénari
 Les utilisateurs visés sont les scriptes et les petites équipes de tournage.
 Les alertes sont des points à examiner, jamais une preuve définitive d'erreur.
 
+L’import accepte un seul PDF avec texte, TXT, Fountain ou Markdown de 5 Mo au
+maximum. Le serveur compte les octets reçus, contrôle l’extension, le type annoncé
+et le contenu, puis limite le texte à 180 000 caractères, 200 scènes et 14 000
+caractères par scène. Les textes doivent être en UTF-8. Les noms de fichier ne
+servent jamais de chemins sur le serveur ; les documents HTML et binaires déguisés
+sont refusés. Aucun appel à un modèle n’est déclenché par l’import.
+
+Les PDF sont limités à 160 pages et lus dans un thread Node séparé. La lecture
+est interrompue après 20 secondes ou lors de l’annulation ; deux lectures sont
+autorisées simultanément. Les scripts PDF détectés sont refusés, et seuls les
+textes sont extraits : les images, liens et pièces jointes ne sont ni affichés ni
+ouverts. Les limites de mémoire V8 ne couvrent pas toute la mémoire native et
+ne constituent pas une isolation du système d’exploitation. Ces protections
+réduisent les risques de saturation sans garantir l’innocuité de tout PDF.
+
+Un projet JSON est traité comme une donnée non fiable : taille et profondeur
+bornées, structure et références contrôlées, liens de source limités à HTTP ou
+HTTPS sans identifiants, propriétés dangereuses refusées. Une restauration crée
+une nouvelle copie pour préserver les projets existants. Les noms d’auteurs,
+licences, sources et résultats déclarés dans ce fichier ne sont pas des preuves
+d’authenticité ; la présence des citations valide leur correspondance au texte,
+pas leur interprétation.
+
 Importer uniquement des textes que l'équipe a le droit d'utiliser. Une analyse
 ou une question avec Groq envoie les scènes sélectionnées ou les extraits utiles
 à ce fournisseur. Pour des textes

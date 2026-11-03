@@ -229,7 +229,22 @@ function App() {
       let imported;
       if (file.name.toLowerCase().endsWith('.json')) {
         const { readProjectExport } = await import('./project-import.js');
-        imported = readProjectExport(await file.text());
+        let raw;
+        try {
+          raw = new TextDecoder('utf-8', { fatal: true }).decode(await file.arrayBuffer());
+        } catch {
+          throw new Error('Le document texte doit être encodé en UTF-8.');
+        }
+        const restored = readProjectExport(raw);
+        // Un fichier peut reprendre l'id d'un projet existant. Une restauration
+        // ouvre toujours une nouvelle copie et ne peut pas écraser sa relecture.
+        imported = {
+          ...restored,
+          id: crypto.randomUUID(),
+          importedBackup: true,
+          importedFromId: restored.id,
+          ...(restored.analysis ? { analysis: { ...restored.analysis, imported: true } } : {}),
+        };
       } else {
         const form = new FormData();
         form.append('file', file);

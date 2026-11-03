@@ -108,6 +108,11 @@ export function Dialogs(props) {
         <p className="field-help">
           {t('PDF avec texte, TXT, Fountain, Markdown ou projet JSON · 5 Mo maximum.')}
         </p>
+        <p className="field-help">
+          {t(
+            'Un projet JSON est ouvert comme nouvelle copie, sans remplacer vos projets. L’import ne lance aucune analyse IA.',
+          )}
+        </p>
         <h3 className="group-label">{t('Exemples disponibles')}</h3>
         {samples.map((sample) => (
           <button className="project-option" key={sample.id} onClick={() => onSample(sample.id)}>

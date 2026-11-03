@@ -58,8 +58,15 @@ test('unsupported imports and malformed JSON are rejected', async () => {
     400,
   );
   assert.equal(
-    (await api(new Request('http://localhost/api/analyze', { method: 'POST', body: '{broken' })))
-      .status,
+    (
+      await api(
+        new Request('http://localhost/api/analyze', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: '{broken',
+        }),
+      )
+    ).status,
     400,
   );
 });

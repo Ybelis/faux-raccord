@@ -4,6 +4,7 @@ import { identityPath, serverIdentity } from './launch.mjs';
 import { api, setRecorded, setEvaluation } from '../worker/api.js';
 import { loadEvaluation } from './evaluation-data.mjs';
 import { readDocumentAsset } from './document-assets.mjs';
+import { localRequestUrl } from '../worker/request-safety.js';
 const port = Number(process.env.PORT || 4173);
 try {
   setRecorded(
@@ -21,14 +22,26 @@ const vite = production
 const packaged = production ? (await import('../dist/server/index.js')).default : null;
 const identity = serverIdentity(port, production ? 'production' : 'development');
 const identityFile = new URL('../.local/server.json', import.meta.url);
-const server = http.createServer(async (req, res) => {
+const server = http.createServer({ maxHeaderSize: 16 * 1024 }, async (req, res) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('Referrer-Policy', 'same-origin');
+  res.setHeader('Cross-Origin-Resource-Policy', 'same-origin');
+  let requestUrl;
+  try {
+    requestUrl = localRequestUrl(req.url, req.headers.host, port);
+  } catch (error) {
+    res.writeHead(error.status || 400, { 'Content-Type': 'application/json; charset=utf-8' });
+    res.end(JSON.stringify({ error: error.message }));
+    return;
+  }
   if (req.method === 'GET' && req.url === identityPath) {
     res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' });
     res.end(JSON.stringify(identity));
     return;
   }
-  if (!production && new URL(req.url, 'http://localhost').pathname.startsWith('/docs/')) {
-    const document = await readDocumentAsset(new URL(req.url, 'http://localhost').pathname);
+  if (!production && requestUrl.pathname.startsWith('/docs/')) {
+    const document = await readDocumentAsset(requestUrl.pathname);
     res.writeHead(document ? 200 : 404, {
       'Content-Type': document?.type || 'text/plain; charset=utf-8',
       'X-Content-Type-Options': 'nosniff',
@@ -64,12 +77,13 @@ const server = http.createServer(async (req, res) => {
     for await (const chunk of req) {
       bytes += chunk.length;
       if (bytes > 6 * 1024 * 1024) {
-        res.writeHead(413).end('Fichier trop volumineux');
+        res.writeHead(413, { 'Content-Type': 'application/json; charset=utf-8' });
+        res.end(JSON.stringify({ error: 'Requête trop volumineuse.' }));
         return;
       }
       chunks.push(chunk);
     }
-    const request = new Request(`http://127.0.0.1:${port}${req.url}`, {
+    const request = new Request(requestUrl, {
       method: req.method,
       headers: req.headers,
       ...(req.method === 'GET' || req.method === 'HEAD' ? {} : { body: Buffer.concat(chunks) }),
@@ -94,6 +108,10 @@ const server = http.createServer(async (req, res) => {
     res.end(JSON.stringify({ error: 'Erreur du serveur local.' }));
   }
 });
+server.headersTimeout = 10_000;
+server.requestTimeout = 30_000;
+server.maxHeadersCount = 50;
+server.maxRequestsPerSocket = 100;
 server.on('error', async (error) => {
   await vite?.close();
   console.error(

@@ -7,10 +7,13 @@ import {
   listModels,
   checkModel,
   DEFAULT_MODEL_SETTINGS,
+  ModelError,
 } from '../src/core/model.js';
 import { withContinuityProfile } from '../src/core/inference-profile.js';
 import { responseLanguage, withResponseLanguage, languageMetadata } from './response-language.js';
 import { handleSources } from './sources.js';
+import { importDocument, ImportError } from './imports.js';
+import { RequestError, checkRequestOrigin, readJsonRequest } from './request-safety.js';
 import { demo } from '../data/demo.js';
 import valkaama from '../data/valkaama.json' with { type: 'json' };
 import controlled from '../data/controlled-script/project.json' with { type: 'json' };
@@ -41,24 +44,55 @@ const sampleScenes = (sample) =>
 
 function validateScenes(scenes) {
   if (!Array.isArray(scenes) || !scenes.length || scenes.length > 60)
-    throw new Error('Choisissez entre 1 et 60 scènes.');
+    throw new RequestError('Choisissez entre 1 et 60 scènes.');
+  const ids = new Set();
   if (
-    scenes.some(
-      (s) => typeof s.text !== 'string' || s.text.length > 14000 || !/^S\d{3}$/.test(s.id),
-    )
+    scenes.some((s) => {
+      if (
+        !s ||
+        typeof s !== 'object' ||
+        Array.isArray(s) ||
+        typeof s.text !== 'string' ||
+        !s.text.trim() ||
+        s.text.length > 14000 ||
+        typeof s.id !== 'string' ||
+        !/^S\d{3}$/.test(s.id) ||
+        ids.has(s.id) ||
+        (s.heading != null && (typeof s.heading !== 'string' || s.heading.length > 500)) ||
+        !Array.isArray(s.pages) ||
+        !s.pages.length ||
+        s.pages.length > 200 ||
+        !s.pages.every((page) => Number.isSafeInteger(page) && page > 0 && page <= 100_000)
+      )
+        return true;
+      if (
+        s.pageSegments != null &&
+        (!Array.isArray(s.pageSegments) ||
+          s.pageSegments.length > 200 ||
+          s.pageSegments.some(
+            (segment) =>
+              !segment ||
+              typeof segment.text !== 'string' ||
+              segment.text.length > 20000 ||
+              !s.pages.includes(segment.page),
+          ) ||
+          s.pageSegments.reduce((total, segment) => total + segment.text.length, 0) > 20000)
+      )
+        return true;
+      ids.add(s.id);
+      return false;
+    })
   )
-    throw new Error('Format des scènes invalide.');
+    throw new RequestError('Format des scènes invalide.');
   if (scenes.reduce((n, s) => n + s.text.length, 0) > 120000)
-    throw new Error('Sélection trop longue. Analysez le scénario par lots.');
+    throw new RequestError('Sélection trop longue. Analysez le scénario par lots.');
 }
 
 export async function api(request, env = {}) {
   const url = new URL(request.url),
     path = url.pathname;
   try {
-    const origin = request.headers.get('origin');
-    if (request.method === 'POST' && origin && origin !== url.origin)
-      return json({ error: 'Origine de requête non autorisée.' }, 403);
+    checkRequestOrigin(request);
     const sourceResponse = await handleSources(request, env);
     if (sourceResponse) return sourceResponse;
     if (path === '/api/status')
@@ -88,7 +122,8 @@ export async function api(request, env = {}) {
         })),
       );
     if (path.startsWith('/api/samples/')) {
-      const s = samples[path.split('/').at(-1)];
+      const key = path.split('/').at(-1);
+      const s = Object.hasOwn(samples, key) ? samples[key] : null;
       if (!s) return json({ error: 'Scénario introuvable.' }, 404);
       return json({
         ...s,
@@ -98,74 +133,12 @@ export async function api(request, env = {}) {
     }
     if (path === '/api/evaluation') return json(evaluation);
     if (request.method !== 'POST') return json({ error: 'Route introuvable.' }, 404);
-    const size = Number(request.headers.get('content-length') || 0);
-    if (size > 6 * 1024 * 1024)
-      return json({ error: 'Le fichier dépasse la limite de 5 Mo.' }, 413);
     if (path === '/api/import') {
-      const form = await request.formData(),
-        file = form.get('file');
-      if (!file || typeof file.arrayBuffer !== 'function' || file.size > 5 * 1024 * 1024)
-        return json({ error: 'Importez un fichier PDF, TXT ou Fountain de moins de 5 Mo.' }, 400);
-      const ext = file.name.toLowerCase().split('.').at(-1);
-      let input;
-      if (ext === 'pdf') {
-        const { getDocumentProxy } = await import('unpdf');
-        const pdf = await getDocumentProxy(new Uint8Array(await file.arrayBuffer()), {
-          maxImageSize: 1000000,
-          isEvalSupported: false,
-        });
-        if (pdf.numPages > 160) {
-          if (typeof pdf.destroy === 'function') await pdf.destroy();
-          return json({ error: 'PDF trop long : 160 pages maximum.' }, 400);
-        }
-        const pages = [];
-        try {
-          for (let i = 1; i <= pdf.numPages; i++) {
-            const page = await pdf.getPage(i),
-              content = await page.getTextContent();
-            let text = '',
-              lastY = null;
-            for (const item of content.items) {
-              if (!('str' in item)) continue;
-              const y = Math.round(item.transform?.[5] || 0);
-              if (lastY !== null && Math.abs(y - lastY) > 3 && !text.endsWith('\n')) text += '\n';
-              text += item.str + (item.hasEOL ? '\n' : ' ');
-              lastY = y;
-            }
-            pages.push({ page: i, text });
-          }
-        } finally {
-          if (typeof pdf.destroy === 'function') await pdf.destroy();
-          else if (typeof pdf.cleanup === 'function') await pdf.cleanup();
-        }
-        input = { pages };
-      } else if (['txt', 'fountain', 'md'].includes(ext)) input = await file.text();
-      else
-        return json(
-          { error: 'Formats acceptés : PDF avec texte, TXT, Fountain et Markdown.' },
-          400,
-        );
-      return json({
-        id: crypto.randomUUID(),
-        title: file.name.replace(/\.[^.]+$/, '').replace(/[_-]/g, ' '),
-        author: 'Document importé',
-        filename: file.name,
-        license: 'À documenter',
-        synthetic: false,
-        ...parseScreenplay(input),
-        analysis: null,
-      });
+      return json(await importDocument(request));
     }
-    const raw = await request.text();
-    if (raw.length > 1400000) return json({ error: 'Requête trop volumineuse.' }, 413);
-    let body;
-    try {
-      body = JSON.parse(raw);
-    } catch {
-      return json({ error: 'Requête JSON invalide.' }, 400);
-    }
-    if (!body || typeof body !== 'object' || Array.isArray(body))
-      return json({ error: 'La requête doit contenir un objet JSON.' }, 400);
+    if (!['/api/models/check', '/api/search', '/api/ask', '/api/analyze'].includes(path))
+      return json({ error: 'Route introuvable.' }, 404);
+    const body = await readJsonRequest(request);
     // Model checks contain no screenplay: they validate a short JSON reply only.
     if (path === '/api/models/check')
       return json(
@@ -176,15 +149,22 @@ export async function api(request, env = {}) {
         }),
       );
     validateScenes(body.scenes);
-    if (path === '/api/search')
+    if (path === '/api/search') {
+      if (typeof body.query !== 'string' || body.query.length > 500)
+        throw new RequestError('La recherche doit contenir au maximum 500 caractères.');
       return json({
-        sources: retrieve(body.scenes, String(body.query || '').slice(0, 500), { topK: 8 }),
+        sources: retrieve(body.scenes, body.query, { topK: 8 }),
       });
+    }
     const config = modelConfig(env, body.provider || 'groq', body.model, body.settings);
+    if (body.language !== undefined && !['fr', 'en'].includes(body.language))
+      throw new RequestError('Langue invalide : choisissez fr ou en.');
     const language = responseLanguage(body.language);
     const generate = withResponseLanguage(callModel, language);
     if (path === '/api/ask') {
-      const question = String(body.question || '').trim();
+      if (typeof body.question !== 'string')
+        throw new RequestError('La question doit contenir entre 3 et 800 caractères.');
+      const question = body.question.trim();
       if (question.length < 3 || question.length > 800)
         return json({ error: 'La question doit contenir entre 3 et 800 caractères.' }, 400);
       return json({
@@ -257,9 +237,14 @@ export async function api(request, env = {}) {
     }
     return json({ error: 'Route introuvable.' }, 404);
   } catch (error) {
+    const expected =
+      error instanceof RequestError || error instanceof ImportError || error instanceof ModelError;
     return json(
-      { error: error.message || 'Une erreur est survenue.', code: error.code || 'INVALID_REQUEST' },
-      error.status || 400,
+      {
+        error: expected ? error.message : 'Le serveur ne peut pas traiter cette requête.',
+        code: expected ? error.code || 'INVALID_REQUEST' : 'INTERNAL_ERROR',
+      },
+      expected ? error.status : 500,
     );
   }
 }

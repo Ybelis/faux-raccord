@@ -21,6 +21,7 @@ import {
 import { fold } from '../core/parser.js';
 import { Badge, Empty, SearchField } from './ui.jsx';
 import { useI18n } from '../i18n-context.jsx';
+import { safeExternalUrl } from '../input-safety.js';
 
 const STATES = {
   intact: 'Intact',
@@ -77,6 +78,7 @@ export function ScriptWorkspace({ project, activeScene, onScene, onReview, onAna
   const selected = project.scenes.find((scene) => scene.id === activeScene) || project.scenes[0];
   const matching = project.scenes.filter((scene) => fold(scene.text).includes(fold(query)));
   const selectedIndex = project.scenes.findIndex((scene) => scene.id === selected?.id);
+  const sourceUrl = safeExternalUrl(project.sourceUrl);
   const allAlerts = project.analysis?.alerts || [];
   const sceneAlerts = allAlerts.filter((alert) =>
     alert.evidence.some((item) => item.sceneId === selected?.id),
@@ -91,11 +93,13 @@ export function ScriptWorkspace({ project, activeScene, onScene, onReview, onAna
             <p>{project.author}</p>
           </div>
           <Badge tone={project.synthetic ? 'amber' : 'mint'}>
-            {project.controlled
-              ? t('{count} erreurs injectées', { count: project.controlledInjectionCount })
-              : project.synthetic
-                ? t('Fiction synthétique')
-                : t('Scénario réel')}
+            {project.importedBackup
+              ? t('Projet importé')
+              : project.controlled
+                ? t('{count} erreurs injectées', { count: project.controlledInjectionCount })
+                : project.synthetic
+                  ? t('Fiction synthétique')
+                  : t('Scénario réel')}
           </Badge>
         </div>
         <div className="document-facts">
@@ -118,8 +122,8 @@ export function ScriptWorkspace({ project, activeScene, onScene, onReview, onAna
         <details className="provenance">
           <summary>{t('Provenance et conditions d’utilisation')}</summary>
           <p>{project.description || t('Document ajouté par l’utilisateur.')}</p>
-          {project.sourceUrl && (
-            <a href={project.sourceUrl} target="_blank" rel="noreferrer">
+          {sourceUrl && (
+            <a href={sourceUrl} target="_blank" rel="noopener noreferrer">
               {' '}
               {t('Consulter la source')} <ExternalLink size={14} />
             </a>
@@ -129,7 +133,9 @@ export function ScriptWorkspace({ project, activeScene, onScene, onReview, onAna
             {t('Attribution :')} {project.author}
             {t('. Licence :')} {project.license || t('à documenter')}.
           </p>
-          {project.provenance?.rightsNotice && <p>{project.provenance.rightsNotice}</p>}
+          {typeof project.provenance?.rightsNotice === 'string' && (
+            <p>{project.provenance.rightsNotice}</p>
+          )}
           {project.controlled && (
             <p>
               {' '}
@@ -431,7 +437,11 @@ export function AnalysisWorkspace({
               <AnalysisWarnings analysis={analysis} />
               <div className="result-label">
                 <Badge tone={analysis.recorded ? 'amber' : 'mint'}>
-                  {analysis.recorded ? t('Analyse enregistrée') : t('Analyse exécutée')}
+                  {analysis.imported
+                    ? t('Résultat importé')
+                    : analysis.recorded
+                      ? t('Analyse enregistrée')
+                      : t('Analyse exécutée')}
                 </Badge>
                 <span>
                   {new Date(analysis.completedAt).toLocaleDateString(
@@ -470,11 +480,15 @@ export function AnalysisWorkspace({
                 </span>
               </div>
               <p className="body-note">
-                {analysis.recorded
+                {analysis.imported
                   ? t(
-                      'Ce résultat enregistré provient d’une exécution réelle. Il est consultable sans nouvel appel au modèle.',
+                      'Résultat restauré depuis un fichier JSON. Le modèle, la date et la provenance sont déclarés dans ce fichier.',
                     )
-                  : t('Ce résultat correspond à votre dernière exécution.')}
+                  : analysis.recorded
+                    ? t(
+                        'Ce résultat enregistré provient d’une exécution réelle. Il est consultable sans nouvel appel au modèle.',
+                      )
+                    : t('Ce résultat correspond à votre dernière exécution.')}
               </p>
               <button className="button primary full" onClick={onReview}>
                 {' '}
@@ -558,7 +572,11 @@ export function ReviewWorkspace(props) {
             {analysis.analyzedSceneIds.length} / {project.scenes.length}
           </strong>{' '}
           {t('scènes analysées')}
-          {analysis.recorded ? t(' · résultat enregistré') : ''}
+          {analysis.imported
+            ? t(' · résultat importé')
+            : analysis.recorded
+              ? t(' · résultat enregistré')
+              : ''}
         </span>
         <span>
           {analysis.alerts.filter((alert) => alert.status !== 'pending').length} /{' '}

@@ -45,6 +45,9 @@ export function reportMarkdown(project, language = 'fr') {
     `${t('Données synthétiques')} : ${t(project.synthetic ? 'oui' : 'non')}\n\n` +
     (a
       ? `${t('Modèle')} : ${a.model} (${a.provider}), prompt ${a.promptVersion}\n${t('Scènes analysées')} : ${a.analyzedSceneIds.length}/${project.scenes.length}\n${t('Accessoires')} : ${a.objects.length}\n\n` +
+        (a.imported
+          ? `${t('Résultat restauré depuis un fichier JSON. Le modèle, la date et la provenance sont déclarés dans ce fichier.')}\n\n`
+          : '') +
         (language === 'en' && a.responseLanguage !== 'en'
           ? 'Recorded titles and explanations are kept in their original language. Source quotations are never translated.\n\n'
           : '') +

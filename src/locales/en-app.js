@@ -1,4 +1,83 @@
 export default {
+  'Projet importé': 'Imported project',
+  'Résultat importé': 'Imported result',
+  ' · résultat importé': '· imported result',
+  'Résultat restauré depuis un fichier JSON. Le modèle, la date et la provenance sont déclarés dans ce fichier.':
+    'Result restored from a JSON file. Its model, date and provenance are declared in that file.',
+  'Un projet JSON est ouvert comme nouvelle copie, sans remplacer vos projets. L’import ne lance aucune analyse IA.':
+    'A JSON project opens as a new copy, keeping your existing projects. Importing does not run an AI analysis.',
+  'Taille de requête invalide.': 'Invalid request size.',
+  'Le fichier à importer est manquant.': 'The file to import is missing.',
+  'Import interrompu.': 'Import stopped.',
+  'Nom de fichier invalide. Renommez le document avant de l’importer.':
+    'Invalid filename. Rename the document before importing it.',
+  'Le type du fichier ne correspond pas au format annoncé.':
+    'The file type does not match its stated format.',
+  'Le document texte doit être encodé en UTF-8.': 'The text document must use UTF-8 encoding.',
+  'Le texte dépasse 180 000 caractères. Importez un extrait.':
+    'The text exceeds 180,000 characters. Import an excerpt.',
+  'Le fichier contient des données binaires au lieu d’un scénario texte.':
+    'The file contains binary data rather than screenplay text.',
+  'Importez le texte du scénario, sans document HTML, script ou fichier binaire.':
+    'Import the screenplay text, without an HTML document, script or binary file.',
+  'Deux PDF sont déjà en cours de lecture. Réessayez dans un instant.':
+    'Two PDFs are already being read. Try again shortly.',
+  'La lecture du PDF a dépassé le délai autorisé.': 'Reading the PDF timed out.',
+  'Le texte extrait dépasse 180 000 caractères. Importez un extrait.':
+    'The extracted text exceeds 180,000 characters. Import an excerpt.',
+  'Le PDF contient des scripts. Exportez une version texte simple.':
+    'The PDF contains scripts. Export a plain-text version.',
+  'PDF illisible, protégé ou invalide. Importez un PDF avec du texte sélectionnable.':
+    'The PDF is unreadable, protected or invalid. Import a PDF with selectable text.',
+  'Le PDF dépasse les ressources autorisées. Importez un extrait.':
+    'The PDF exceeds the allowed resources. Import an excerpt.',
+  'La lecture du PDF a échoué. Importez un PDF avec du texte sélectionnable.':
+    'Reading the PDF failed. Import a PDF with selectable text.',
+  'La lecture du PDF a été interrompue.': 'Reading the PDF was interrupted.',
+  'La lecture PDF est disponible dans la version locale Node.js.':
+    'PDF reading is available in the local Node.js version.',
+  'Envoyez un seul fichier avec le formulaire d’import.': 'Send one file using the import form.',
+  'Le formulaire d’import est invalide.': 'The import form is invalid.',
+  'Importez un seul fichier à la fois, sans champ supplémentaire.':
+    'Import one file at a time, without additional fields.',
+  'Le fichier à importer est vide.': 'The file to import is empty.',
+  'Le contenu du fichier ne correspond pas à un PDF valide.':
+    'The file content does not match a valid PDF.',
+  'Le document ne contient pas assez de texte exploitable. Importez un scénario texte ou un PDF avec du texte sélectionnable.':
+    'The document does not contain enough usable text. Import screenplay text or a PDF with selectable text.',
+  'Le scénario dépasse 200 scènes. Importez un extrait.':
+    'The screenplay exceeds 200 scenes. Import an excerpt.',
+  'Une scène dépasse 14 000 caractères. Découpez le document en scènes plus courtes avant de l’importer.':
+    'A scene exceeds 14,000 characters. Split the document into shorter scenes before importing it.',
+  'La requête doit utiliser le format application/json.':
+    'The request must use the application/json format.',
+  'Requête interrompue.': 'Request stopped.',
+  'Structure JSON trop complexe.': 'The JSON structure is too complex.',
+  'Structure JSON non autorisée.': 'The JSON structure is not allowed.',
+  'Hôte local non autorisé.': 'The local host is not allowed.',
+  'Adresse de requête invalide.': 'Invalid request address.',
+  'La recherche doit contenir au maximum 500 caractères.':
+    'The search must contain no more than 500 characters.',
+  'Langue invalide : choisissez fr ou en.': 'Invalid language: choose fr or en.',
+  'Le serveur ne peut pas traiter cette requête.': 'The server cannot process this request.',
+  'Ce fichier ne correspond pas à un projet Faux Raccord valide. Le projet JSON dépasse la limite de 5 Mo.':
+    'This file is not a valid Faux Raccord project. The JSON project exceeds the 5 MB limit.',
+  'Ce fichier ne correspond pas à un projet Faux Raccord valide. La structure JSON est trop imbriquée.':
+    'This file is not a valid Faux Raccord project. The JSON structure is nested too deeply.',
+  'Ce fichier ne correspond pas à un projet Faux Raccord valide. Le projet contient trop de données imbriquées.':
+    'This file is not a valid Faux Raccord project. The project contains too much nested data.',
+  'Ce fichier ne correspond pas à un projet Faux Raccord valide. Une liste du projet dépasse la taille autorisée.':
+    'This file is not a valid Faux Raccord project. A project list exceeds the allowed size.',
+  'Ce fichier ne correspond pas à un projet Faux Raccord valide. Les métadonnées du projet sont trop volumineuses.':
+    'This file is not a valid Faux Raccord project. The project metadata is too large.',
+  'Ce fichier ne correspond pas à un projet Faux Raccord valide. Une propriété JSON non autorisée a été détectée.':
+    'This file is not a valid Faux Raccord project. A disallowed JSON property was detected.',
+  'Ce fichier ne correspond pas à un projet Faux Raccord valide. Les liens de source doivent utiliser HTTP ou HTTPS, sans identifiants.':
+    'This file is not a valid Faux Raccord project. Source links must use HTTP or HTTPS, without credentials.',
+  'Ce fichier ne correspond pas à un projet Faux Raccord valide. Le JSON est illisible ou incomplet.':
+    'This file is not a valid Faux Raccord project. The JSON is unreadable or incomplete.',
+  'Ce fichier ne correspond pas à un projet Faux Raccord valide. Le scénario dépasse 180 000 caractères.':
+    'This file is not a valid Faux Raccord project. The screenplay exceeds 180,000 characters.',
   'Une montre se brise, puis réapparaît intacte.': 'A watch breaks, then reappears intact.',
   'Faux Raccord retrouve les deux passages. Vous vérifiez si une réparation explique le changement, puis vous gardez ou écartez l’alerte.':
     'Faux Raccord brings the two passages together. Check whether a repair explains the change, then keep or dismiss the alert.',

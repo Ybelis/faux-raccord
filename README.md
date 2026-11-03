@@ -53,6 +53,23 @@ change l’interface et la documentation utilisateur ; le choix est conservé su
 cet appareil. Les scénarios, citations et résultats déjà enregistrés gardent
 leur langue d’origine. Les documents PDF restent en français.
 
+## Importer un scénario
+
+Les PDF avec texte, TXT, Fountain et Markdown sont limités à **5 Mo**, 180 000
+caractères, 200 scènes et 14 000 caractères par scène ; les PDF à 160 pages.
+Le serveur vérifie le nom, le type annoncé et le contenu. Les textes doivent
+être en UTF-8 ; les documents binaires ou HTML déguisés sont refusés.
+
+Les sauvegardes JSON ont leur propre validation de structure, de taille et de
+preuves. Elles sont restaurées comme **nouvelles copies**, sans écraser les
+projets existants. Leur provenance et leurs résultats restent des déclarations
+du fichier importé, pas une certification de l’application.
+
+La lecture PDF utilise un thread Node séparé, avec un délai de 20 secondes et
+deux lectures simultanées au maximum. Les limites du moteur V8 réduisent les
+risques de saturation ; elles ne constituent pas une isolation du système
+d’exploitation. Importer un fichier ne déclenche aucun appel à un modèle.
+
 ## Fonctionnement technique
 
 L’interface React envoie les scènes sélectionnées au serveur Node.js. Les routes
@@ -187,6 +204,12 @@ compter plusieurs fois la même erreur. Une baseline au même modèle reçoit un
 prompt direct. Le rapport conserve les échecs et ne présume pas la supériorité
 du pipeline. Les anciennes vignettes synthétiques et la QA réelle sont des
 expériences complémentaires, distinctes de ce benchmark.
+
+Sur les 12 scènes évaluées, le coût théorique d’inférence est de **0,0070 USD**
+pour le système contre **0,00178 USD** pour le prompt simple, aux tarifs
+[Groq consignés dans le rapport](https://console.groq.com/docs/model/openai/gpt-oss-120b).
+Les durées enregistrées sont respectivement 184 et 41 secondes. Ces mesures
+n’établissent pas de gain de temps pour l’utilisateur ni un coût pour un film entier.
 
 ```sh
 npm test
