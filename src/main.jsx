@@ -16,6 +16,7 @@ import {
   TriangleAlert,
   X,
 } from 'lucide-react';
+import { guessCharacters } from './core/parser.js';
 import { allProjects, saveProject, downloadFile, reportMarkdown } from './storage.js';
 import { Empty } from './components/ui.jsx';
 import { GuidedTour, TOUR_STEPS } from './components/GuidedTour.jsx';
@@ -356,6 +357,52 @@ function App() {
       setAsking(false);
     }
   }
+  function proposeSceneEdit(scene, instruction, consent) {
+    return api('edit', { scenes: [scene], instruction, consent, ...selection, language });
+  }
+  // Une nouvelle version ne peut pas réutiliser les preuves de l'ancien texte.
+  // Sauvegarder l'original avant de changer de projet préserve aussi ses notes.
+  async function applySceneEdit(sceneId, text) {
+    const revisedScenes = project.scenes.map((scene) =>
+      scene.id === sceneId
+        ? {
+            ...scene,
+            text,
+            pageSegments: [{ page: scene.pages[0] || 1, text }],
+            characters: guessCharacters(text),
+            edited: true,
+          }
+        : scene,
+    );
+    const revisedText = revisedScenes.map((scene) => scene.text).join('\n\n');
+    const characterCount = revisedText.length;
+    if (characterCount > 180_000)
+      throw new Error('La version modifiée dépasse 180 000 caractères. Utilisez un extrait.');
+    try {
+      await saveProject(project);
+    } catch {
+      throw new Error(
+        'La sauvegarde du projet original a échoué. La modification n’a pas été appliquée.',
+      );
+    }
+    setSaved((items) => [...items.filter((item) => item.id !== project.id), project]);
+    changeProject({
+      ...project,
+      id: crypto.randomUUID(),
+      title: `${project.title.slice(0, 260)}${t(' — version modifiée')}`,
+      derivedFromId: project.id,
+      scenes: revisedScenes,
+      text: revisedText,
+      pages: undefined,
+      characterCount,
+      controlled: false,
+      controlledInjectionCount: undefined,
+      provenance: { ...project.provenance, type: 'user-edited-copy' },
+      analysis: null,
+    });
+    setActiveScene(sceneId);
+    setToast('Une nouvelle copie a été créée. Le projet original et sa relecture sont conservés.');
+  }
   function exportProject() {
     downloadFile(
       `${project.title}-faux-raccord.json`,
@@ -639,6 +686,11 @@ function App() {
                     project={project}
                     activeScene={activeScene}
                     onScene={setActiveScene}
+                    onPropose={proposeSceneEdit}
+                    onApplyEdit={applySceneEdit}
+                    canEdit={tourStep === null && !busy}
+                    provider={selection.provider}
+                    model={selection.model}
                     onAnalyze={() => navigate('analysis')}
                     onReview={(id) => {
                       setActiveAlert(id);

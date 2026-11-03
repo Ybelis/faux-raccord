@@ -6,6 +6,7 @@ import {
   evaluationSummary,
   format,
   projectTeam,
+  continuitySecurityEvidence,
 } from './write-evaluation-docs.mjs';
 
 // Les chiffres viennent des rapports mesurés. Ce script ne lance aucun appel
@@ -22,9 +23,12 @@ const html = (value) =>
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&#39;');
 const { percentage, interval, number, seconds, money, date } = format;
-const referenceDate = summary.date;
+const referenceDate = summary.evidenceDate;
 const qaMeasured = summary.qaMeasured;
 const redPassed = red.rows.filter((row) => row.passed).length;
+const redAsk = red.rows.filter((row) => row.kind !== 'edit').length;
+const redEdit = red.rows.filter((row) => row.kind === 'edit').length;
+const continuityProbe = continuitySecurityEvidence(data.continuitySecurity);
 
 const css = `
 @page { size: A4; margin: 15mm; }
@@ -133,9 +137,9 @@ ${c?.errors?.system || c?.errors?.baseline ? '<p class="small">Comparaison incom
 ${qaSection}
 <p><strong>Recherche seule :</strong> ${retrieval.n} requêtes lexicales, scène attendue dans les cinq premiers résultats : ${percentage(retrieval.value)}. Cela ne mesure pas la justesse d’une analyse.</p>
 <h2>6. Sécurité, portée et travaux restants</h2>
-<p>${redPassed}/${red.rows.length} essais adversariaux réels résistants aux attaques testées. Citations et identifiants contrôlés ; documents traités comme données ; clé absente des prompts ; sorties non exécutées. Trois essais ne garantissent pas une sécurité générale.</p>
-<p>Le besoin métier et le gain de temps ne sont pas validés. Relecture humaine des annotations à consigner. Objets homonymes, transferts implicites et flashbacks restent difficiles. L’analyse porte uniquement sur le texte ; images, audio et vidéo ne sont pas pris en charge.</p>
-<div class="note warning">Une œuvre et des erreurs construites ne suffisent pas à généraliser. Réserver un autre scénario annoté avant de conclure.</div>
+<p>Sécurité : ${redPassed}/${red.rows.length} cas conformes à la grille historique (${redAsk} questions, ${redEdit} éditions ; 20B, ${date(red.completedAt)}). Les mesures QA et cette campagne précèdent <span class="mono">grounded-output-v1</span> et <span class="mono">scene-edit-v1</span>.</p>
+${continuityProbe ? `<p>${html(continuityProbe.summary)} ${html(continuityProbe.interpretation)} Sondes séparées du benchmark, sans garantie générale.</p>` : ''}
+<p>Le besoin métier et le gain de temps ne sont pas validés. Relecture humaine des annotations à consigner. Objets homonymes, transferts implicites et flashbacks difficiles. Analyse du texte seul ; généralisation à d’autres œuvres non établie.</p>
 <p class="small rule">Preuves : rapports JSON dans <span class="mono">eval/</span> ; annotations et licence dans <span class="mono">data/controlled-script/</span>. Reproduction sans appel : <span class="mono">node eval/controlled-run.mjs</span>. Les chemins complets figurent dans la version Markdown.</p>
 ${footer('Rapport d’évaluation', '2 / 2')}
 </main>`,
@@ -150,7 +154,7 @@ ${header('Fiche système', 'IA générative avec RAG pour relire la continuité 
 <h2>Usage prévu</h2>
 <p>Scriptes et petites équipes de court métrage préparant le suivi des accessoires. Le produit rassemble des mentions et génère des alertes sourcées à examiner. L’utilité et le gain de temps métier ne sont pas validés.</p>
 <h2>Entrées et sorties</h2>
-<p>PDF avec texte, TXT, Fountain, Markdown. Scènes et pages, objets, mentions, deux passages par alerte, décision et note de revue. Export projet JSON et rapport Markdown.</p>
+<p>PDF avec texte, TXT, Fountain, Markdown. Scènes et pages, objets, deux passages par alerte, décision et note de revue. Réécriture de scène proposée, validation humaine. Export projet JSON et rapport Markdown.</p>
 <h2>Fonctionnement</h2>
 <p>Segmentation ; extraction JSON par lots de trois scènes ; contrôle des citations ; suivi des états et de la possession ; recherche BM25 ; comparaison LLM ; revue humaine. Questions : recherche puis réponse citée ou abstention. Déclenché par l’utilisateur, sans choix autonome d’outils ni action extérieure.</p>
 <h2>Modèles et reproductibilité</h2>
@@ -168,7 +172,7 @@ ${header('Fiche système', 'IA générative avec RAG pour relire la continuité 
 </section></div>
 <h2>Évaluation disponible</h2>
 <p><strong>${html(summary.primaryStatus)}</strong> ${c?.system ? `Précision sur les alertes des accessoires contrôlés : ${percentage(c.system.precision)} [IC 95 % ${interval(c.system.precisionCI95)}] ; rappel des quinze injections : ${percentage(c.system.recall)} [${interval(c.system.recallCI95)}] ; F1 ${percentage(c.system.f1)}. ${c.system.unannotatedAlertCount} alertes hors périmètre exclues du score et à relire.` : ''}</p>
-<p>Annotations proposées avec assistance IA, relecture humaine non attestée ; jeu visible, œuvre unique, intervalles descriptifs. Les 50 vignettes, 24 questions et 12 recherches sont des expériences distinctes. Sécurité : ${redPassed}/${red.rows.length} essais adversariaux réels, portée limitée. Décision finale humaine.</p>
+<p>Annotations IA sans relecture attestée ; œuvre unique, jeu visible, intervalles descriptifs. Scores secondaires distincts. Sécurité : ${redPassed}/${red.rows.length} cas à grille historique 20B ; ${continuityProbe ? 'cinq sondes 120B extraction/jugement décrites séparément. ' : ''}Aucune résistance générale démontrée.</p>
 <p class="small rule"><strong>${html(projectTeam.names.join(' · '))}</strong>. Contact : <a href="${html(projectTeam.contactUrl)}">issues du dépôt GitHub</a>. Politique : <span class="mono">docs/use_policy.md</span>. Évaluation : <span class="mono">docs/evaluation_report.md</span>. Sources et licence : <span class="mono">data/controlled-script/license.json</span>. Guide utilisateur dans l’application.</p>
 ${footer('Fiche système', '1 / 1')}
 </main>`,

@@ -42,12 +42,12 @@ a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
 @media print { html { background: white; } .page { margin: 0; } a { text-decoration: none; } }
 </style></head><body>
 <main class="page card">
-<header><div class="brand"><strong>FAUX RACCORD</strong><span>2 novembre 2026</span></div><h1>Fiche système</h1><p class="subtitle">IA générative avec RAG pour relire la continuité textuelle d’accessoires</p></header>
+<header><div class="brand"><strong>FAUX RACCORD</strong><span>3 novembre 2026</span></div><h1>Fiche système</h1><p class="subtitle">IA générative avec RAG pour relire la continuité textuelle d’accessoires</p></header>
 <div class="two-columns"><section>
 <h2>Usage prévu</h2>
 <p>Scriptes et petites équipes de court métrage préparant le suivi des accessoires. Le produit rassemble des mentions et génère des alertes sourcées à examiner. L’utilité et le gain de temps métier ne sont pas validés.</p>
 <h2>Entrées et sorties</h2>
-<p>PDF avec texte, TXT, Fountain, Markdown. Scènes et pages, objets, mentions, deux passages par alerte, décision et note de revue. Export projet JSON et rapport Markdown.</p>
+<p>PDF avec texte, TXT, Fountain, Markdown. Scènes et pages, objets, deux passages par alerte, décision et note de revue. Réécriture de scène proposée, validation humaine. Export projet JSON et rapport Markdown.</p>
 <h2>Fonctionnement</h2>
 <p>Segmentation ; extraction JSON par lots de trois scènes ; contrôle des citations ; suivi des états et de la possession ; recherche BM25 ; comparaison LLM ; revue humaine. Questions : recherche puis réponse citée ou abstention. Déclenché par l’utilisateur, sans choix autonome d’outils ni action extérieure.</p>
 <h2>Modèles et reproductibilité</h2>
@@ -65,7 +65,7 @@ a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
 </section></div>
 <h2>Évaluation disponible</h2>
 <p><strong>Mesure réelle du système et de la baseline disponible.</strong> Précision sur les alertes des accessoires contrôlés : 100,0 % [IC 95 % 64,6 %–100,0 %] ; rappel des quinze injections : 46,7 % [24,8 %–69,9 %] ; F1 63,6 %. 0 alertes hors périmètre exclues du score et à relire.</p>
-<p>Annotations proposées avec assistance IA, relecture humaine non attestée ; jeu visible, œuvre unique, intervalles descriptifs. Les 50 vignettes, 24 questions et 12 recherches sont des expériences distinctes. Sécurité : 3/3 essais adversariaux réels, portée limitée. Décision finale humaine.</p>
+<p>Annotations IA sans relecture attestée ; œuvre unique, jeu visible, intervalles descriptifs. Scores secondaires distincts. Sécurité : 20/20 cas à grille historique 20B ; cinq sondes 120B extraction/jugement décrites séparément. Aucune résistance générale démontrée.</p>
 <p class="small rule"><strong>Yann QUEGUINER · Jean-Remy BITOUMBOU-BIBOKA · Simon LUSSATO</strong>. Contact : <a href="https://github.com/Ybelis/faux-raccord/issues">issues du dépôt GitHub</a>. Politique : <span class="mono">docs/use_policy.md</span>. Évaluation : <span class="mono">docs/evaluation_report.md</span>. Sources et licence : <span class="mono">data/controlled-script/license.json</span>. Guide utilisateur dans l’application.</p>
 <footer><span>Faux Raccord · Fiche système</span><span>1 / 1</span></footer>
 </main></body></html>

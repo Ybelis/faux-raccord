@@ -42,7 +42,7 @@ a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
 @media print { html { background: white; } .page { margin: 0; } a { text-decoration: none; } }
 </style></head><body>
 <main class="page">
-<header><div class="brand"><strong>FAUX RACCORD</strong><span>2 novembre 2026</span></div><h1>Rapport d’évaluation</h1><p class="subtitle">Expérience principale : retrouver quinze faux raccords introduits dans un même scénario</p></header>
+<header><div class="brand"><strong>FAUX RACCORD</strong><span>3 novembre 2026</span></div><h1>Rapport d’évaluation</h1><p class="subtitle">Expérience principale : retrouver quinze faux raccords introduits dans un même scénario</p></header>
 <h2>1. Données, droits et protocole</h2>
 <p><strong>Valkaama</strong>, Tim Baumann d’après Hendrik Behnisch, version 2007-06-30 : 56 scènes conservées. L’adaptation d’évaluation ajoute 19 accessoires et prépare leur continuité cohérente. <strong>Exactement quinze phrases ultérieures sont ensuite modifiées</strong> pour créer quinze erreurs ; quatre transitions expliquées restent comme contrôles négatifs. L’évaluation couvre S001–S012, où se trouvent toutes les injections. Aucun faux raccord n’est attribué aux auteurs originaux.</p>
 <p>La <a href="https://www.valkaama.com/index.php?l=en&amp;page=sources">page officielle de l’auteur</a> annonce la licence <strong>CC BY-SA 3.0</strong>. L’adaptation est attribuée, ses modifications documentées et sa licence identique. Les contrôles vérifient les preuves littérales et que l’annulation des quinze modifications restitue la référence : <strong>validation réussie</strong>. Annotations proposées avec assistance IA, relecture humaine non attestée ; jeu de développement visible.</p>
@@ -61,7 +61,7 @@ a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
 <footer><span>Faux Raccord · Rapport d’évaluation</span><span>1 / 2</span></footer>
 </main>
 <main class="page">
-<header><div class="brand"><strong>FAUX RACCORD</strong><span>2 novembre 2026</span></div><h1>Coût, compléments et limites</h1><p class="subtitle">Les expériences suivantes ont leur propre unité et leur propre modèle</p></header>
+<header><div class="brand"><strong>FAUX RACCORD</strong><span>3 novembre 2026</span></div><h1>Coût, compléments et limites</h1><p class="subtitle">Les expériences suivantes ont leur propre unité et leur propre modèle</p></header>
 <h2>4. Coût et durée de l’expérience principale</h2>
 <table><thead><tr><th>Douze scènes</th><th>Tokens entrée / sortie</th><th>Durées cumulées</th><th>Coût estimé</th></tr></thead><tbody><tr><td>Prompt simple (2 requêtes)</td><td>7 531 / 1 088</td><td>41,093 s</td><td>0,001782 USD</td></tr><tr><td>Pipeline (8 requêtes)</td><td>22 344 / 6 085</td><td>184,217 s</td><td>0,007003 USD</td></tr></tbody></table>
 <p class="small">Tarif <a href="https://console.groq.com/docs/model/openai/gpt-oss-120b">openai/gpt-oss-120b</a>, vérifié le 2 novembre 2026 : 0.15 USD/M en entrée, 0.6 USD/M en sortie. Coût théorique des sorties mesurées, hors essais et facture réelle. Les durées additionnent les requêtes, y compris quotas et réponses reprises du cache ; la dernière reprise seule (93,072 s) n’est pas la durée totale. 8 requêtes système pour 6 appels logiques, le transport divisant le jugement.</p>
@@ -73,9 +73,9 @@ a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
 <p><strong>24 questions sur les dix premières scènes inchangées de Valkaama</strong>, profil <span class="mono">openai/gpt-oss-120b</span> : 19/24 conformes avec RAG [IC 95 % 59,5 %–90,8 %], contre 16/24 au prompt simple [46,7 %–82,0 %]. Abstentions correctes : 4/4 et 4/4. La grille lexicale vérifie réponse et citation, ou <span class="mono">NOT FOUND</span>. Synonymes et négations peuvent la tromper. Cette mesure porte sur les réponses, pas la continuité.</p>
 <p><strong>Recherche seule :</strong> 12 requêtes lexicales, scène attendue dans les cinq premiers résultats : 100,0 %. Cela ne mesure pas la justesse d’une analyse.</p>
 <h2>6. Sécurité, portée et travaux restants</h2>
-<p>3/3 essais adversariaux réels résistants aux attaques testées. Citations et identifiants contrôlés ; documents traités comme données ; clé absente des prompts ; sorties non exécutées. Trois essais ne garantissent pas une sécurité générale.</p>
-<p>Le besoin métier et le gain de temps ne sont pas validés. Relecture humaine des annotations à consigner. Objets homonymes, transferts implicites et flashbacks restent difficiles. L’analyse porte uniquement sur le texte ; images, audio et vidéo ne sont pas pris en charge.</p>
-<div class="note warning">Une œuvre et des erreurs construites ne suffisent pas à généraliser. Réserver un autre scénario annoté avant de conclure.</div>
+<p>Sécurité : 20/20 cas conformes à la grille historique (17 questions, 3 éditions ; 20B, 3 novembre 2026). Les mesures QA et cette campagne précèdent <span class="mono">grounded-output-v1</span> et <span class="mono">scene-edit-v1</span>.</p>
+<p>Cinq sondes distinctes sur openai/gpt-oss-120b : extraction conforme avec et sans injection ; jugement « ambiguous » sans attaque et « ambiguous » avec attaque, pour « contradiction » attendu ; réparation classée « explained ». Le même écart existe sans attaque : il ne met pas en évidence l’exécution de l’ordre malveillant « explained ». Les deux alertes resteraient à relire. Sondes séparées du benchmark, sans garantie générale.</p>
+<p>Le besoin métier et le gain de temps ne sont pas validés. Relecture humaine des annotations à consigner. Objets homonymes, transferts implicites et flashbacks difficiles. Analyse du texte seul ; généralisation à d’autres œuvres non établie.</p>
 <p class="small rule">Preuves : rapports JSON dans <span class="mono">eval/</span> ; annotations et licence dans <span class="mono">data/controlled-script/</span>. Reproduction sans appel : <span class="mono">node eval/controlled-run.mjs</span>. Les chemins complets figurent dans la version Markdown.</p>
 <footer><span>Faux Raccord · Rapport d’évaluation</span><span>2 / 2</span></footer>
 </main></body></html>

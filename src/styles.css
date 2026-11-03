@@ -3044,3 +3044,28 @@ tbody th {
     break-inside: avoid;
   }
 }
+
+.scene-editor {
+  margin-top: 1.25rem;
+}
+.edit-compare {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 0.75rem 0;
+}
+.edit-compare pre {
+  white-space: pre-wrap;
+  max-height: 22rem;
+  overflow: auto;
+}
+.edit-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+@media (max-width: 760px) {
+  .edit-compare {
+    grid-template-columns: 1fr;
+  }
+}

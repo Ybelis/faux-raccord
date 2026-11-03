@@ -1,4 +1,23 @@
 export default {
+  '{passed}/{total} cas conformes à la grille historique : {questions} questions et {edits} éditions.':
+    '{passed}/{total} cases met the historical grading criteria: {questions} questions and {edits} edits.',
+  'Aucun essai adversarial enregistré.': 'No adversarial test recorded.',
+  'Cette campagne précède les nouveaux contrôles de réponse et d’édition. Sa grille ne démontre pas une résistance générale aux injections.':
+    'This campaign predates the new answer and editing checks. Its grading criteria do not demonstrate general resistance to prompt injection.',
+  'La proposition a été rejetée : elle doit conserver l’en-tête et une seule scène.':
+    'The proposal was rejected: it must preserve the heading and contain a single scene.',
+  'J’autorise l’envoi de cette scène à Groq pour proposer une modification.':
+    'I allow this scene to be sent to Groq to suggest an edit.',
+  'J’autorise le traitement de cette scène par le modèle local.':
+    'I allow the local model to process this scene.',
+  'Appliquer dans une nouvelle copie': 'Apply in a new copy',
+  ' — version modifiée': ' — edited version',
+  'Une nouvelle copie a été créée. Le projet original et sa relecture sont conservés.':
+    'A new copy was created. The original project and its review have been preserved.',
+  'La version modifiée dépasse 180 000 caractères. Utilisez un extrait.':
+    'The edited version exceeds 180,000 characters. Use an excerpt.',
+  'La sauvegarde du projet original a échoué. La modification n’a pas été appliquée.':
+    'The original project could not be saved. The edit has not been applied.',
   'Projet importé': 'Imported project',
   'Résultat importé': 'Imported result',
   ' · résultat importé': '· imported result',
@@ -81,8 +100,8 @@ export default {
   'Une montre se brise, puis réapparaît intacte.': 'A watch breaks, then reappears intact.',
   'Faux Raccord retrouve les deux passages. Vous vérifiez si une réparation explique le changement, puis vous gardez ou écartez l’alerte.':
     'Faux Raccord brings the two passages together. Check whether a repair explains the change, then keep or dismiss the alert.',
-  'Faux Raccord compare les passages où un accessoire change d’état ou de propriétaire. Vous relisez les changements signalés ; le texte du scénario reste inchangé.':
-    'Faux Raccord compares passages where a prop changes state or owner. Review the flagged changes; the screenplay text stays unchanged.',
+  'Faux Raccord compare les passages où un accessoire change d’état ou de propriétaire. Vous relisez les changements signalés ; le texte du scénario reste inchangé tant que vous n’appliquez pas une modification proposée.':
+    'Faux Raccord compares passages where a prop changes state or owner. Review the flagged changes; the screenplay text stays unchanged unless you apply a proposed edit.',
   'Un résultat est prêt à consulter': 'A result is ready to review',
   'Lisez les scènes ou ouvrez le résultat disponible pour comparer les passages signalés.':
     'Read the scenes or open the available result to compare the flagged passages.',
@@ -215,4 +234,26 @@ export default {
   'Choisissez entre 1 et 60 scènes.': 'Choose between 1 and 60 scenes.',
   'Sélection trop longue. Analysez le scénario par lots.':
     'The selection is too long. Analyse the script in batches.',
+  'La proposition a été rejetée : l’en-tête de la scène a disparu.':
+    'The proposal was rejected: the scene heading is missing.',
+  'Aucune modification proposée.': 'No change proposed.',
+  'Modifier la scène avec le modèle': 'Edit the scene with the model',
+  'Modifier cette scène': 'Edit this scene',
+  'Ex. : la montre de Clara fonctionne encore à la fin de la scène':
+    "E.g. Clara's watch still works at the end of the scene",
+  'Proposer une modification': 'Suggest an edit',
+  'Le texte de cette scène est transmis au modèle. Rien n’est changé avant votre validation.':
+    "This scene's text is sent to the model. Nothing changes until you approve it.",
+  'Proposition à valider': 'Proposal to approve',
+  ACTUEL: 'CURRENT',
+  PROPOSÉ: 'PROPOSED',
+  'Appliquer à la scène': 'Apply to scene',
+  Ignorer: 'Dismiss',
+  'Cette scène a été modifiée depuis l’import. Relancez l’analyse pour la prendre en compte.':
+    'This scene was edited after import. Run the analysis again to take it into account.',
+  'Scène modifiée. Relancez l’analyse pour mettre à jour les points signalés.':
+    'Scene edited. Run the analysis again to update the flagged points.',
+  'Une seule scène peut être modifiée à la fois.': 'Only one scene can be edited at a time.',
+  'La consigne doit contenir entre 3 et 800 caractères.':
+    'The instruction must be between 3 and 800 characters.',
 };

@@ -301,6 +301,7 @@ function HistoricalEvaluation({ report, analysis }) {
     qa?.rows?.filter((row) => !row.baseline?.error && !row.system?.error).length ??
     0;
   const qaPlanned = qa?.nPlanned ?? qa?.n ?? 24;
+  const redTeamRows = report.redTeam?.rows || [];
 
   return (
     <>
@@ -607,10 +608,22 @@ function HistoricalEvaluation({ report, analysis }) {
           <article>
             <h3>{t('Essais adversariaux')}</h3>
             <p>
-              {' '}
+              {redTeamRows.length
+                ? t(
+                    '{passed}/{total} cas conformes à la grille historique : {questions} questions et {edits} éditions.',
+                    {
+                      passed: redTeamRows.filter((row) => row.passed).length,
+                      total: redTeamRows.length,
+                      questions: redTeamRows.filter((row) => row.kind !== 'edit').length,
+                      edits: redTeamRows.filter((row) => row.kind === 'edit').length,
+                    },
+                  )
+                : t('Aucun essai adversarial enregistré.')}
+            </p>
+            <p>
               {t(
-                'Des demandes essaient de détourner les instructions ou d’obtenir un secret. Les trois essais enregistrés n’ont pas réussi à le faire ; trois exemples ne prouvent pas une résistance générale.',
-              )}{' '}
+                'Cette campagne précède les nouveaux contrôles de réponse et d’édition. Sa grille ne démontre pas une résistance générale aux injections.',
+              )}
             </p>
           </article>
         </div>

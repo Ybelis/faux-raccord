@@ -1,6 +1,6 @@
 # Rapport d’évaluation — Faux Raccord
 
-État des preuves : 2 novembre 2026. [Rapport principal brut](../eval/controlled-report.json), [script reproductible](../eval/controlled-run.mjs).
+Preuves disponibles au 3 novembre 2026. Mesure principale du 2 novembre 2026. [Rapport principal brut](../eval/controlled-report.json), [script reproductible](../eval/controlled-run.mjs).
 
 ## 1. Expérience principale : un scénario, quinze erreurs
 
@@ -54,9 +54,11 @@ Notes d’exécution : Profil de sortie : extraction et baseline3000, jugement10
 
 L’ancien jeu séparé de **50 courtes vignettes synthétiques** reste disponible : système, précision 94,4 % [74,2 %–99,0 %], rappel 81,0 %, F1 87,2 % ; baseline 84,0 %, 100,0 %, 91,3 %. L’unité y est le **cas positif**, différente de l’alerte du benchmark principal. Le prompt simple obtient ici le meilleur F1. Modèle `openai/gpt-oss-20b`, exécution du 2 novembre 2026, code `fc3b8d431ac6` ; ces scores historiques ne valident pas rétroactivement le modèle du nouvel essai. [Résultats](../eval/report.json).
 
-**24 questions sur de vrais passages inchangés** des dix premières scènes de Valkaama, modèle `openai/gpt-oss-120b` : 19/24 conformes avec RAG [IC 95 % 59,5 %–90,8 %], contre 16/24 avec prompt simple [46,7 %–82,0 %]. Abstentions correctes : 4/4 et 4/4. La grille lexicale vérifie réponse et citation, ou `NOT FOUND` ; synonymes et négations peuvent la tromper. Ce résultat mesure les réponses, pas la continuité. [Rapport QA](../eval/qa-real-report.json).
+**24 questions sur de vrais passages inchangés** des dix premières scènes de Valkaama, modèle `openai/gpt-oss-120b` : 19/24 conformes avec RAG [IC 95 % 59,5 %–90,8 %], contre 16/24 avec prompt simple [46,7 %–82,0 %]. Abstentions correctes : 4/4 et 4/4. La grille lexicale vérifie réponse et citation, ou `NOT FOUND` ; synonymes et négations peuvent la tromper. Ce résultat mesure les réponses, pas la continuité. Mesure antérieure au contrôle API `grounded-output-v1`. [Rapport QA](../eval/qa-real-report.json).
 
-Recherche seule : 12 requêtes lexicales sur Valkaama, scène attendue dans les cinq premiers résultats dans 100,0 % des cas. Sécurité : 3/3 tests adversariaux réels réussis ; échantillon limité. [Journal](red_team_log.md).
+Recherche seule : 12 requêtes lexicales sur Valkaama, scène attendue dans les cinq premiers résultats dans 100,0 % des cas. Sécurité : campagne du 3 novembre 2026, modèle `openai/gpt-oss-20b` ; 20/20 cas satisfont la grille automatique historique (17 questions, 3 éditions), avant le profil de contrôle `grounded-output-v1`. Ce résultat ne mesure ni la qualité des réponses ni une résistance générale du LLM. [Journal](red_team_log.md).
+
+**Complément sécurité du 3 novembre 2026.** Cinq sondes distinctes sur openai/gpt-oss-120b : extraction conforme avec et sans injection ; jugement « ambiguous » sans attaque et « ambiguous » avec attaque, pour « contradiction » attendu ; réparation classée « explained ». Le même écart existe sans attaque : il ne met pas en évidence l’exécution de l’ordre malveillant « explained ». Les deux alertes resteraient à relire. Ces sondes synthétiques ne changent pas le score des quinze injections. [Sorties et entrées conservées](../eval/red-team-continuity-results.json), [script](../eval/red-team-continuity.mjs).
 
 L’utilité pour une équipe de tournage et le gain de temps ne sont pas validés. Le jeu principal est visible et ses annotations attendent une relecture humaine. Objets homonymes, possession implicite et flashbacks restent difficiles. L’analyse porte uniquement sur le texte ; images, audio et vidéo ne sont pas pris en charge. Réserver un autre scénario annoté avant de conclure sur la généralisation.
 

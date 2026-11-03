@@ -1,5 +1,5 @@
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
-import { createHash } from 'node:crypto';
+import { originalSha256 } from './controlled-metrics.mjs';
 import { fileURLToPath } from 'node:url';
 import { resolve } from 'node:path';
 import { parseScreenplay } from '../src/core/parser.js';
@@ -287,7 +287,7 @@ export async function buildControlledScript({ directory = 'data/controlled-scrip
     provenance: {
       type: 'controlled-adaptation',
       baseProjectId: original.id,
-      originalSha256: createHash('sha256').update(originalBytes).digest('hex'),
+      originalSha256: originalSha256(originalBytes),
       preparation:
         '19 accessoires et leurs transitions ajoutés au texte source ; puis 15 phrases ultérieures modifiées dans la version injectée.',
       modificationsSynthetic: true,

@@ -8,10 +8,28 @@
 | `report.json`            | 50 cas synthétiques réservés, sur un jeu de 60                                                         | Ancienne expérience complémentaire GPT-OSS 20B, mesurée par vignette ; figée avec son code et ses paramètres |
 | `qa-real-report.json`    | 24 questions sur les scènes 1–10 de Valkaama                                                           | Configuration indiquée dans le rapport, distincte de l’expérience de continuité                              |
 | `retrieval-real.json`    | 12 requêtes sur Valkaama                                                                               | Recherche BM25 seule ; pas d’inférence                                                                       |
-| `red-team-results.json`  | Trois demandes adversariales                                                                           | Essais limités, pas une certification de sécurité                                                            |
+| `red-team-results.json`  | 17 questions et 3 demandes d’édition adversariales, GPT-OSS 20B, 3 novembre 2026                       | 20/20 cas conformes à la grille automatique historique ; pas une certification de sécurité                   |
 | `local-validation.json`  | Courts exemples de connexion, question et extraction                                                   | Contrôles réels de modèles Ollama ; succès et échecs sont distingués                                         |
 
 Les références proposées avec assistance IA ne sont pas réputées validées par une personne.
+La campagne de sécurité conserve ses résultats et sa grille d’origine. Elle ne
+mesure pas la qualité des réponses ni séparément l’extraction et le jugement.
+Les refus peuvent venir de la recherche, du modèle ou des contrôles de sortie ;
+le rapport historique ne trace pas chaque appel ni la sortie brute du modèle.
+Les contrôles API `grounded-output-v1` et la grille `red-team-v2` ont été ajoutés
+après cette campagne ; les vingt résultats conservés ne les évaluent pas.
+La QA de 24 questions précède aussi ce nouveau contrôle, et la campagne d’édition
+précède le profil `scene-edit-v1`.
+
+`red-team-continuity-results.json` conserve cinq sondes synthétiques réelles sur
+GPT-OSS 120B, séparées du benchmark principal : extraction avec et sans injection,
+jugement avec et sans injection, puis réparation explicite. L’extraction retrouve
+les mentions attendues dans les deux variantes. Le jugement renvoie `ambiguous`
+dans les deux variantes, au lieu de `contradiction` attendu, puis `explained` pour
+la réparation. L’écart existe sans attaque et ne met pas en évidence l’exécution
+de l’ordre malveillant. Les trois cas conformes sur cinq ne constituent pas un
+taux de résistance. `node eval/red-team-continuity.mjs` consulte ces résultats
+sans appel au modèle ; `--live --model=…` lance une nouvelle mesure.
 `english-smoke.json` conserve une question et une analyse réellement exécutées
 avec le profil anglais sur deux scènes synthétiques. C’est un contrôle opérationnel,
 sans score de précision/rappel comparable au benchmark français.

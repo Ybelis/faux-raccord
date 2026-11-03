@@ -1,6 +1,7 @@
 import { parseScreenplay } from '../src/core/parser.js';
 import { retrieve } from '../src/core/retrieval.js';
 import { analyze, answerQuestion } from '../src/core/pipeline.js';
+import { editScene, EDIT_PROMPT_VERSION } from '../src/core/scene-edit.js';
 import {
   callModel,
   modelConfig,
@@ -14,6 +15,7 @@ import { responseLanguage, withResponseLanguage, languageMetadata } from './resp
 import { handleSources } from './sources.js';
 import { importDocument, ImportError } from './imports.js';
 import { RequestError, checkRequestOrigin, readJsonRequest } from './request-safety.js';
+import { enforceAnswerEvidence } from './llm-safety.js';
 import { demo } from '../data/demo.js';
 import valkaama from '../data/valkaama.json' with { type: 'json' };
 import controlled from '../data/controlled-script/project.json' with { type: 'json' };
@@ -136,7 +138,9 @@ export async function api(request, env = {}) {
     if (path === '/api/import') {
       return json(await importDocument(request));
     }
-    if (!['/api/models/check', '/api/search', '/api/ask', '/api/analyze'].includes(path))
+    if (
+      !['/api/models/check', '/api/search', '/api/ask', '/api/analyze', '/api/edit'].includes(path)
+    )
       return json({ error: 'Route introuvable.' }, 404);
     const body = await readJsonRequest(request);
     // Model checks contain no screenplay: they validate a short JSON reply only.
@@ -161,6 +165,29 @@ export async function api(request, env = {}) {
       throw new RequestError('Langue invalide : choisissez fr ou en.');
     const language = responseLanguage(body.language);
     const generate = withResponseLanguage(callModel, language);
+    if (path === '/api/edit') {
+      if (body.consent !== true)
+        throw new RequestError(
+          'Confirmez que ces scènes peuvent être analysées par le moteur choisi.',
+        );
+      if (typeof body.instruction !== 'string')
+        throw new RequestError('La consigne doit contenir entre 3 et 800 caractères.');
+      const instruction = body.instruction.trim();
+      if (body.scenes.length !== 1)
+        return json({ error: 'Une seule scène peut être modifiée à la fois.' }, 400);
+      if (instruction.length < 3 || instruction.length > 800)
+        return json({ error: 'La consigne doit contenir entre 3 et 800 caractères.' }, 400);
+      if (typeof body.scenes[0].heading !== 'string' || !body.scenes[0].heading.trim())
+        throw new RequestError('Format des scènes invalide.');
+      return json({
+        ...(await editScene(body.scenes[0], instruction, config, {
+          model: generate,
+          signal: request.signal,
+        })),
+        editPromptVersion: EDIT_PROMPT_VERSION,
+        ...languageMetadata(language),
+      });
+    }
     if (path === '/api/ask') {
       if (typeof body.question !== 'string')
         throw new RequestError('La question doit contenir entre 3 et 800 caractères.');
@@ -168,7 +195,9 @@ export async function api(request, env = {}) {
       if (question.length < 3 || question.length > 800)
         return json({ error: 'La question doit contenir entre 3 et 800 caractères.' }, 400);
       return json({
-        ...(await answerQuestion(body.scenes, question, config, { model: generate })),
+        ...enforceAnswerEvidence(
+          await answerQuestion(body.scenes, question, config, { model: generate }),
+        ),
         ...languageMetadata(language),
       });
     }

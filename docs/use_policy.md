@@ -44,6 +44,20 @@ sans preuve est rejeté. Les instructions incluses dans les scénarios sont des
 données, pas des instructions pour le système. Les sorties du modèle ne sont
 jamais exécutées comme code ou HTML.
 
+L’édition envoie une seule scène au modèle après accord explicite. La proposition
+doit conserver son en-tête et rester une scène unique. Son application est une
+action humaine et crée une nouvelle copie sans analyse ; le projet original et
+ses décisions sont conservés. Les instructions présentes dans le texte restent
+des données non fiables, y compris lorsqu’elles imitent un rôle système.
+
+Les instructions système définissent la tâche. Les scènes et les noms ou alias
+déjà extraits sont transmis dans un message de données distinct. Cette séparation
+et les consignes de refus réduisent le risque de détournement sans le supprimer :
+une injection peut modifier un état ou un verdict tout en citant un passage réel.
+Le modèle ne reçoit aucune clé serveur et ne dispose d’aucun outil d’exécution.
+Le profil de réponse `grounded-output-v1` impose des citations dans le texte,
+cohérentes avec les sources annoncées, ou une abstention `NOT FOUND`.
+
 L'utilisateur confirme ou écarte les alertes et peut joindre une note. Il doit
 vérifier l'identité de l'objet, les ellipses et les intentions de mise en scène.
 Une absence de mention ne permet pas d'affirmer une disparition.
