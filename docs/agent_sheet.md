@@ -51,8 +51,9 @@ function calling or MCP.
 | `check_continuity`      | Read; consumes model quota      | `scene_ids` (1–12 unique identifiers).                                                           | `analyze()` in `src/core/pipeline.js`.                                                             |
 | `create_revision_draft` | Write; creates a separate draft | `scene_id`, `instruction` (3–800 characters).                                                    | `editScene()` in `src/core/scene-edit.js` for generation; draft storage remains to be implemented. |
 
-These are contracts for the planned adapters, not three implemented agent
-tools. The host binds every call to one selected, validated screenplay snapshot;
+`search_passages` is implemented by the Session 3 MCP server below; the other
+two tools remain contracts for planned adapters. The host binds every call to
+one selected, validated screenplay snapshot;
 custom projects currently live in browser storage and must be supplied
 explicitly. Project paths, URLs, API keys, model settings and consent are not
 model-controlled parameters.
@@ -75,3 +76,31 @@ and return no draft when the model refuses or produces invalid text. Retries
 reuse a host-managed operation identity to avoid duplicate drafts. Applying a
 draft requires approval of that exact proposal against the unchanged source
 revision; the model cannot provide its own approval.
+
+## MCP server — Session 3
+
+[server.py](../agent/server.py) exposes `search_passages` over stdio with the
+exact S2 description and parameter schema. A fixed
+[Node bridge](../agent/search_bridge.mjs) calls the existing parser and BM25;
+the search logic is not duplicated in Python. No web server, model or API key is
+needed. Launch and replay instructions are in the [README](../README.md#serveur-mcp).
+
+```text
+Session 3 notebook → MCP client → server.py → search_bridge.mjs → retrieve()
+                    ← referenced screenplay passages ←
+```
+
+The launcher chooses the controlled Valkaama adaptation by default, or the
+original with `--sample valkaama`. Only these two bundled corpora are exposed;
+browser projects and arbitrary files are not connected yet. A SHA-256 hash pins
+the source revision at startup, and subsequent calls reject a changed source.
+The bridge runs without a shell or inherited API keys, has a ten-second timeout,
+and limits JSON input to 16 KiB and output to 64 KiB. These are application
+controls; stdio still runs as a local process with the user's OS permissions.
+
+The executed [Session 3 project notebook](../agent/session3.ipynb) discovers the
+tool, checks its description and schema against S2, and retrieves the two watch
+passages in S001 and S002. It also records a valid empty search and rejected
+requests for an unknown scene and an excessive result limit. These are real
+MCP calls with zero model calls; they do not measure LLM quality. Python stdio
+tests and Node bridge tests cover these boundaries independently of the web UI.

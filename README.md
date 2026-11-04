@@ -196,6 +196,34 @@ Le dossier `.venv` et les secrets restent hors de Git. Sur la branche `agentic`,
 chaque tâche terminée est commitée avec son numéro de séance, par exemple
 `S1: Define five user requests and autonomy boundaries`.
 
+## Serveur MCP
+
+[agent/server.py](agent/server.py) expose `search_passages` en lecture seule,
+selon son [contrat S2](agent/tool_schemas.json). Il réutilise la recherche BM25
+en JavaScript. Le corpus par défaut est l’adaptation contrôlée de Valkaama ;
+`--sample valkaama` sélectionne le scénario original. Les projets du navigateur
+ne sont pas encore connectés à ce serveur.
+
+Pour essayer le serveur, ouvrir [agent/session3.ipynb](agent/session3.ipynb),
+sélectionner le noyau **Faux Raccord (Python 3.15.2)** ou l’interpréteur `.venv`,
+puis exécuter toutes les cellules. Le notebook démarre et ferme le serveur :
+aucun lancement web, aucune clé et aucun modèle ne sont nécessaires. Le résultat
+attendu est un outil découvert, deux passages de la montre en S001/S002, une
+recherche vide et deux appels refusés avec une explication.
+
+Depuis un terminal, après `uv sync --locked --group notebooks` :
+
+```sh
+uv run --locked --group notebooks jupyter-execute agent/session3.ipynb --inplace --kernel_name=python3 --timeout=45
+uv run --locked --group notebooks python -m unittest discover -s tests -p test_mcp.py -v
+```
+
+Pour un autre client MCP local, la commande serveur est
+`uv run --locked --group notebooks python agent/server.py`, lancée depuis ce
+dossier. Le transport utilise stdin/stdout : seule, cette commande attend des
+messages MCP. Le serveur n’ouvre aucun port. Les logs du notebook restent dans
+`.local/mcp-notebook.log`, hors de Git.
+
 ## Choix des modèles
 
 Les nouvelles réponses suivent la langue choisie dans l’interface. Le profil
@@ -281,6 +309,7 @@ Sources, transformations et licences : [data/README.md](data/README.md).
 
 - [Agent sheet](docs/agent_sheet.md) : cinq demandes utilisateur et choix entre workflow et agent.
 - [Contrats des trois outils](agent/tool_schemas.json) : schémas JSON, accès lecture/écriture et exemples d’arguments ; [périmètre et contrôles](docs/agent_sheet.md#tool-contracts--session-2).
+- [Notebook MCP exécuté](agent/session3.ipynb) · [Serveur Python](agent/server.py).
 - [Rapport d’évaluation](docs/evaluation_report.md) · [PDF, deux pages](docs/print/evaluation.pdf).
 - [Fiche système](docs/system_card.md) · [PDF, une page](docs/print/system-card.pdf).
 - [Politique d’utilisation](docs/use_policy.md) · [Journal de red team, 20 essais](docs/red_team_log.md).

@@ -13,8 +13,8 @@
     "eval:legacy": "node --env-file-if-exists=.env eval/run.mjs",
     "explain": "node scripts/explain-example.mjs",
     "data:fetch": "python scripts/fetch_corpus.py",
-    "format": "prettier --write src worker scripts tests eval/*.mjs index.html",
-    "format:check": "prettier --check src worker scripts tests eval/*.mjs index.html"
+    "format": "prettier --write src worker scripts tests eval/*.mjs agent/*.mjs agent/*.json index.html",
+    "format:check": "prettier --check src worker scripts tests eval/*.mjs agent/*.mjs agent/*.json index.html"
   },
   "dependencies": {
     "lucide-react": "1.66.0",
