@@ -1,0 +1,118 @@
+{
+  "version": "1.0.0",
+  "tools": [
+    {
+      "name": "search_passages",
+      "description": "Search the selected screenplay for a prop or event. Use short names or phrases to find evidence before drawing a conclusion. Returns up to five verbatim passages with scene identifiers and indicative page numbers. No matches does not prove that an explanation is absent.",
+      "access": "read",
+      "parameters": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500,
+            "pattern": "\\S",
+            "description": "Prop name, alias or event to search for in the screenplay's language; whitespace alone is invalid."
+          },
+          "scene_ids": {
+            "type": ["array", "null"],
+            "minItems": 1,
+            "maxItems": 200,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "pattern": "^S[0-9]{3}$"
+            },
+            "default": null,
+            "description": "Restrict the search to these existing scene identifiers; omit or use null to search the whole selected screenplay."
+          },
+          "top_k": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5,
+            "default": 5,
+            "description": "Maximum number of ranked passages to return."
+          }
+        },
+        "required": ["query"]
+      },
+      "example_arguments": {
+        "query": "brass pocket watch",
+        "scene_ids": ["S001", "S002"],
+        "top_k": 5
+      }
+    },
+    {
+      "name": "check_continuity",
+      "description": "Check prop continuity across one to twelve explicitly selected scenes using the extraction and comparison pipeline. Use for a requested scan or to investigate a suspect transition. Returns candidate alerts with source passages and analysis limitations; it does not confirm or dismiss alerts. This read operation consumes model quota and cannot establish consistency outside its scene selection.",
+      "access": "read",
+      "parameters": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "scene_ids": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 12,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "pattern": "^S[0-9]{3}$"
+            },
+            "description": "Existing scene identifiers to analyse; include both sides of a suspect transition and relevant intervening scenes. The host restores screenplay order."
+          }
+        },
+        "required": ["scene_ids"]
+      },
+      "example_arguments": {
+        "scene_ids": [
+          "S001",
+          "S002",
+          "S003",
+          "S004",
+          "S005",
+          "S006",
+          "S007",
+          "S008",
+          "S009",
+          "S010",
+          "S011",
+          "S012"
+        ]
+      }
+    },
+    {
+      "name": "create_revision_draft",
+      "description": "Generate and save a separate revision draft for one scene when the user requests a correction. Preserve the scene heading, language and unrelated content. Returns a draft identifier and proposed text for review, or explains why no draft was created. It never applies a correction, overwrites the screenplay or changes review decisions; applying the draft requires human approval.",
+      "access": "write",
+      "parameters": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "scene_id": {
+            "type": "string",
+            "pattern": "^S[0-9]{3}$",
+            "description": "Identifier of the single existing scene to revise."
+          },
+          "instruction": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 800,
+            "pattern": "\\S",
+            "description": "Specific continuity correction requested by the user; keep the edit minimal and unrelated content unchanged."
+          }
+        },
+        "required": ["scene_id", "instruction"]
+      },
+      "example_arguments": {
+        "scene_id": "S002",
+        "instruction": "Keep Runa's brass pocket watch broken and stopped. Change only its action description; preserve all other text."
+      }
+    }
+  ]
+}

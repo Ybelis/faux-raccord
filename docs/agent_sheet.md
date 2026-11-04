@@ -36,3 +36,42 @@ states what remains uncertain; an unsuccessful search does not establish that
 no explanation exists. A correction succeeds only if the approved change
 addresses the identified issue without altering unrelated content. Applying a
 draft requires human approval and preserves the original version.
+
+## Tool contracts — Session 2
+
+The three [tool schemas](../agent/tool_schemas.json) define names, descriptions,
+parameters and access levels, with one example call each. `parameters` contains
+the JSON Schema; `access` and `example_arguments` are repository metadata, not
+arguments sent by the model. The host can adapt these definitions to native
+function calling or MCP.
+
+| Tool                    | Access                          | Parameters                                                                                       | Existing code to reuse                                                                             |
+| ----------------------- | ------------------------------- | ------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------- |
+| `search_passages`       | Read                            | `query` (1–500 characters), optional `scene_ids` (up to 200), optional `top_k` (1–5, default 5). | `retrieve()` in `src/core/retrieval.js`.                                                           |
+| `check_continuity`      | Read; consumes model quota      | `scene_ids` (1–12 unique identifiers).                                                           | `analyze()` in `src/core/pipeline.js`.                                                             |
+| `create_revision_draft` | Write; creates a separate draft | `scene_id`, `instruction` (3–800 characters).                                                    | `editScene()` in `src/core/scene-edit.js` for generation; draft storage remains to be implemented. |
+
+These are contracts for the planned adapters, not three implemented agent
+tools. The host binds every call to one selected, validated screenplay snapshot;
+custom projects currently live in browser storage and must be supplied
+explicitly. Project paths, URLs, API keys, model settings and consent are not
+model-controlled parameters.
+
+Schema validation rejects unknown arguments, wrong types, invalid identifier
+formats and out-of-range values. Before execution, the host must also check
+that identifiers exist, trim text and recheck lengths, reject blank or
+NUL-containing input, restore screenplay order, and enforce the selected text
+and execution budgets.
+Analysis is limited to 120,000 characters in addition to the twelve-scene cap;
+search passages retain the existing 1,000-character maximum. An empty search
+is a valid result; invalid input, a missing scene, refused consent, stale
+revision or model failure must produce an actionable error rather than a
+fabricated result. Read access describes project effects, not inference cost.
+
+Model calls require consent supplied by the application. The draft adapter must
+save a separate proposal to qualify as a write operation; it must validate the
+returned single-scene structure, leave the original and review decisions intact,
+and return no draft when the model refuses or produces invalid text. Retries
+reuse a host-managed operation identity to avoid duplicate drafts. Applying a
+draft requires approval of that exact proposal against the unchanged source
+revision; the model cannot provide its own approval.
