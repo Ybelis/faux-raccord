@@ -9,3 +9,9 @@ artifacts/
 test-results/
 playwright-report/
 *.log
+
+# Python tools and local notebook execution.
+.venv/
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/

@@ -1,0 +1,21 @@
+[project]
+name = "faux-raccord-tools"
+version = "0.1.0"
+description = "Local tools and notebook environment for Faux Raccord"
+requires-python = ">=3.15,<3.16"
+dependencies = [
+    "fastmcp==4.1.6",
+]
+
+[dependency-groups]
+notebooks = [
+    "ipykernel==7.4.0",
+    "matplotlib==3.11.2",
+    "numpy==2.5.4",
+    "openai==3.45.0",
+    "pandas==3.1.0",
+]
+
+[[tool.uv.index]]
+url = "https://pypi.org/simple"
+default = true

@@ -173,6 +173,29 @@ leur présence ne garantit pas non plus la justesse de la réponse.
 `npm run explain` déroule ce parcours avec des sorties de modèle **simulées et
 annoncées**. Cette commande explique le code sans appeler ni mesurer un LLM.
 
+## Environnement Python
+
+Les outils MCP et les notebooks disposent d’un environnement séparé en
+**Python 3.15.2**. [uv](https://docs.astral.sh/uv/getting-started/installation/)
+gère l’interpréteur et les dépendances ; `.python-version`, `pyproject.toml` et
+`uv.lock` enregistrent la configuration. Depuis ce dossier :
+
+```sh
+uv sync --locked --group notebooks
+uv run --locked --group notebooks python --version
+```
+
+La seconde commande doit afficher `Python 3.15.2`. Le groupe `notebooks` fournit
+le noyau Jupyter, le client API et les bibliothèques de calcul et de graphiques.
+Dans VS Code, sélectionner l’interpréteur `.venv/Scripts/python.exe` sous Windows
+ou `.venv/bin/python` sous macOS/Linux comme noyau du notebook. Les cellules
+propres aux secrets Colab demandent une adaptation pour une exécution locale.
+L’application web se lance toujours avec les commandes Node.js ci-dessus.
+
+Le dossier `.venv` et les secrets restent hors de Git. Sur la branche `agentic`,
+chaque tâche terminée est commitée avec son numéro de séance, par exemple
+`S1: Define five user requests and autonomy boundaries`.
+
 ## Choix des modèles
 
 Les nouvelles réponses suivent la langue choisie dans l’interface. Le profil
