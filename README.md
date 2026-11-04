@@ -256,6 +256,7 @@ Sources, transformations et licences : [data/README.md](data/README.md).
 
 ## Livrables et limites
 
+- [Agent sheet](docs/agent_sheet.md) : cinq demandes utilisateur et choix entre workflow et agent.
 - [Rapport d’évaluation](docs/evaluation_report.md) · [PDF, deux pages](docs/print/evaluation.pdf).
 - [Fiche système](docs/system_card.md) · [PDF, une page](docs/print/system-card.pdf).
 - [Politique d’utilisation](docs/use_policy.md) · [Journal de red team, 20 essais](docs/red_team_log.md).
