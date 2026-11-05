@@ -104,3 +104,14 @@ passages in S001 and S002. It also records a valid empty search and rejected
 requests for an unknown scene and an excessive result limit. These are real
 MCP calls with zero model calls; they do not measure LLM quality. Python stdio
 tests and Node bridge tests cover these boundaries independently of the web UI.
+
+## Control and memory — Session 4
+
+1. Control: one bounded ReAct controller chooses its next tool from observations; R1–R3 retain fixed workflows.
+2. Working memory: the request, script revision, passages and tool results exist only for the current run, up to five minutes.
+3. Limits: code allows six controller calls, eight tool calls and sixteen model calls total, including calls inside analysis tools.
+4. Persistence: pending drafts are stored locally and expire after seven days; a new run never loads them or old traces as model memory.
+5. Trust: retrieved text remains untrusted data, missing evidence means uncertainty, and applying any correction remains a human action.
+
+The [versioned configuration](../agent/config.json) records these limits. Exact
+read calls may reuse their results within the same run and source revision.
