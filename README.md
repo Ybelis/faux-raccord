@@ -280,7 +280,7 @@ npm test
 
 ## Choix des modèles
 
-La version agentique dispose d’un contrôleur séparé décrit ci-dessous ; les
+La version agentique dispose d’un contrôleur séparé décrit plus haut ; les
 mesures historiques du détecteur ne sont pas des scores de cet agent.
 
 Les nouvelles réponses suivent la langue choisie dans l’interface. Le profil
@@ -364,7 +364,7 @@ Sources, transformations et licences : [data/README.md](data/README.md).
 
 ## Livrables et limites
 
-- [Agent sheet](docs/agent_sheet.md) : cinq demandes utilisateur et choix entre workflow et agent.
+- [Agent sheet et pitch](docs/agent_sheet.md) : cinq demandes, stratégie, mémoire, résultats d’exécution et choix d’un seul agent.
 - [Contrats des trois outils](agent/tool_schemas.json) : schémas JSON, accès lecture/écriture et exemples d’arguments ; [périmètre et contrôles](docs/agent_sheet.md#tool-contracts--session-2).
 - [Notebook MCP exécuté](agent/session3.ipynb) · [Serveur Python](agent/server.py).
 - [Rapport d’évaluation](docs/evaluation_report.md) · [PDF, deux pages](docs/print/evaluation.pdf).

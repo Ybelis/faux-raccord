@@ -3,12 +3,13 @@
 ## Purpose
 
 Faux Raccord helps screenplay writers and editors review prop continuity. The
-planned assistant investigates a specific continuity doubt, explains its
+assistant investigates a specific continuity doubt, explains its
 recommendation with source passages and prepares corrections for review.
 
-The requests below define the intended behaviour. The current application
-already provides fixed analysis and editing workflows; the investigation loop
-remains to be implemented and evaluated.
+The command-line prototype implements the five requests below using LangGraph.
+The web application retains its existing analysis and editing workflows. The
+agent's recorded executions demonstrate functionality, not general detection
+accuracy or a measured improvement in user productivity.
 
 ## Five user requests
 
@@ -45,23 +46,23 @@ the JSON Schema; `access` and `example_arguments` are repository metadata, not
 arguments sent by the model. The host can adapt these definitions to native
 function calling or MCP.
 
-| Tool                    | Access                          | Parameters                                                                                       | Existing code to reuse                                                                             |
-| ----------------------- | ------------------------------- | ------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------- |
-| `search_passages`       | Read                            | `query` (1–500 characters), optional `scene_ids` (up to 200), optional `top_k` (1–5, default 5). | `retrieve()` in `src/core/retrieval.js`.                                                           |
-| `check_continuity`      | Read; consumes model quota      | `scene_ids` (1–12 unique identifiers).                                                           | `analyze()` in `src/core/pipeline.js`.                                                             |
-| `create_revision_draft` | Write; creates a separate draft | `scene_id`, `instruction` (3–800 characters).                                                    | `editScene()` in `src/core/scene-edit.js` for generation; draft storage remains to be implemented. |
+| Tool                    | Access                          | Parameters                                                                                       | Existing code to reuse                                                                  |
+| ----------------------- | ------------------------------- | ------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------- |
+| `search_passages`       | Read                            | `query` (1–500 characters), optional `scene_ids` (up to 200), optional `top_k` (1–5, default 5). | `retrieve()` in `src/core/retrieval.js`.                                                |
+| `check_continuity`      | Read; consumes model quota      | `scene_ids` (1–12 unique identifiers).                                                           | `analyze()` in `src/core/pipeline.js`.                                                  |
+| `create_revision_draft` | Write; creates a separate draft | `scene_id`, `instruction` (3–800 characters).                                                    | `editScene()` for generation and `DraftStore` in `agent/state.py` for separate storage. |
 
-`search_passages` is implemented by the Session 3 MCP server below; the other
-two tools remain contracts for planned adapters. The host binds every call to
+`search_passages` runs through the Session 3 MCP server below. The other two
+tools run through the local action bridge introduced in Session 5. The host binds every call to
 one selected, validated screenplay snapshot;
 custom projects currently live in browser storage and must be supplied
 explicitly. Project paths, URLs, API keys, model settings and consent are not
 model-controlled parameters.
 
 Schema validation rejects unknown arguments, wrong types, invalid identifier
-formats and out-of-range values. Before execution, the host must also check
-that identifiers exist, trim text and recheck lengths, reject blank or
-NUL-containing input, restore screenplay order, and enforce the selected text
+formats and out-of-range values. Before execution, the host also checks
+that identifiers exist, trims text and rechecks lengths, rejects blank or
+NUL-containing input, restores screenplay order, and enforces the selected text
 and execution budgets.
 Analysis is limited to 120,000 characters in addition to the twelve-scene cap;
 search passages retain the existing 1,000-character maximum. An empty search
@@ -69,13 +70,12 @@ is a valid result; invalid input, a missing scene, refused consent, stale
 revision or model failure must produce an actionable error rather than a
 fabricated result. Read access describes project effects, not inference cost.
 
-Model calls require consent supplied by the application. The draft adapter must
-save a separate proposal to qualify as a write operation; it must validate the
-returned single-scene structure, leave the original and review decisions intact,
-and return no draft when the model refuses or produces invalid text. Retries
-reuse a host-managed operation identity to avoid duplicate drafts. Applying a
-draft requires approval of that exact proposal against the unchanged source
-revision; the model cannot provide its own approval.
+Model calls require consent supplied by the host. The draft adapter saves a
+separate proposal after the generation function validates its single-scene
+structure; the original and review decisions stay intact. Refused or invalid
+proposals create no draft. Repeating the same operation and validated payload
+returns the existing draft; conflicting reuse is rejected. The agent has no apply tool: applying a
+proposal is a separate human action, outside this prototype's agent loop.
 
 ## MCP server — Session 3
 
@@ -115,3 +115,106 @@ tests and Node bridge tests cover these boundaries independently of the web UI.
 
 The [versioned configuration](../agent/config.json) records these limits. Exact
 read calls may reuse their results within the same run and source revision.
+
+## Framework and execution — Session 5
+
+[runner.py](../agent/runner.py) builds an explicit LangGraph graph:
+
+```mermaid
+flowchart TD
+    A[User request] --> B[Route]
+    B -->|R1–R3| C[Fixed workflow]
+    B -->|R4–R5 or custom investigation| D[One controller]
+    D -->|Tool call| E[Validate and execute]
+    E --> F[Tool observation]
+    F --> D
+    D -->|Final response| G[Citation checks]
+    C --> H[Sources, analysis or pending draft]
+    G --> H
+    H --> I[Human review]
+```
+
+LangGraph **1.2.20** provides the state and conditional edges; our code controls
+the tools and limits. It fits the combination of fixed workflows and adaptive
+investigations without introducing additional autonomous agents.
+[Graph API reference](https://docs.langchain.com/oss/python/langgraph/graph-api).
+
+The [recorded runs](../agent/evidence/session5.json) retain eight real attempts,
+including three initial failures. The latest execution of each request is:
+
+| Request | Observed result                                                                          | Model request attempts | Duration |
+| ------- | ---------------------------------------------------------------------------------------- | ---------------------: | -------: |
+| R1      | Two source passages returned through MCP.                                                |                      0 |    3.1 s |
+| R2      | Twelve scenes analysed; five candidate alerts returned.                                  |                     10 |  192.7 s |
+| R3      | One separate watch-correction draft saved for review.                                    |                      1 |    2.5 s |
+| R4      | Two source passages cited; the controller reports uncertainty and an unexplained change. |                      2 |    4.3 s |
+| R5      | One notebook-correction draft saved; its uncited model summary is withheld.              |                      5 |   67.7 s |
+
+These are functional cases from the visible development screenplay, not an
+independent quality benchmark. Request attempts include temporary provider
+failures; unavailable token counts are marked as unmeasured. The initial runs
+exposed a rate limit and a malformed attempt to call a nonexistent `JSON`
+function. The controller now concludes in ordinary text, separately from tool
+calls, and temporary rate limits have a bounded wait and retry. R5 still exposes
+a useful limitation: the proposed edit exists, but the model's summary omitted
+citations, so the guard returned uncertainty rather than publishing that summary.
+R3 also needs human review: its proposal stops the watch mechanism but leaves
+the glass intact, despite the earlier breakage. A saved, structurally valid
+draft therefore does not establish that the continuity problem is fully fixed.
+
+## Agent design — Session 6
+
+**One agent.** A single controller investigates one screenplay and owns the
+request state. Its three tools share the same source revision. Separate agents
+would add context transfers and coordination without an identified need in
+these five cases. Extraction and judgment inside `check_continuity` remain
+fixed model calls, not independent agents.
+
+| Field             | Decision                                                                                                                                                                                  |
+| ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| User              | A screenplay writer or editor reviewing prop continuity.                                                                                                                                  |
+| Goal              | Investigate a specific continuity doubt and return source passages, an explicit uncertainty, or a pending correction draft.                                                               |
+| Model             | Groq `openai/gpt-oss-120b`, temperature 0; native tool calling and continuity generation are tested separately.                                                                           |
+| Model rationale   | Reuse the model already exercised by the detector and support native tool calls; the current evidence does not establish that it is the cheapest or best model.                           |
+| Framework         | LangGraph 1.2.20, with explicit routes, state and stopping conditions.                                                                                                                    |
+| Data              | The licensed Valkaama screenplay and its clearly labelled controlled adaptation; screenplay by Tim Baumann based on Hendrik Behnisch, CC BY-SA 3.0.                                       |
+| Read tools        | `search_passages` and `check_continuity`.                                                                                                                                                 |
+| Write tool        | `create_revision_draft`, which stores an unapplied proposal.                                                                                                                              |
+| Autonomy          | Fixed routes for R1–R3; one bounded ReAct controller for R4–R5 and custom investigations.                                                                                                 |
+| Working memory    | Current request, source revision and tool observations; discarded after the run, never shared across projects.                                                                            |
+| Persistent state  | Pending drafts expire after seven days and are deleted on access after expiry; recorded test traces are audit evidence and are never loaded as conversational memory.                     |
+| Stop rules        | Six controller requests, eight tool calls, sixteen total model requests and five minutes; errors, missing evidence and unavailable quota are explicit outcomes.                           |
+| Human control     | Consent before model processing; all drafts remain `pending_review`, with no agent tool to apply or overwrite the screenplay.                                                             |
+| Success checks    | Source references must exist in the run; analyses identify their exact scene scope; a draft must actually be saved separately against the unchanged source revision.                      |
+| Current interface | A local CLI with live execution and clearly labelled recorded replay; the React UI does not yet invoke this controller.                                                                   |
+| Limits            | Fallible extraction and interpretation, incomplete lexical search, latency and quota limits; no visual continuity analysis, browser-project integration or automatic correction approval. |
+
+### Two-minute kickoff pitch
+
+Imagine a watch breaks in one scene and works again in the next. A reader has to
+find both passages, check whether anything explains the change, and decide
+whether it needs a correction. Faux Raccord supports that review.
+
+Our first version used a fixed pipeline to extract props and compare their
+states. We now also support a targeted request: investigate this alert and,
+if needed, prepare a small correction.
+
+We use one controller with three tools: search the screenplay, check continuity
+in selected scenes, and create a revision draft. The controller chooses its
+next action from the results. Simple requests still follow fixed workflows.
+LangGraph makes those paths and stopping conditions explicit.
+
+We chose one agent because these tasks share one screenplay and one goal.
+Splitting the work would add coordination and repeated context without a
+demonstrated benefit.
+
+Safety boundaries live in the code. The agent reads a pinned source revision,
+has a shared call and time budget, and cannot overwrite the original. Drafts
+remain separate and require human review. Working memory ends with each run.
+
+We executed five real requests and kept the traces, including failures. One
+model summary lacked citations, so it was withheld while the saved draft
+remained available. Another draft left an inconsistent detail, which still
+needs human correction. That illustrates our aim: useful evidence and reviewable
+proposals, with visible limits, rather than automatic claims that a screenplay
+is now correct.
