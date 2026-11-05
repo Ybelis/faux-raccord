@@ -224,7 +224,64 @@ dossier. Le transport utilise stdin/stdout : seule, cette commande attend des
 messages MCP. Le serveur n’ouvre aucun port. Les logs du notebook restent dans
 `.local/mcp-notebook.log`, hors de Git.
 
+## Assistant de relecture avec LangGraph
+
+Le prototype en ligne de commande exécute les cinq demandes de
+l’[agent sheet](docs/agent_sheet.md). Les trois premières suivent un parcours
+fixe ; les deux autres utilisent un contrôleur qui choisit ses recherches et
+ses outils selon leurs résultats. La recherche passe par le serveur MCP S3 ;
+l’analyse et les corrections réutilisent le code JavaScript existant.
+L’interface React utilise encore le parcours GenAI initial.
+
+Pour consulter les essais enregistrés, sans appel au modèle :
+
+```sh
+uv sync --locked --group notebooks
+uv run --locked --group notebooks python -m agent.run --replay
+```
+
+Cette vue affiche le dernier essai de chaque demande. `--replay --json` montre
+toutes les tentatives, y compris les échecs, dans
+[agent/evidence/session5.json](agent/evidence/session5.json). Ce sont des preuves
+d’exécution, pas un benchmark de qualité ni une nouvelle mesure de rappel.
+
+Pour lancer une enquête réelle sur le scénario contrôlé :
+
+```sh
+uv run --locked --group notebooks python -m agent.run --request R4 --live --consent
+```
+
+`--all --live --consent` exécute les cinq demandes. `--goal "..."` permet une
+autre demande ; ajouter `--allow-draft` pour autoriser l’enregistrement d’une
+proposition. La clé reste dans `.env`. Ces commandes consomment le quota Groq ;
+une analyse de douze scènes peut prendre plusieurs minutes, notamment en raison
+des limites temporaires du fournisseur. Les tentatives de reprise comptent
+dans le budget. Une nouvelle trace n’est ajoutée au fichier de preuves que si
+`--record` est demandé explicitement.
+
+Les modifications sont des brouillons `pending_review`, conservés séparément
+dans `.local/agent/drafts`. L’agent ne les applique jamais. Pour consulter une
+proposition retournée par un outil, utiliser `--show-draft IDENTIFIANT`. Les
+brouillons expirent après sept jours ; les fichiers expirés sont supprimés
+lorsqu’on tente de les lire. Les anciennes conversations et les traces
+enregistrées ne sont pas réutilisées comme mémoire du modèle.
+
+[agent/config.json](agent/config.json) fixe le modèle, les limites et la
+rétention. Les [instructions du contrôleur](agent/prompts/controller_v1.txt)
+sont versionnées. Les appels aux modèles à l’intérieur des outils sont compris
+dans la limite globale, et les citations finales sont contrôlées contre les
+passages réellement observés. Une citation valide ne garantit pas
+l’interprétation ; un résumé refusé n’efface pas un brouillon déjà enregistré.
+
+```sh
+uv run --locked --group notebooks python -m unittest discover -s tests -p 'test_agent_*.py' -v
+npm test
+```
+
 ## Choix des modèles
+
+La version agentique dispose d’un contrôleur séparé décrit ci-dessous ; les
+mesures historiques du détecteur ne sont pas des scores de cet agent.
 
 Les nouvelles réponses suivent la langue choisie dans l’interface. Le profil
 anglais `english-output-v1` est versionné dans `worker/response-language.js` ;

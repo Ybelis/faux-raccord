@@ -1,0 +1,1449 @@
+{
+  "kind": "real task executions, not a quality benchmark",
+  "runs": [
+    {
+      "run_id": "af13eba3ab55480f9feea4d654852a98",
+      "request_id": "R3",
+      "request": "In scene S002, keep Runa’s watch broken and change as little else as possible; show me the proposed text before applying it.",
+      "mode": "workflow",
+      "framework": "LangGraph",
+      "profile": "agent-react-v1",
+      "model": "openai/gpt-oss-120b",
+      "sample": "controlled-valkaama",
+      "source_revision": "bfb319fefc35664cdebef764bc6bf48ce22eaddf4127b5d4e385e4cfd1228407",
+      "completed_at": "2026-11-05T09:42:13.754570+00:00",
+      "status": "completed",
+      "error": null,
+      "final": {
+        "answer": "A separate correction draft is ready for human review; the original is unchanged.",
+        "verdict": "draft_ready",
+        "citations": []
+      },
+      "usage": {
+        "controller_calls": 0,
+        "tool_calls": 1,
+        "model_calls": 1,
+        "input_tokens": 1189,
+        "output_tokens": 877,
+        "unmeasured_calls": 0,
+        "interrupted_actions": 0,
+        "milliseconds": 2463
+      },
+      "events": [
+        {
+          "tool": "create_revision_draft",
+          "arguments": {
+            "scene_id": "S002",
+            "instruction": "Keep Runa's brass pocket watch broken and stopped. Change only its action description; preserve all other text."
+          },
+          "result": {
+            "script": {
+              "id": "controlled-valkaama",
+              "title": "Valkaama — atelier de continuité",
+              "revision": "bfb319fefc35664cdebef764bc6bf48ce22eaddf4127b5d4e385e4cfd1228407",
+              "license": "CC BY-SA 3.0",
+              "scene_count": 56
+            },
+            "scene_id": "S002",
+            "changed": true,
+            "summary": "Changed pocket watch description to broken and stopped",
+            "usage": {
+              "inputTokens": 1189,
+              "outputTokens": 877,
+              "milliseconds": 2272,
+              "provider": "groq",
+              "model": "openai/gpt-oss-120b",
+              "promptVersion": "1.0.0",
+              "settings": {
+                "temperature": 0,
+                "maxOutputTokens": 3000,
+                "reasoningEffort": "low"
+              },
+              "outputLimit": 3000,
+              "calls": 1,
+              "unmeasuredCalls": 0
+            },
+            "editPromptVersion": "scene-edit-v1",
+            "edit_prompt_version": "scene-edit-v1",
+            "warnings": [
+              "This is a proposal only; the host must save it as a separate draft.",
+              "A structurally valid proposal can still change meaning; review it before approval."
+            ],
+            "draft_id": "draft-c0074faa9f2da7af8cc182fa35dd7d02b298c66ea56d3cc1277c1150e08238df",
+            "status": "pending_review",
+            "expires_at": "2026-11-12T09:42:13.736227+00:00",
+            "proposed_changes": "--- S002 original\n+++ S002 draft\n@@ -1,5 +1,5 @@\n 2) EXT. HALMSTAD - STREET - CAFE – DAY\n-Runa checks the same brass pocket watch: its glass is intact and its mechanism works. Nobody has repaired or replaced it.\n+Runa checks the same brass pocket watch: its glass is intact but its mechanism is broken and stopped. Nobody has repaired or replaced it.\n Lasse opens the same red notebook, intact with all its original pages. No replacement has been obtained.\n Ibsy pours water from her same yellow flask, now completely full. It has not been refilled.\n Lasse unfolds his same folded street map. He has neither recovered it nor obtained a replacement.",
+            "diff_truncated": false
+          }
+        }
+      ],
+      "evidence": [],
+      "drafts": [
+        {
+          "draft_id": "draft-c0074faa9f2da7af8cc182fa35dd7d02b298c66ea56d3cc1277c1150e08238df",
+          "sample_id": "controlled-valkaama",
+          "source_revision": "bfb319fefc35664cdebef764bc6bf48ce22eaddf4127b5d4e385e4cfd1228407",
+          "scene_id": "S002",
+          "instruction": "Keep Runa's brass pocket watch broken and stopped. Change only its action description; preserve all other text.",
+          "text": "2) EXT. HALMSTAD - STREET - CAFE – DAY\nRuna checks the same brass pocket watch: its glass is intact but its mechanism is broken and stopped. Nobody has repaired or replaced it.\nLasse opens the same red notebook, intact with all its original pages. No replacement has been obtained.\nIbsy pours water from her same yellow flask, now completely full. It has not been refilled.\nLasse unfolds his same folded street map. He has neither recovered it nor obtained a replacement.\nLasse repairs Ibsy's white toy car by firmly replacing its wheel. The repaired car rolls normally.\nRuna, Lasse, Ibsy\nRuna drinks a glass of red wine, Ibsy is busy with her cake\nand Lasse is focused on the lines he is writing on a piece\nof crinkled paper.\nRuna observes the two, lights a cigarette and apparently\nfeels good.\nShe looks at the people on the street and the smile on her\nface vanishes. Lasse stops writing.\nLASSE\nCan I send an email tonight? I\nmean, from your laptop?\nRUNA\n(confused)\nYOU have an e-mail account?\nLASSE\nOf course not... I would like to\nuse yours...\nRUNA\nO... Okay.\n\nLasse looks at his piece of paper again. He cancels out a\nword, thinks for a while and replaces it by another.\nRuna eyes him up a little suspiciously.\nRUNA\nLasse?\nLASSE\nYes, Runa?\nRUNA\nWhy don’t you want to show me your\npoems? You must have written\nhundreds of them during the past\nfew weeks, since we met each\nother.\nLASSE\nI already told you. I am writing\nfor myself.\nRUNA\nYes, but... I phoned one of my\nfriends this morning. She knows\nsomeone who could help you publish\nyour poems. You could make a\nlittle extra money...\nLASSE\n(sceptical)\nNo... I don’t want that. What I am\nwriting... I am writing for a\ndifferent purpose.\nRUNA\nWhat kind of purpose? To scrape\nthrough life as a poor poet?\nLASSE\n(at ease)\nI am not one of those people who\njust writes to become famous and\nmake big money.\nRUNA\nSo why are you writing so much?\nLASSE\nWriting and poetry are simply a\npart of me.\n\nRUNA\n...as well as travelling. I know.\nYou already mentioned that. You\nknow, you’re quite strange.\nSometimes I get the impression\nthat you are living in a different\nworld. One which is far away from\nthis planet.\nLasse’s face darkens and for a moment he looks sad.\nLASSE\nI don’t expect you to understand\nme. Not many people do...\nRUNA\nI’m sorry ... I didn’t mean for\nyou to take it personally...\nSilence. Lasse looks absently into nowhere. But after a\nwhile he smiles at her.\nLASSE\nAlright. No problem. Let’s go. The\nday is too beautiful to spend it\narguing. Every day is too\nbeautiful to spend arguing! Come\non Ibsy!\nHe gets up, takes Ibsy by her hand and slowly goes away\nwith her.\nRuna is disappointed. She puts some money on the table and\nfollows them.",
+          "summary": "Changed pocket watch description to broken and stopped",
+          "status": "pending_review",
+          "created_at": "2026-11-05T09:42:13.736227+00:00",
+          "expires_at": "2026-11-12T09:42:13.736227+00:00"
+        }
+      ]
+    },
+    {
+      "run_id": "454318efa72141a0ad05ee70d943faa2",
+      "request_id": "R1",
+      "request": "Show me both source passages behind the watch alert between scenes S001 and S002.",
+      "mode": "workflow",
+      "framework": "LangGraph",
+      "profile": "agent-react-v1",
+      "model": "openai/gpt-oss-120b",
+      "sample": "controlled-valkaama",
+      "source_revision": "bfb319fefc35664cdebef764bc6bf48ce22eaddf4127b5d4e385e4cfd1228407",
+      "completed_at": "2026-11-05T09:42:43.091828+00:00",
+      "status": "completed",
+      "error": null,
+      "final": {
+        "answer": "[S002-C1] 2) EXT. HALMSTAD - STREET - CAFE – DAY\nRuna checks the same brass pocket watch: its glass is intact and its mechanism works. Nobody has repaired or replaced it.\nLasse opens the same red notebook, intact with all its original pages. No replacement has been obtained.\nIbsy pours water from her same yellow flask, now completely full. It has not been refilled.\nLasse unfolds his same folded street map. He has neither recovered it nor obtained a replacement.\nLasse repairs Ibsy's white toy car by firmly replacing its wheel. The repaired car rolls normally.\nRuna, Lasse, Ibsy\nRuna drinks a glass of red wine, Ibsy is busy with her cake\nand Lasse is focused on the lines he is writing on a piece\nof crinkled paper.\nRuna observes the two, lights a cigarette and apparently\nfeels good.\nShe looks at the people on the street and the smile on her\nface vanishes. Lasse stops writing.\nLASSE\nCan I send an email tonight? I\nmean, from your laptop?\nRUNA\n(confused)\nYOU have an e-mail account?\nLASSE\n\n[S001-C1] 1) EXT. HALMSTAD - PARK – DAY\nRuna drops her brass pocket watch. Its glass breaks and its mechanism stops.\nLasse burns his red notebook completely. Only ashes remain.\nIbsy empties her yellow flask completely and screws its cap back on.\nA gust carries Lasse's folded street map into the river. It sinks out of reach and is lost.\nIbsy's white toy car loses a wheel and cannot roll.\nRuna, Lasse, Ibsy\nIt is a warm day in August. RUNA ESKLETH walks through the\npark. She stops for a while and looks at LASSE who plays\nwith her little sister IBSY.\nSERIES OF SHOTS\nA) Runa goes through the park.\nB) Lasse is playing with Ibsy.\nC) Runa looks dreamily around.\nLasse leaves Ibsy to take care of herself. He approaches\nRuna and puts his hand on her shoulder.\nRUNA\nHey! Don’t just sneak up behind\nme!\nLASSE\nYou were miles away. What’s on\nyour mind?\nRUNA\nNothing, Lasse, nothing...\nRuna lights a cigarette.\nRUNA\nOur little sweetie is quite tired\nalready, isn’t she?\nLasse turns around. Ibsy runs towards them.",
+        "verdict": "sources_ready",
+        "citations": [
+          "S002-C1",
+          "S001-C1"
+        ]
+      },
+      "usage": {
+        "controller_calls": 0,
+        "tool_calls": 1,
+        "model_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "unmeasured_calls": 0,
+        "interrupted_actions": 0,
+        "milliseconds": 3064
+      },
+      "events": [
+        {
+          "tool": "search_passages",
+          "arguments": {
+            "query": "brass pocket watch",
+            "scene_ids": [
+              "S001",
+              "S002"
+            ],
+            "top_k": 5
+          },
+          "result": {
+            "script": {
+              "id": "controlled-valkaama",
+              "title": "Valkaama — atelier de continuité",
+              "revision": "bfb319fefc35664cdebef764bc6bf48ce22eaddf4127b5d4e385e4cfd1228407",
+              "license": "CC BY-SA 3.0",
+              "scene_count": 56
+            },
+            "query": "brass pocket watch",
+            "scope_scene_ids": [
+              "S001",
+              "S002"
+            ],
+            "passages": [
+              {
+                "id": "S002-C1",
+                "sceneId": "S002",
+                "heading": "2) EXT. HALMSTAD - STREET - CAFE – DAY",
+                "page": 3,
+                "text": "2) EXT. HALMSTAD - STREET - CAFE – DAY\nRuna checks the same brass pocket watch: its glass is intact and its mechanism works. Nobody has repaired or replaced it.\nLasse opens the same red notebook, intact with all its original pages. No replacement has been obtained.\nIbsy pours water from her same yellow flask, now completely full. It has not been refilled.\nLasse unfolds his same folded street map. He has neither recovered it nor obtained a replacement.\nLasse repairs Ibsy's white toy car by firmly replacing its wheel. The repaired car rolls normally.\nRuna, Lasse, Ibsy\nRuna drinks a glass of red wine, Ibsy is busy with her cake\nand Lasse is focused on the lines he is writing on a piece\nof crinkled paper.\nRuna observes the two, lights a cigarette and apparently\nfeels good.\nShe looks at the people on the street and the smile on her\nface vanishes. Lasse stops writing.\nLASSE\nCan I send an email tonight? I\nmean, from your laptop?\nRUNA\n(confused)\nYOU have an e-mail account?\nLASSE",
+                "start": 0,
+                "score": 2.882
+              },
+              {
+                "id": "S001-C1",
+                "sceneId": "S001",
+                "heading": "1) EXT. HALMSTAD - PARK – DAY",
+                "page": 2,
+                "text": "1) EXT. HALMSTAD - PARK – DAY\nRuna drops her brass pocket watch. Its glass breaks and its mechanism stops.\nLasse burns his red notebook completely. Only ashes remain.\nIbsy empties her yellow flask completely and screws its cap back on.\nA gust carries Lasse's folded street map into the river. It sinks out of reach and is lost.\nIbsy's white toy car loses a wheel and cannot roll.\nRuna, Lasse, Ibsy\nIt is a warm day in August. RUNA ESKLETH walks through the\npark. She stops for a while and looks at LASSE who plays\nwith her little sister IBSY.\nSERIES OF SHOTS\nA) Runa goes through the park.\nB) Lasse is playing with Ibsy.\nC) Runa looks dreamily around.\nLasse leaves Ibsy to take care of herself. He approaches\nRuna and puts his hand on her shoulder.\nRUNA\nHey! Don’t just sneak up behind\nme!\nLASSE\nYou were miles away. What’s on\nyour mind?\nRUNA\nNothing, Lasse, nothing...\nRuna lights a cigarette.\nRUNA\nOur little sweetie is quite tired\nalready, isn’t she?\nLasse turns around. Ibsy runs towards them.",
+                "start": 0,
+                "score": 2.781
+              }
+            ],
+            "warnings": [
+              "Page numbers are indicative; BM25 scores rank lexical matches and are not confidence values.",
+              "No matching passage does not prove that an explanation is absent."
+            ],
+            "model_calls": 0
+          }
+        }
+      ],
+      "evidence": [
+        {
+          "id": "S002-C1",
+          "sceneId": "S002",
+          "heading": "2) EXT. HALMSTAD - STREET - CAFE – DAY",
+          "page": 3,
+          "text": "2) EXT. HALMSTAD - STREET - CAFE – DAY\nRuna checks the same brass pocket watch: its glass is intact and its mechanism works. Nobody has repaired or replaced it.\nLasse opens the same red notebook, intact with all its original pages. No replacement has been obtained.\nIbsy pours water from her same yellow flask, now completely full. It has not been refilled.\nLasse unfolds his same folded street map. He has neither recovered it nor obtained a replacement.\nLasse repairs Ibsy's white toy car by firmly replacing its wheel. The repaired car rolls normally.\nRuna, Lasse, Ibsy\nRuna drinks a glass of red wine, Ibsy is busy with her cake\nand Lasse is focused on the lines he is writing on a piece\nof crinkled paper.\nRuna observes the two, lights a cigarette and apparently\nfeels good.\nShe looks at the people on the street and the smile on her\nface vanishes. Lasse stops writing.\nLASSE\nCan I send an email tonight? I\nmean, from your laptop?\nRUNA\n(confused)\nYOU have an e-mail account?\nLASSE",
+          "start": 0,
+          "score": 2.882
+        },
+        {
+          "id": "S001-C1",
+          "sceneId": "S001",
+          "heading": "1) EXT. HALMSTAD - PARK – DAY",
+          "page": 2,
+          "text": "1) EXT. HALMSTAD - PARK – DAY\nRuna drops her brass pocket watch. Its glass breaks and its mechanism stops.\nLasse burns his red notebook completely. Only ashes remain.\nIbsy empties her yellow flask completely and screws its cap back on.\nA gust carries Lasse's folded street map into the river. It sinks out of reach and is lost.\nIbsy's white toy car loses a wheel and cannot roll.\nRuna, Lasse, Ibsy\nIt is a warm day in August. RUNA ESKLETH walks through the\npark. She stops for a while and looks at LASSE who plays\nwith her little sister IBSY.\nSERIES OF SHOTS\nA) Runa goes through the park.\nB) Lasse is playing with Ibsy.\nC) Runa looks dreamily around.\nLasse leaves Ibsy to take care of herself. He approaches\nRuna and puts his hand on her shoulder.\nRUNA\nHey! Don’t just sneak up behind\nme!\nLASSE\nYou were miles away. What’s on\nyour mind?\nRUNA\nNothing, Lasse, nothing...\nRuna lights a cigarette.\nRUNA\nOur little sweetie is quite tired\nalready, isn’t she?\nLasse turns around. Ibsy runs towards them.",
+          "start": 0,
+          "score": 2.781
+        }
+      ],
+      "drafts": []
+    },
+    {
+      "run_id": "a0d5c6d9e0fe4d8b8964d72b1e4b5d55",
+      "request_id": "R4",
+      "request": "I am not convinced by this watch alert: investigate whether the script explains the change before recommending that I keep or dismiss it.",
+      "mode": "agent",
+      "framework": "LangGraph",
+      "profile": "agent-react-v1",
+      "model": "openai/gpt-oss-120b",
+      "sample": "controlled-valkaama",
+      "source_revision": "bfb319fefc35664cdebef764bc6bf48ce22eaddf4127b5d4e385e4cfd1228407",
+      "completed_at": "2026-11-05T09:42:53.580698+00:00",
+      "status": "error",
+      "error": {
+        "code": "TOOL_USE_FAILED",
+        "message": "The model returned an invalid tool call."
+      },
+      "final": {
+        "answer": "The model returned an invalid tool call.",
+        "verdict": "uncertain",
+        "citations": []
+      },
+      "usage": {
+        "controller_calls": 2,
+        "tool_calls": 1,
+        "model_calls": 2,
+        "input_tokens": 894,
+        "output_tokens": 72,
+        "unmeasured_calls": 1,
+        "interrupted_actions": 0,
+        "milliseconds": 5700
+      },
+      "events": [
+        {
+          "tool": "search_passages",
+          "arguments": {
+            "query": "brass pocket watch",
+            "scene_ids": [
+              "S001",
+              "S002"
+            ],
+            "top_k": 5
+          },
+          "result": {
+            "script": {
+              "id": "controlled-valkaama",
+              "title": "Valkaama — atelier de continuité",
+              "revision": "bfb319fefc35664cdebef764bc6bf48ce22eaddf4127b5d4e385e4cfd1228407",
+              "license": "CC BY-SA 3.0",
+              "scene_count": 56
+            },
+            "query": "brass pocket watch",
+            "scope_scene_ids": [
+              "S001",
+              "S002"
+            ],
+            "passages": [
+              {
+                "id": "S002-C1",
+                "sceneId": "S002",
+                "heading": "2) EXT. HALMSTAD - STREET - CAFE – DAY",
+                "page": 3,
+                "text": "2) EXT. HALMSTAD - STREET - CAFE – DAY\nRuna checks the same brass pocket watch: its glass is intact and its mechanism works. Nobody has repaired or replaced it.\nLasse opens the same red notebook, intact with all its original pages. No replacement has been obtained.\nIbsy pours water from her same yellow flask, now completely full. It has not been refilled.\nLasse unfolds his same folded street map. He has neither recovered it nor obtained a replacement.\nLasse repairs Ibsy's white toy car by firmly replacing its wheel. The repaired car rolls normally.\nRuna, Lasse, Ibsy\nRuna drinks a glass of red wine, Ibsy is busy with her cake\nand Lasse is focused on the lines he is writing on a piece\nof crinkled paper.\nRuna observes the two, lights a cigarette and apparently\nfeels good.\nShe looks at the people on the street and the smile on her\nface vanishes. Lasse stops writing.\nLASSE\nCan I send an email tonight? I\nmean, from your laptop?\nRUNA\n(confused)\nYOU have an e-mail account?\nLASSE",
+                "start": 0,
+                "score": 2.882
+              },
+              {
+                "id": "S001-C1",
+                "sceneId": "S001",
+                "heading": "1) EXT. HALMSTAD - PARK – DAY",
+                "page": 2,
+                "text": "1) EXT. HALMSTAD - PARK – DAY\nRuna drops her brass pocket watch. Its glass breaks and its mechanism stops.\nLasse burns his red notebook completely. Only ashes remain.\nIbsy empties her yellow flask completely and screws its cap back on.\nA gust carries Lasse's folded street map into the river. It sinks out of reach and is lost.\nIbsy's white toy car loses a wheel and cannot roll.\nRuna, Lasse, Ibsy\nIt is a warm day in August. RUNA ESKLETH walks through the\npark. She stops for a while and looks at LASSE who plays\nwith her little sister IBSY.\nSERIES OF SHOTS\nA) Runa goes through the park.\nB) Lasse is playing with Ibsy.\nC) Runa looks dreamily around.\nLasse leaves Ibsy to take care of herself. He approaches\nRuna and puts his hand on her shoulder.\nRUNA\nHey! Don’t just sneak up behind\nme!\nLASSE\nYou were miles away. What’s on\nyour mind?\nRUNA\nNothing, Lasse, nothing...\nRuna lights a cigarette.\nRUNA\nOur little sweetie is quite tired\nalready, isn’t she?\nLasse turns around. Ibsy runs towards them.",
+                "start": 0,
+                "score": 2.781
+              }
+            ],
+            "warnings": [
+              "Page numbers are indicative; BM25 scores rank lexical matches and are not confidence values.",
+              "No matching passage does not prove that an explanation is absent."
+            ],
+            "model_calls": 0
+          }
+        }
+      ],
+      "evidence": [
+        {
+          "id": "S002-C1",
+          "sceneId": "S002",
+          "heading": "2) EXT. HALMSTAD - STREET - CAFE – DAY",
+          "page": 3,
+          "text": "2) EXT. HALMSTAD - STREET - CAFE – DAY\nRuna checks the same brass pocket watch: its glass is intact and its mechanism works. Nobody has repaired or replaced it.\nLasse opens the same red notebook, intact with all its original pages. No replacement has been obtained.\nIbsy pours water from her same yellow flask, now completely full. It has not been refilled.\nLasse unfolds his same folded street map. He has neither recovered it nor obtained a replacement.\nLasse repairs Ibsy's white toy car by firmly replacing its wheel. The repaired car rolls normally.\nRuna, Lasse, Ibsy\nRuna drinks a glass of red wine, Ibsy is busy with her cake\nand Lasse is focused on the lines he is writing on a piece\nof crinkled paper.\nRuna observes the two, lights a cigarette and apparently\nfeels good.\nShe looks at the people on the street and the smile on her\nface vanishes. Lasse stops writing.\nLASSE\nCan I send an email tonight? I\nmean, from your laptop?\nRUNA\n(confused)\nYOU have an e-mail account?\nLASSE",
+          "start": 0,
+          "score": 2.882
+        },
+        {
+          "id": "S001-C1",
+          "sceneId": "S001",
+          "heading": "1) EXT. HALMSTAD - PARK – DAY",
+          "page": 2,
+          "text": "1) EXT. HALMSTAD - PARK – DAY\nRuna drops her brass pocket watch. Its glass breaks and its mechanism stops.\nLasse burns his red notebook completely. Only ashes remain.\nIbsy empties her yellow flask completely and screws its cap back on.\nA gust carries Lasse's folded street map into the river. It sinks out of reach and is lost.\nIbsy's white toy car loses a wheel and cannot roll.\nRuna, Lasse, Ibsy\nIt is a warm day in August. RUNA ESKLETH walks through the\npark. She stops for a while and looks at LASSE who plays\nwith her little sister IBSY.\nSERIES OF SHOTS\nA) Runa goes through the park.\nB) Lasse is playing with Ibsy.\nC) Runa looks dreamily around.\nLasse leaves Ibsy to take care of herself. He approaches\nRuna and puts his hand on her shoulder.\nRUNA\nHey! Don’t just sneak up behind\nme!\nLASSE\nYou were miles away. What’s on\nyour mind?\nRUNA\nNothing, Lasse, nothing...\nRuna lights a cigarette.\nRUNA\nOur little sweetie is quite tired\nalready, isn’t she?\nLasse turns around. Ibsy runs towards them.",
+          "start": 0,
+          "score": 2.781
+        }
+      ],
+      "drafts": []
+    },
+    {
+      "run_id": "e90a9291abac46978f7cad05b53fcc9a",
+      "request_id": "R2",
+      "request": "Check prop continuity in scenes S001–S012 and show the source passages for each alert.",
+      "mode": "workflow",
+      "framework": "LangGraph",
+      "profile": "agent-react-v1",
+      "model": "openai/gpt-oss-120b",
+      "sample": "controlled-valkaama",
+      "source_revision": "bfb319fefc35664cdebef764bc6bf48ce22eaddf4127b5d4e385e4cfd1228407",
+      "completed_at": "2026-11-05T09:45:00.378025+00:00",
+      "status": "error",
+      "error": {
+        "code": "RATE_LIMIT",
+        "message": "Limite temporaire Groq atteinte. Patientez puis réessayez."
+      },
+      "final": {
+        "answer": "Limite temporaire Groq atteinte. Patientez puis réessayez.",
+        "verdict": "uncertain",
+        "citations": []
+      },
+      "usage": {
+        "controller_calls": 0,
+        "tool_calls": 1,
+        "model_calls": 4,
+        "input_tokens": 5067,
+        "output_tokens": 2193,
+        "unmeasured_calls": 2,
+        "interrupted_actions": 0,
+        "milliseconds": 17924
+      },
+      "events": [],
+      "evidence": [],
+      "drafts": []
+    },
+    {
+      "run_id": "17937a8b37aa4f72bf85c894a2b14c0d",
+      "request_id": "R4",
+      "request": "I am not convinced by this watch alert: investigate whether the script explains the change before recommending that I keep or dismiss it.",
+      "mode": "agent",
+      "framework": "LangGraph",
+      "profile": "agent-react-v1",
+      "model": "openai/gpt-oss-120b",
+      "framework_version": "1.2.20",
+      "config": {
+        "version": "agent-react-v1",
+        "provider": "groq",
+        "model": "openai/gpt-oss-120b",
+        "sample": "controlled-valkaama",
+        "temperature": 0,
+        "max_controller_calls": 6,
+        "max_tool_calls": 8,
+        "max_total_model_calls": 16,
+        "max_controller_output_tokens": 1400,
+        "max_run_seconds": 300,
+        "draft_retention_days": 7
+      },
+      "controller_prompt_sha256": "8cfff956d402bb49b46e2b2afb84c693f81696d9b67fd74fc54ef93858696ce0",
+      "sample": "controlled-valkaama",
+      "source_revision": "bfb319fefc35664cdebef764bc6bf48ce22eaddf4127b5d4e385e4cfd1228407",
+      "completed_at": "2026-11-05T09:47:21.473782+00:00",
+      "status": "error",
+      "error": {
+        "code": "TOOL_USE_FAILED",
+        "message": "The model returned an invalid tool call."
+      },
+      "final": {
+        "answer": "The model returned an invalid tool call.",
+        "verdict": "uncertain",
+        "citations": []
+      },
+      "usage": {
+        "controller_calls": 2,
+        "tool_calls": 1,
+        "model_calls": 2,
+        "input_tokens": 894,
+        "output_tokens": 72,
+        "unmeasured_calls": 1,
+        "interrupted_actions": 0,
+        "milliseconds": 4480
+      },
+      "events": [
+        {
+          "event": "controller_response",
+          "tool_calls": [
+            {
+              "id": "fc_37e9b697-1ab1-4058-947e-846415ac6fb6",
+              "type": "function",
+              "function": {
+                "name": "search_passages",
+                "arguments": "{\"query\":\"brass pocket watch\",\"scene_ids\":[\"S001\",\"S002\"],\"top_k\":5}"
+              }
+            }
+          ],
+          "content": "",
+          "usage": {
+            "calls": 1,
+            "inputTokens": 894,
+            "outputTokens": 72,
+            "milliseconds": 562
+          }
+        },
+        {
+          "tool": "search_passages",
+          "arguments": {
+            "query": "brass pocket watch",
+            "scene_ids": [
+              "S001",
+              "S002"
+            ],
+            "top_k": 5
+          },
+          "result": {
+            "script": {
+              "id": "controlled-valkaama",
+              "title": "Valkaama — atelier de continuité",
+              "revision": "bfb319fefc35664cdebef764bc6bf48ce22eaddf4127b5d4e385e4cfd1228407",
+              "license": "CC BY-SA 3.0",
+              "scene_count": 56
+            },
+            "query": "brass pocket watch",
+            "scope_scene_ids": [
+              "S001",
+              "S002"
+            ],
+            "passages": [
+              {
+                "id": "S002-C1",
+                "sceneId": "S002",
+                "heading": "2) EXT. HALMSTAD - STREET - CAFE – DAY",
+                "page": 3,
+                "text": "2) EXT. HALMSTAD - STREET - CAFE – DAY\nRuna checks the same brass pocket watch: its glass is intact and its mechanism works. Nobody has repaired or replaced it.\nLasse opens the same red notebook, intact with all its original pages. No replacement has been obtained.\nIbsy pours water from her same yellow flask, now completely full. It has not been refilled.\nLasse unfolds his same folded street map. He has neither recovered it nor obtained a replacement.\nLasse repairs Ibsy's white toy car by firmly replacing its wheel. The repaired car rolls normally.\nRuna, Lasse, Ibsy\nRuna drinks a glass of red wine, Ibsy is busy with her cake\nand Lasse is focused on the lines he is writing on a piece\nof crinkled paper.\nRuna observes the two, lights a cigarette and apparently\nfeels good.\nShe looks at the people on the street and the smile on her\nface vanishes. Lasse stops writing.\nLASSE\nCan I send an email tonight? I\nmean, from your laptop?\nRUNA\n(confused)\nYOU have an e-mail account?\nLASSE",
+                "start": 0,
+                "score": 2.882
+              },
+              {
+                "id": "S001-C1",
+                "sceneId": "S001",
+                "heading": "1) EXT. HALMSTAD - PARK – DAY",
+                "page": 2,
+                "text": "1) EXT. HALMSTAD - PARK – DAY\nRuna drops her brass pocket watch. Its glass breaks and its mechanism stops.\nLasse burns his red notebook completely. Only ashes remain.\nIbsy empties her yellow flask completely and screws its cap back on.\nA gust carries Lasse's folded street map into the river. It sinks out of reach and is lost.\nIbsy's white toy car loses a wheel and cannot roll.\nRuna, Lasse, Ibsy\nIt is a warm day in August. RUNA ESKLETH walks through the\npark. She stops for a while and looks at LASSE who plays\nwith her little sister IBSY.\nSERIES OF SHOTS\nA) Runa goes through the park.\nB) Lasse is playing with Ibsy.\nC) Runa looks dreamily around.\nLasse leaves Ibsy to take care of herself. He approaches\nRuna and puts his hand on her shoulder.\nRUNA\nHey! Don’t just sneak up behind\nme!\nLASSE\nYou were miles away. What’s on\nyour mind?\nRUNA\nNothing, Lasse, nothing...\nRuna lights a cigarette.\nRUNA\nOur little sweetie is quite tired\nalready, isn’t she?\nLasse turns around. Ibsy runs towards them.",
+                "start": 0,
+                "score": 2.781
+              }
+            ],
+            "warnings": [
+              "Page numbers are indicative; BM25 scores rank lexical matches and are not confidence values.",
+              "No matching passage does not prove that an explanation is absent."
+            ],
+            "model_calls": 0
+          }
+        }
+      ],
+      "evidence": [
+        {
+          "id": "S002-C1",
+          "sceneId": "S002",
+          "heading": "2) EXT. HALMSTAD - STREET - CAFE – DAY",
+          "page": 3,
+          "text": "2) EXT. HALMSTAD - STREET - CAFE – DAY\nRuna checks the same brass pocket watch: its glass is intact and its mechanism works. Nobody has repaired or replaced it.\nLasse opens the same red notebook, intact with all its original pages. No replacement has been obtained.\nIbsy pours water from her same yellow flask, now completely full. It has not been refilled.\nLasse unfolds his same folded street map. He has neither recovered it nor obtained a replacement.\nLasse repairs Ibsy's white toy car by firmly replacing its wheel. The repaired car rolls normally.\nRuna, Lasse, Ibsy\nRuna drinks a glass of red wine, Ibsy is busy with her cake\nand Lasse is focused on the lines he is writing on a piece\nof crinkled paper.\nRuna observes the two, lights a cigarette and apparently\nfeels good.\nShe looks at the people on the street and the smile on her\nface vanishes. Lasse stops writing.\nLASSE\nCan I send an email tonight? I\nmean, from your laptop?\nRUNA\n(confused)\nYOU have an e-mail account?\nLASSE",
+          "start": 0,
+          "score": 2.882
+        },
+        {
+          "id": "S001-C1",
+          "sceneId": "S001",
+          "heading": "1) EXT. HALMSTAD - PARK – DAY",
+          "page": 2,
+          "text": "1) EXT. HALMSTAD - PARK – DAY\nRuna drops her brass pocket watch. Its glass breaks and its mechanism stops.\nLasse burns his red notebook completely. Only ashes remain.\nIbsy empties her yellow flask completely and screws its cap back on.\nA gust carries Lasse's folded street map into the river. It sinks out of reach and is lost.\nIbsy's white toy car loses a wheel and cannot roll.\nRuna, Lasse, Ibsy\nIt is a warm day in August. RUNA ESKLETH walks through the\npark. She stops for a while and looks at LASSE who plays\nwith her little sister IBSY.\nSERIES OF SHOTS\nA) Runa goes through the park.\nB) Lasse is playing with Ibsy.\nC) Runa looks dreamily around.\nLasse leaves Ibsy to take care of herself. He approaches\nRuna and puts his hand on her shoulder.\nRUNA\nHey! Don’t just sneak up behind\nme!\nLASSE\nYou were miles away. What’s on\nyour mind?\nRUNA\nNothing, Lasse, nothing...\nRuna lights a cigarette.\nRUNA\nOur little sweetie is quite tired\nalready, isn’t she?\nLasse turns around. Ibsy runs towards them.",
+          "start": 0,
+          "score": 2.781
+        }
+      ],
+      "drafts": []
+    },
+    {
+      "run_id": "0fad9249c885469cab3db588d42b46d1",
+      "request_id": "R4",
+      "request": "I am not convinced by this watch alert: investigate whether the script explains the change before recommending that I keep or dismiss it.",
+      "mode": "agent",
+      "framework": "LangGraph",
+      "profile": "agent-react-v2",
+      "model": "openai/gpt-oss-120b",
+      "framework_version": "1.2.20",
+      "config": {
+        "version": "agent-react-v2",
+        "provider": "groq",
+        "model": "openai/gpt-oss-120b",
+        "sample": "controlled-valkaama",
+        "temperature": 0,
+        "max_controller_calls": 6,
+        "max_tool_calls": 8,
+        "max_total_model_calls": 16,
+        "max_controller_output_tokens": 1400,
+        "max_run_seconds": 300,
+        "draft_retention_days": 7
+      },
+      "controller_prompt_sha256": "62c47a278812b2e3a4821392adc03103b8179dd437bf85f83b80b00698ed6c2e",
+      "sample": "controlled-valkaama",
+      "source_revision": "bfb319fefc35664cdebef764bc6bf48ce22eaddf4127b5d4e385e4cfd1228407",
+      "completed_at": "2026-11-05T09:48:26.823877+00:00",
+      "status": "completed",
+      "error": null,
+      "final": {
+        "answer": "Verdict: uncertain – The brass pocket watch is broken in S001 (“Runa drops her brass pocket watch. Its glass breaks and its mechanism stops.” [S001-C1]) and is later described as intact and functional in S002 (“Runa checks the same brass pocket watch: its glass is intact and its mechanism works.” [S002-C1]). The script provides no passage explaining how or why the watch was repaired or replaced between these scenes. Consequently, the alert about the watch’s state change is not currently explained in the screenplay.",
+        "verdict": "uncertain",
+        "citations": [
+          "S001-C1",
+          "S002-C1"
+        ]
+      },
+      "usage": {
+        "controller_calls": 2,
+        "tool_calls": 1,
+        "model_calls": 2,
+        "input_tokens": 2726,
+        "output_tokens": 311,
+        "unmeasured_calls": 0,
+        "interrupted_actions": 0,
+        "milliseconds": 4344
+      },
+      "events": [
+        {
+          "event": "controller_response",
+          "tool_calls": [
+            {
+              "id": "fc_0a723327-3e0b-445b-99c9-b4c18ae7b72f",
+              "type": "function",
+              "function": {
+                "name": "search_passages",
+                "arguments": "{\"query\":\"brass pocket watch\",\"scene_ids\":[\"S001\",\"S002\"],\"top_k\":5}"
+              }
+            }
+          ],
+          "content": "",
+          "usage": {
+            "calls": 1,
+            "inputTokens": 920,
+            "outputTokens": 72,
+            "milliseconds": 638
+          }
+        },
+        {
+          "tool": "search_passages",
+          "arguments": {
+            "query": "brass pocket watch",
+            "scene_ids": [
+              "S001",
+              "S002"
+            ],
+            "top_k": 5
+          },
+          "result": {
+            "script": {
+              "id": "controlled-valkaama",
+              "title": "Valkaama — atelier de continuité",
+              "revision": "bfb319fefc35664cdebef764bc6bf48ce22eaddf4127b5d4e385e4cfd1228407",
+              "license": "CC BY-SA 3.0",
+              "scene_count": 56
+            },
+            "query": "brass pocket watch",
+            "scope_scene_ids": [
+              "S001",
+              "S002"
+            ],
+            "passages": [
+              {
+                "id": "S002-C1",
+                "sceneId": "S002",
+                "heading": "2) EXT. HALMSTAD - STREET - CAFE – DAY",
+                "page": 3,
+                "text": "2) EXT. HALMSTAD - STREET - CAFE – DAY\nRuna checks the same brass pocket watch: its glass is intact and its mechanism works. Nobody has repaired or replaced it.\nLasse opens the same red notebook, intact with all its original pages. No replacement has been obtained.\nIbsy pours water from her same yellow flask, now completely full. It has not been refilled.\nLasse unfolds his same folded street map. He has neither recovered it nor obtained a replacement.\nLasse repairs Ibsy's white toy car by firmly replacing its wheel. The repaired car rolls normally.\nRuna, Lasse, Ibsy\nRuna drinks a glass of red wine, Ibsy is busy with her cake\nand Lasse is focused on the lines he is writing on a piece\nof crinkled paper.\nRuna observes the two, lights a cigarette and apparently\nfeels good.\nShe looks at the people on the street and the smile on her\nface vanishes. Lasse stops writing.\nLASSE\nCan I send an email tonight? I\nmean, from your laptop?\nRUNA\n(confused)\nYOU have an e-mail account?\nLASSE",
+                "start": 0,
+                "score": 2.882
+              },
+              {
+                "id": "S001-C1",
+                "sceneId": "S001",
+                "heading": "1) EXT. HALMSTAD - PARK – DAY",
+                "page": 2,
+                "text": "1) EXT. HALMSTAD - PARK – DAY\nRuna drops her brass pocket watch. Its glass breaks and its mechanism stops.\nLasse burns his red notebook completely. Only ashes remain.\nIbsy empties her yellow flask completely and screws its cap back on.\nA gust carries Lasse's folded street map into the river. It sinks out of reach and is lost.\nIbsy's white toy car loses a wheel and cannot roll.\nRuna, Lasse, Ibsy\nIt is a warm day in August. RUNA ESKLETH walks through the\npark. She stops for a while and looks at LASSE who plays\nwith her little sister IBSY.\nSERIES OF SHOTS\nA) Runa goes through the park.\nB) Lasse is playing with Ibsy.\nC) Runa looks dreamily around.\nLasse leaves Ibsy to take care of herself. He approaches\nRuna and puts his hand on her shoulder.\nRUNA\nHey! Don’t just sneak up behind\nme!\nLASSE\nYou were miles away. What’s on\nyour mind?\nRUNA\nNothing, Lasse, nothing...\nRuna lights a cigarette.\nRUNA\nOur little sweetie is quite tired\nalready, isn’t she?\nLasse turns around. Ibsy runs towards them.",
+                "start": 0,
+                "score": 2.781
+              }
+            ],
+            "warnings": [
+              "Page numbers are indicative; BM25 scores rank lexical matches and are not confidence values.",
+              "No matching passage does not prove that an explanation is absent."
+            ],
+            "model_calls": 0
+          }
+        },
+        {
+          "event": "controller_response",
+          "tool_calls": [],
+          "content": "Verdict: uncertain – The brass pocket watch is broken in S001 (“Runa drops her brass pocket watch. Its glass breaks and its mechanism stops.” [S001-C1]) and is later described as intact and functional in S002 (“Runa checks the same brass pocket watch: its glass is intact and its mechanism works.” [S002-C1]). The script provides no passage explaining how or why the watch was repaired or replaced between these scenes. Consequently, the alert about the watch’s state change is not currently explained in the screenplay.",
+          "usage": {
+            "calls": 1,
+            "inputTokens": 1806,
+            "outputTokens": 239,
+            "milliseconds": 662
+          }
+        }
+      ],
+      "evidence": [
+        {
+          "id": "S002-C1",
+          "sceneId": "S002",
+          "heading": "2) EXT. HALMSTAD - STREET - CAFE – DAY",
+          "page": 3,
+          "text": "2) EXT. HALMSTAD - STREET - CAFE – DAY\nRuna checks the same brass pocket watch: its glass is intact and its mechanism works. Nobody has repaired or replaced it.\nLasse opens the same red notebook, intact with all its original pages. No replacement has been obtained.\nIbsy pours water from her same yellow flask, now completely full. It has not been refilled.\nLasse unfolds his same folded street map. He has neither recovered it nor obtained a replacement.\nLasse repairs Ibsy's white toy car by firmly replacing its wheel. The repaired car rolls normally.\nRuna, Lasse, Ibsy\nRuna drinks a glass of red wine, Ibsy is busy with her cake\nand Lasse is focused on the lines he is writing on a piece\nof crinkled paper.\nRuna observes the two, lights a cigarette and apparently\nfeels good.\nShe looks at the people on the street and the smile on her\nface vanishes. Lasse stops writing.\nLASSE\nCan I send an email tonight? I\nmean, from your laptop?\nRUNA\n(confused)\nYOU have an e-mail account?\nLASSE",
+          "start": 0,
+          "score": 2.882
+        },
+        {
+          "id": "S001-C1",
+          "sceneId": "S001",
+          "heading": "1) EXT. HALMSTAD - PARK – DAY",
+          "page": 2,
+          "text": "1) EXT. HALMSTAD - PARK – DAY\nRuna drops her brass pocket watch. Its glass breaks and its mechanism stops.\nLasse burns his red notebook completely. Only ashes remain.\nIbsy empties her yellow flask completely and screws its cap back on.\nA gust carries Lasse's folded street map into the river. It sinks out of reach and is lost.\nIbsy's white toy car loses a wheel and cannot roll.\nRuna, Lasse, Ibsy\nIt is a warm day in August. RUNA ESKLETH walks through the\npark. She stops for a while and looks at LASSE who plays\nwith her little sister IBSY.\nSERIES OF SHOTS\nA) Runa goes through the park.\nB) Lasse is playing with Ibsy.\nC) Runa looks dreamily around.\nLasse leaves Ibsy to take care of herself. He approaches\nRuna and puts his hand on her shoulder.\nRUNA\nHey! Don’t just sneak up behind\nme!\nLASSE\nYou were miles away. What’s on\nyour mind?\nRUNA\nNothing, Lasse, nothing...\nRuna lights a cigarette.\nRUNA\nOur little sweetie is quite tired\nalready, isn’t she?\nLasse turns around. Ibsy runs towards them.",
+          "start": 0,
+          "score": 2.781
+        }
+      ],
+      "drafts": []
+    },
+    {
+      "run_id": "b020808dc1604f41b30d549df83a9212",
+      "request_id": "R5",
+      "request": "Lasse’s red notebook is destroyed and later appears intact: find the least intrusive way to resolve this inconsistency and prepare a correction for me to approve.",
+      "mode": "agent",
+      "framework": "LangGraph",
+      "profile": "agent-react-v2",
+      "model": "openai/gpt-oss-120b",
+      "framework_version": "1.2.20",
+      "config": {
+        "version": "agent-react-v2",
+        "provider": "groq",
+        "model": "openai/gpt-oss-120b",
+        "sample": "controlled-valkaama",
+        "temperature": 0,
+        "max_controller_calls": 6,
+        "max_tool_calls": 8,
+        "max_total_model_calls": 16,
+        "max_controller_output_tokens": 1400,
+        "max_run_seconds": 300,
+        "draft_retention_days": 7
+      },
+      "controller_prompt_sha256": "62c47a278812b2e3a4821392adc03103b8179dd437bf85f83b80b00698ed6c2e",
+      "sample": "controlled-valkaama",
+      "source_revision": "bfb319fefc35664cdebef764bc6bf48ce22eaddf4127b5d4e385e4cfd1228407",
+      "completed_at": "2026-11-05T09:49:58.586286+00:00",
+      "status": "completed",
+      "error": null,
+      "final": {
+        "answer": "The model response could not be grounded in this run’s evidence; review the retrieved passages.",
+        "verdict": "uncertain",
+        "citations": []
+      },
+      "usage": {
+        "controller_calls": 4,
+        "tool_calls": 2,
+        "model_calls": 5,
+        "input_tokens": 8413,
+        "output_tokens": 1082,
+        "unmeasured_calls": 1,
+        "interrupted_actions": 0,
+        "milliseconds": 67719
+      },
+      "events": [
+        {
+          "event": "controller_response",
+          "tool_calls": [
+            {
+              "id": "fc_44925548-4ae1-4725-ac1d-85a19bfc0997",
+              "type": "function",
+              "function": {
+                "name": "search_passages",
+                "arguments": "{\"query\":\"red notebook\",\"top_k\":5}"
+              }
+            }
+          ],
+          "content": "",
+          "usage": {
+            "calls": 1,
+            "inputTokens": 1058,
+            "outputTokens": 49,
+            "milliseconds": 589
+          }
+        },
+        {
+          "tool": "search_passages",
+          "arguments": {
+            "query": "red notebook",
+            "top_k": 5
+          },
+          "result": {
+            "script": {
+              "id": "controlled-valkaama",
+              "title": "Valkaama — atelier de continuité",
+              "revision": "bfb319fefc35664cdebef764bc6bf48ce22eaddf4127b5d4e385e4cfd1228407",
+              "license": "CC BY-SA 3.0",
+              "scene_count": 56
+            },
+            "query": "red notebook",
+            "scope_scene_ids": null,
+            "passages": [
+              {
+                "id": "S002-C1",
+                "sceneId": "S002",
+                "heading": "2) EXT. HALMSTAD - STREET - CAFE – DAY",
+                "page": 3,
+                "text": "2) EXT. HALMSTAD - STREET - CAFE – DAY\nRuna checks the same brass pocket watch: its glass is intact and its mechanism works. Nobody has repaired or replaced it.\nLasse opens the same red notebook, intact with all its original pages. No replacement has been obtained.\nIbsy pours water from her same yellow flask, now completely full. It has not been refilled.\nLasse unfolds his same folded street map. He has neither recovered it nor obtained a replacement.\nLasse repairs Ibsy's white toy car by firmly replacing its wheel. The repaired car rolls normally.\nRuna, Lasse, Ibsy\nRuna drinks a glass of red wine, Ibsy is busy with her cake\nand Lasse is focused on the lines he is writing on a piece\nof crinkled paper.\nRuna observes the two, lights a cigarette and apparently\nfeels good.\nShe looks at the people on the street and the smile on her\nface vanishes. Lasse stops writing.\nLASSE\nCan I send an email tonight? I\nmean, from your laptop?\nRUNA\n(confused)\nYOU have an e-mail account?\nLASSE",
+                "start": 0,
+                "score": 7.327
+              },
+              {
+                "id": "S001-C1",
+                "sceneId": "S001",
+                "heading": "1) EXT. HALMSTAD - PARK – DAY",
+                "page": 2,
+                "text": "1) EXT. HALMSTAD - PARK – DAY\nRuna drops her brass pocket watch. Its glass breaks and its mechanism stops.\nLasse burns his red notebook completely. Only ashes remain.\nIbsy empties her yellow flask completely and screws its cap back on.\nA gust carries Lasse's folded street map into the river. It sinks out of reach and is lost.\nIbsy's white toy car loses a wheel and cannot roll.\nRuna, Lasse, Ibsy\nIt is a warm day in August. RUNA ESKLETH walks through the\npark. She stops for a while and looks at LASSE who plays\nwith her little sister IBSY.\nSERIES OF SHOTS\nA) Runa goes through the park.\nB) Lasse is playing with Ibsy.\nC) Runa looks dreamily around.\nLasse leaves Ibsy to take care of herself. He approaches\nRuna and puts his hand on her shoulder.\nRUNA\nHey! Don’t just sneak up behind\nme!\nLASSE\nYou were miles away. What’s on\nyour mind?\nRUNA\nNothing, Lasse, nothing...\nRuna lights a cigarette.\nRUNA\nOur little sweetie is quite tired\nalready, isn’t she?\nLasse turns around. Ibsy runs towards them.",
+                "start": 0,
+                "score": 5.929
+              },
+              {
+                "id": "S024-C1",
+                "sceneId": "S024",
+                "heading": "24) INT. GOTHENBURG - ERIK’S FLAT – NIGHT",
+                "page": 46,
+                "text": "24) INT. GOTHENBURG - ERIK’S FLAT – NIGHT\nRuna, Erik\nRuna and Erik are sitting in the living room. An empty\nbottle of red wine is standing on the table together with\ntwo glasses. They are going through Erik’s photo album.\nRuna looks at her watch.\nRUNA\n(impatiently)\nCan we do it now?\nErik smirks suggestive.\nERIK\nOf course. I’ll just get some\ntools.\n\nHe stands up and leaves the room. Runa nervously drums her\nfingers on the table.",
+                "start": 0,
+                "score": 3.725
+              },
+              {
+                "id": "S004-C1",
+                "sceneId": "S004",
+                "heading": "4) INT. GOTHENBURG - HOTEL - ROOM – NIGHT",
+                "page": 5,
+                "text": "4) INT. GOTHENBURG - HOTEL - ROOM – NIGHT\nLeila drops her silver wristwatch. The glass shatters and the hands stop.\nMagnus takes the last cigarette from his blue cigarette case; the case is completely empty.\nMagnus crushes his green medicine vial under his heel. The vial is destroyed into tiny fragments.\nLeila accidentally drops her red coin purse down the sealed ventilation shaft. It is lost and unreachable.\nLeila drinks the last water in her amber drinking bottle. It is completely empty.\nMagnus, Leila\nMAGNUS is standing with an almost empty glass of Scotch at\nthe window. Free of emotion he stares outside.\nLEILA, a prostitute in cheap lingerie is lying on the bed.\nShe smokes a cigarette.\n\nNext to her the half-empty bottle is standing on the\nbedside locker.\nNext to the bottle there is her glass of Scotch and money\nwhich Magnus apparently paid in advance.\nMagnus slowly turns around. They look at each other.\nImpatiently she puts out her cigarette.\nLEILA\nAre you ready love?",
+                "start": 0,
+                "score": 2.888
+              },
+              {
+                "id": "S005-C1",
+                "sceneId": "S005",
+                "heading": "5) INT. GOTHENBURG - HOTEL - ROOM – NIGHT",
+                "page": 10,
+                "text": "5) INT. GOTHENBURG - HOTEL - ROOM – NIGHT\nLeila checks her same silver wristwatch: the glass is intact and the hands work. Nobody has repaired or replaced it.\nMagnus opens his same blue cigarette case; it is completely full of cigarettes. Nobody has refilled it.\nMagnus sets his same green medicine vial on the table, intact and unbroken. No replacement has been obtained.\nLeila holds her same red coin purse. She has neither recovered it from the shaft nor obtained a replacement.\nLeila refills her amber drinking bottle with water from the tap. The bottle is now completely full.\nMagnus, Leila\nMagnus and Leila are lying together in bed. Magnus stares\nat the ceiling. After a while he gets up and takes the now\nalmost empty bottle.\nHe drinks a sip and goes slightly staggering to the window.\nMagnus stares outside.\nMAGNUS\n(quiet)\nAre you listening to me now?\nMagnus looks at Leila and sees her turning around on the\nbed. She sleeps.\nMAGNUS\n(against the window)\n... you are sleeping.\n(sighs)",
+                "start": 0,
+                "score": 2.819
+              }
+            ],
+            "warnings": [
+              "Page numbers are indicative; BM25 scores rank lexical matches and are not confidence values.",
+              "No matching passage does not prove that an explanation is absent."
+            ],
+            "model_calls": 0
+          }
+        },
+        {
+          "event": "controller_response",
+          "tool_calls": [
+            {
+              "id": "fc_9d69cafb-8c25-41c5-bf1a-af8ebce23731",
+              "type": "function",
+              "function": {
+                "name": "create_revision_draft",
+                "arguments": "{\"instruction\":\"Adjust S002 to explain that Lasse's red notebook is a replacement or has been restored after being burned earlier. Change the line to indicate he opens a new red notebook rather than the same one.\",\"scene_id\":\"S002\"}"
+              }
+            }
+          ],
+          "content": "",
+          "usage": {
+            "calls": 1,
+            "inputTokens": 2757,
+            "outputTokens": 116,
+            "milliseconds": 614
+          }
+        },
+        {
+          "tool": "create_revision_draft",
+          "arguments": {
+            "instruction": "Adjust S002 to explain that Lasse's red notebook is a replacement or has been restored after being burned earlier. Change the line to indicate he opens a new red notebook rather than the same one.",
+            "scene_id": "S002"
+          },
+          "result": {
+            "script": {
+              "id": "controlled-valkaama",
+              "title": "Valkaama — atelier de continuité",
+              "revision": "bfb319fefc35664cdebef764bc6bf48ce22eaddf4127b5d4e385e4cfd1228407",
+              "license": "CC BY-SA 3.0",
+              "scene_count": 56
+            },
+            "scene_id": "S002",
+            "changed": true,
+            "summary": "Changed Lasse's line to show he opens a new red notebook as a replacement after the original was burned.",
+            "usage": {
+              "inputTokens": 1207,
+              "outputTokens": 817,
+              "milliseconds": 2106,
+              "provider": "groq",
+              "model": "openai/gpt-oss-120b",
+              "promptVersion": "1.0.0",
+              "settings": {
+                "temperature": 0,
+                "maxOutputTokens": 3000,
+                "reasoningEffort": "low"
+              },
+              "outputLimit": 3000,
+              "calls": 1,
+              "unmeasuredCalls": 0
+            },
+            "editPromptVersion": "scene-edit-v1",
+            "edit_prompt_version": "scene-edit-v1",
+            "warnings": [
+              "This is a proposal only; the host must save it as a separate draft.",
+              "A structurally valid proposal can still change meaning; review it before approval."
+            ],
+            "draft_id": "draft-880bfedc3aee9ba00f555a638805f143fd4ff51d05fc84820cb12f77fccfd7d1",
+            "status": "pending_review",
+            "expires_at": "2026-11-12T09:48:57.487111+00:00",
+            "proposed_changes": "--- S002 original\n+++ S002 draft\n@@ -1,6 +1,6 @@\n 2) EXT. HALMSTAD - STREET - CAFE – DAY\n Runa checks the same brass pocket watch: its glass is intact and its mechanism works. Nobody has repaired or replaced it.\n-Lasse opens the same red notebook, intact with all its original pages. No replacement has been obtained.\n+Lasse opens a new red notebook, a replacement restored after the previous one was burned earlier, its pages fresh.\n Ibsy pours water from her same yellow flask, now completely full. It has not been refilled.\n Lasse unfolds his same folded street map. He has neither recovered it nor obtained a replacement.\n Lasse repairs Ibsy's white toy car by firmly replacing its wheel. The repaired car rolls normally.",
+            "diff_truncated": false
+          }
+        },
+        {
+          "event": "controller_error",
+          "code": "RATE_LIMIT",
+          "usage": {
+            "calls": 1,
+            "inputTokens": 0,
+            "outputTokens": 0,
+            "milliseconds": 36,
+            "unmeasuredCalls": 1
+          }
+        },
+        {
+          "event": "rate_limit_wait",
+          "seconds": 60
+        },
+        {
+          "event": "controller_response",
+          "tool_calls": [],
+          "content": "Verdict: draft_ready – The red notebook is burned in S001 and later appears intact in S002. A minimal fix is to change S002’s line to note that Lasse opens a new/replaced red notebook rather than the original, preserving continuity. The proposed revision draft is draft‑880bfedc3aee9ba00f555a638805f143fd4ff51d05fc84820cb12f77fccfd7d1.",
+          "usage": {
+            "calls": 1,
+            "inputTokens": 3391,
+            "outputTokens": 100,
+            "milliseconds": 755
+          }
+        }
+      ],
+      "evidence": [
+        {
+          "id": "S002-C1",
+          "sceneId": "S002",
+          "heading": "2) EXT. HALMSTAD - STREET - CAFE – DAY",
+          "page": 3,
+          "text": "2) EXT. HALMSTAD - STREET - CAFE – DAY\nRuna checks the same brass pocket watch: its glass is intact and its mechanism works. Nobody has repaired or replaced it.\nLasse opens the same red notebook, intact with all its original pages. No replacement has been obtained.\nIbsy pours water from her same yellow flask, now completely full. It has not been refilled.\nLasse unfolds his same folded street map. He has neither recovered it nor obtained a replacement.\nLasse repairs Ibsy's white toy car by firmly replacing its wheel. The repaired car rolls normally.\nRuna, Lasse, Ibsy\nRuna drinks a glass of red wine, Ibsy is busy with her cake\nand Lasse is focused on the lines he is writing on a piece\nof crinkled paper.\nRuna observes the two, lights a cigarette and apparently\nfeels good.\nShe looks at the people on the street and the smile on her\nface vanishes. Lasse stops writing.\nLASSE\nCan I send an email tonight? I\nmean, from your laptop?\nRUNA\n(confused)\nYOU have an e-mail account?\nLASSE",
+          "start": 0,
+          "score": 7.327
+        },
+        {
+          "id": "S001-C1",
+          "sceneId": "S001",
+          "heading": "1) EXT. HALMSTAD - PARK – DAY",
+          "page": 2,
+          "text": "1) EXT. HALMSTAD - PARK – DAY\nRuna drops her brass pocket watch. Its glass breaks and its mechanism stops.\nLasse burns his red notebook completely. Only ashes remain.\nIbsy empties her yellow flask completely and screws its cap back on.\nA gust carries Lasse's folded street map into the river. It sinks out of reach and is lost.\nIbsy's white toy car loses a wheel and cannot roll.\nRuna, Lasse, Ibsy\nIt is a warm day in August. RUNA ESKLETH walks through the\npark. She stops for a while and looks at LASSE who plays\nwith her little sister IBSY.\nSERIES OF SHOTS\nA) Runa goes through the park.\nB) Lasse is playing with Ibsy.\nC) Runa looks dreamily around.\nLasse leaves Ibsy to take care of herself. He approaches\nRuna and puts his hand on her shoulder.\nRUNA\nHey! Don’t just sneak up behind\nme!\nLASSE\nYou were miles away. What’s on\nyour mind?\nRUNA\nNothing, Lasse, nothing...\nRuna lights a cigarette.\nRUNA\nOur little sweetie is quite tired\nalready, isn’t she?\nLasse turns around. Ibsy runs towards them.",
+          "start": 0,
+          "score": 5.929
+        },
+        {
+          "id": "S024-C1",
+          "sceneId": "S024",
+          "heading": "24) INT. GOTHENBURG - ERIK’S FLAT – NIGHT",
+          "page": 46,
+          "text": "24) INT. GOTHENBURG - ERIK’S FLAT – NIGHT\nRuna, Erik\nRuna and Erik are sitting in the living room. An empty\nbottle of red wine is standing on the table together with\ntwo glasses. They are going through Erik’s photo album.\nRuna looks at her watch.\nRUNA\n(impatiently)\nCan we do it now?\nErik smirks suggestive.\nERIK\nOf course. I’ll just get some\ntools.\n\nHe stands up and leaves the room. Runa nervously drums her\nfingers on the table.",
+          "start": 0,
+          "score": 3.725
+        },
+        {
+          "id": "S004-C1",
+          "sceneId": "S004",
+          "heading": "4) INT. GOTHENBURG - HOTEL - ROOM – NIGHT",
+          "page": 5,
+          "text": "4) INT. GOTHENBURG - HOTEL - ROOM – NIGHT\nLeila drops her silver wristwatch. The glass shatters and the hands stop.\nMagnus takes the last cigarette from his blue cigarette case; the case is completely empty.\nMagnus crushes his green medicine vial under his heel. The vial is destroyed into tiny fragments.\nLeila accidentally drops her red coin purse down the sealed ventilation shaft. It is lost and unreachable.\nLeila drinks the last water in her amber drinking bottle. It is completely empty.\nMagnus, Leila\nMAGNUS is standing with an almost empty glass of Scotch at\nthe window. Free of emotion he stares outside.\nLEILA, a prostitute in cheap lingerie is lying on the bed.\nShe smokes a cigarette.\n\nNext to her the half-empty bottle is standing on the\nbedside locker.\nNext to the bottle there is her glass of Scotch and money\nwhich Magnus apparently paid in advance.\nMagnus slowly turns around. They look at each other.\nImpatiently she puts out her cigarette.\nLEILA\nAre you ready love?",
+          "start": 0,
+          "score": 2.888
+        },
+        {
+          "id": "S005-C1",
+          "sceneId": "S005",
+          "heading": "5) INT. GOTHENBURG - HOTEL - ROOM – NIGHT",
+          "page": 10,
+          "text": "5) INT. GOTHENBURG - HOTEL - ROOM – NIGHT\nLeila checks her same silver wristwatch: the glass is intact and the hands work. Nobody has repaired or replaced it.\nMagnus opens his same blue cigarette case; it is completely full of cigarettes. Nobody has refilled it.\nMagnus sets his same green medicine vial on the table, intact and unbroken. No replacement has been obtained.\nLeila holds her same red coin purse. She has neither recovered it from the shaft nor obtained a replacement.\nLeila refills her amber drinking bottle with water from the tap. The bottle is now completely full.\nMagnus, Leila\nMagnus and Leila are lying together in bed. Magnus stares\nat the ceiling. After a while he gets up and takes the now\nalmost empty bottle.\nHe drinks a sip and goes slightly staggering to the window.\nMagnus stares outside.\nMAGNUS\n(quiet)\nAre you listening to me now?\nMagnus looks at Leila and sees her turning around on the\nbed. She sleeps.\nMAGNUS\n(against the window)\n... you are sleeping.\n(sighs)",
+          "start": 0,
+          "score": 2.819
+        }
+      ],
+      "drafts": [
+        {
+          "draft_id": "draft-880bfedc3aee9ba00f555a638805f143fd4ff51d05fc84820cb12f77fccfd7d1",
+          "sample_id": "controlled-valkaama",
+          "source_revision": "bfb319fefc35664cdebef764bc6bf48ce22eaddf4127b5d4e385e4cfd1228407",
+          "scene_id": "S002",
+          "instruction": "Adjust S002 to explain that Lasse's red notebook is a replacement or has been restored after being burned earlier. Change the line to indicate he opens a new red notebook rather than the same one.",
+          "text": "2) EXT. HALMSTAD - STREET - CAFE – DAY\nRuna checks the same brass pocket watch: its glass is intact and its mechanism works. Nobody has repaired or replaced it.\nLasse opens a new red notebook, a replacement restored after the previous one was burned earlier, its pages fresh.\nIbsy pours water from her same yellow flask, now completely full. It has not been refilled.\nLasse unfolds his same folded street map. He has neither recovered it nor obtained a replacement.\nLasse repairs Ibsy's white toy car by firmly replacing its wheel. The repaired car rolls normally.\nRuna, Lasse, Ibsy\nRuna drinks a glass of red wine, Ibsy is busy with her cake\nand Lasse is focused on the lines he is writing on a piece\nof crinkled paper.\nRuna observes the two, lights a cigarette and apparently\nfeels good.\nShe looks at the people on the street and the smile on her\nface vanishes. Lasse stops writing.\nLASSE\nCan I send an email tonight? I\nmean, from your laptop?\nRUNA\n(confused)\nYOU have an e-mail account?\nLASSE\nOf course not... I would like to\nuse yours...\nRUNA\nO... Okay.\n\nLasse looks at his piece of paper again. He cancels out a\nword, thinks for a while and replaces it by another.\nRuna eyes him up a little suspiciously.\nRUNA\nLasse?\nLASSE\nYes, Runa?\nRUNA\nWhy don’t you want to show me your\npoems? You must have written\nhundreds of them during the past\nfew weeks, since we met each\nother.\nLASSE\nI already told you. I am writing\nfor myself.\nRUNA\nYes, but... I phoned one of my\nfriends this morning. She knows\nsomeone who could help you publish\nyour poems. You could make a\nlittle extra money...\nLASSE\n(sceptical)\nNo... I don’t want that. What I am\nwriting... I am writing for a\ndifferent purpose.\nRUNA\nWhat kind of purpose? To scrape\nthrough life as a poor poet?\nLASSE\n(at ease)\nI am not one of those people who\njust writes to become famous and\nmake big money.\nRUNA\nSo why are you writing so much?\nLASSE\nWriting and poetry are simply a\npart of me.\n\nRUNA\n...as well as travelling. I know.\nYou already mentioned that. You\nknow, you’re quite strange.\nSometimes I get the impression\nthat you are living in a different\nworld. One which is far away from\nthis planet.\nLasse’s face darkens and for a moment he looks sad.\nLASSE\nI don’t expect you to understand\nme. Not many people do...\nRUNA\nI’m sorry ... I didn’t mean for\nyou to take it personally...\nSilence. Lasse looks absently into nowhere. But after a\nwhile he smiles at her.\nLASSE\nAlright. No problem. Let’s go. The\nday is too beautiful to spend it\narguing. Every day is too\nbeautiful to spend arguing! Come\non Ibsy!\nHe gets up, takes Ibsy by her hand and slowly goes away\nwith her.\nRuna is disappointed. She puts some money on the table and\nfollows them.",
+          "summary": "Changed Lasse's line to show he opens a new red notebook as a replacement after the original was burned.",
+          "status": "pending_review",
+          "created_at": "2026-11-05T09:48:57.487111+00:00",
+          "expires_at": "2026-11-12T09:48:57.487111+00:00"
+        }
+      ]
+    },
+    {
+      "run_id": "1c6a9143216148a4854bb66130a307c9",
+      "request_id": "R2",
+      "request": "Check prop continuity in scenes S001–S012 and show the source passages for each alert.",
+      "mode": "workflow",
+      "framework": "LangGraph",
+      "profile": "agent-react-v2",
+      "model": "openai/gpt-oss-120b",
+      "framework_version": "1.2.20",
+      "config": {
+        "version": "agent-react-v2",
+        "provider": "groq",
+        "model": "openai/gpt-oss-120b",
+        "sample": "controlled-valkaama",
+        "temperature": 0,
+        "max_controller_calls": 6,
+        "max_tool_calls": 8,
+        "max_total_model_calls": 16,
+        "max_controller_output_tokens": 1400,
+        "max_run_seconds": 300,
+        "draft_retention_days": 7
+      },
+      "controller_prompt_sha256": "62c47a278812b2e3a4821392adc03103b8179dd437bf85f83b80b00698ed6c2e",
+      "sample": "controlled-valkaama",
+      "source_revision": "bfb319fefc35664cdebef764bc6bf48ce22eaddf4127b5d4e385e4cfd1228407",
+      "completed_at": "2026-11-05T09:54:21.451703+00:00",
+      "status": "completed",
+      "error": null,
+      "final": {
+        "answer": "Analysis returned 5 candidate alerts across 12 scenes. Review their source pairs; this is not a guarantee of complete detection.",
+        "verdict": "analysis_ready",
+        "citations": [
+          "S001-Ea617fb16c785",
+          "S002-E57f9b36b6ce3",
+          "S001-Ed27a3eb1dea0",
+          "S002-E1d37bb7b4e9b",
+          "S004-E8b83eaa5ff5c",
+          "S005-E127a27e4f368",
+          "S008-E8d57c5d9dbce",
+          "S009-E83e522c729a9",
+          "S008-Ed929e8c9eedf",
+          "S009-E0534db2bd1fb"
+        ]
+      },
+      "usage": {
+        "controller_calls": 0,
+        "tool_calls": 1,
+        "model_calls": 10,
+        "input_tokens": 18956,
+        "output_tokens": 4393,
+        "unmeasured_calls": 3,
+        "interrupted_actions": 0,
+        "milliseconds": 192667
+      },
+      "events": [
+        {
+          "tool": "check_continuity",
+          "arguments": {
+            "scene_ids": [
+              "S001",
+              "S002",
+              "S003",
+              "S004",
+              "S005",
+              "S006",
+              "S007",
+              "S008",
+              "S009",
+              "S010",
+              "S011",
+              "S012"
+            ]
+          },
+          "result": {
+            "script": {
+              "id": "controlled-valkaama",
+              "title": "Valkaama — atelier de continuité",
+              "revision": "bfb319fefc35664cdebef764bc6bf48ce22eaddf4127b5d4e385e4cfd1228407",
+              "license": "CC BY-SA 3.0",
+              "scene_count": 56
+            },
+            "analyzed_scene_ids": [
+              "S001",
+              "S002",
+              "S003",
+              "S004",
+              "S005",
+              "S006",
+              "S007",
+              "S008",
+              "S009",
+              "S010",
+              "S011",
+              "S012"
+            ],
+            "alerts": [
+              {
+                "id": "ALT001",
+                "entityId": "OBJ001",
+                "entityName": "pocket watch de Runa",
+                "category": "state",
+                "severity": "medium",
+                "verdict": "ambiguous",
+                "title": "Pocket watch state inconsistency",
+                "description": "The watch is broken in S001 and later appears intact in S002, but the text does not mention any repair, replacement, or time jump that would justify the change. This leaves the continuity unclear.",
+                "question": "Is there an off‑screen repair or replacement of Runa's pocket watch between scenes S001 and S002?",
+                "evidence": [
+                  {
+                    "sceneId": "S001",
+                    "quote": "Runa drops her brass pocket watch. Its glass breaks and its mechanism stops.",
+                    "page": 2,
+                    "state": "broken",
+                    "owner": "Runa",
+                    "action": "break",
+                    "temporal": "continuous",
+                    "id": "S001-Ea617fb16c785"
+                  },
+                  {
+                    "sceneId": "S002",
+                    "quote": "Runa checks the same brass pocket watch: its glass is intact and its mechanism works. Nobody has repaired or replaced it.",
+                    "page": 3,
+                    "state": "intact",
+                    "owner": "Runa",
+                    "action": "observe",
+                    "temporal": "continuous",
+                    "id": "S002-E57f9b36b6ce3"
+                  }
+                ],
+                "retrieved": [
+                  {
+                    "id": "S002-C1",
+                    "sceneId": "S002",
+                    "score": 3.01
+                  },
+                  {
+                    "id": "S001-C1",
+                    "sceneId": "S001",
+                    "score": 2.924
+                  },
+                  {
+                    "id": "S001-C2",
+                    "sceneId": "S001",
+                    "score": 0.138
+                  },
+                  {
+                    "id": "S002-C2",
+                    "sceneId": "S002",
+                    "score": 0.138
+                  },
+                  {
+                    "id": "S002-C3",
+                    "sceneId": "S002",
+                    "score": 0.128
+                  }
+                ],
+                "status": "pending",
+                "note": ""
+              },
+              {
+                "id": "ALT002",
+                "entityId": "OBJ002",
+                "entityName": "carnet rouge de Lasse",
+                "category": "state",
+                "severity": "medium",
+                "verdict": "ambiguous",
+                "title": "Red notebook state inconsistency",
+                "description": "Lasse's red notebook is described as completely burned to ashes in S001, yet it is later shown intact in S002 with no indication of repair, reconstruction, or magical restoration. The continuity therefore remains uncertain.",
+                "question": "Does the narrative imply that Lasse somehow restored or obtained a new red notebook between scenes S001 and S002?",
+                "evidence": [
+                  {
+                    "sceneId": "S001",
+                    "quote": "Lasse burns his red notebook completely. Only ashes remain.",
+                    "page": 2,
+                    "state": "destroyed",
+                    "owner": "Lasse",
+                    "action": "destroy",
+                    "temporal": "continuous",
+                    "id": "S001-Ed27a3eb1dea0"
+                  },
+                  {
+                    "sceneId": "S002",
+                    "quote": "Lasse opens the same red notebook, intact with all its original pages. No replacement has been obtained.",
+                    "page": 3,
+                    "state": "intact",
+                    "owner": "Lasse",
+                    "action": "observe",
+                    "temporal": "continuous",
+                    "id": "S002-E1d37bb7b4e9b"
+                  }
+                ],
+                "retrieved": [
+                  {
+                    "id": "S002-C1",
+                    "sceneId": "S002",
+                    "score": 2.763
+                  },
+                  {
+                    "id": "S001-C1",
+                    "sceneId": "S001",
+                    "score": 2.312
+                  },
+                  {
+                    "id": "S001-C2",
+                    "sceneId": "S001",
+                    "score": 0.466
+                  },
+                  {
+                    "id": "S002-C2",
+                    "sceneId": "S002",
+                    "score": 0.457
+                  },
+                  {
+                    "id": "S002-C3",
+                    "sceneId": "S002",
+                    "score": 0.432
+                  }
+                ],
+                "status": "pending",
+                "note": ""
+              },
+              {
+                "id": "ALT003",
+                "entityId": "OBJ007",
+                "entityName": "blue cigarette case de Magnus",
+                "category": "state",
+                "severity": "medium",
+                "verdict": "ambiguous",
+                "title": "Blue cigarette case state change",
+                "description": "The case is described as empty in S004 and later as full in S005, but the text provides no explicit indication of a refill, replacement, or other transition. While a refill could have occurred off‑screen, the lack of any mention makes the continuity uncertain.",
+                "question": "Is there any implied or off‑screen event (e.g., Magnus refilling the case) that explains how the blue cigarette case becomes full between scenes S004 and S005?",
+                "evidence": [
+                  {
+                    "sceneId": "S004",
+                    "quote": "Magnus takes the last cigarette from his blue cigarette case; the case is completely empty.",
+                    "page": 5,
+                    "state": "empty",
+                    "owner": "Magnus",
+                    "action": "take",
+                    "temporal": "continuous",
+                    "id": "S004-E8b83eaa5ff5c"
+                  },
+                  {
+                    "sceneId": "S005",
+                    "quote": "Magnus opens his same blue cigarette case; it is completely full of cigarettes.",
+                    "page": 10,
+                    "state": "full",
+                    "owner": "Magnus",
+                    "action": "unknown",
+                    "temporal": "continuous",
+                    "id": "S005-E127a27e4f368"
+                  }
+                ],
+                "retrieved": [
+                  {
+                    "id": "S004-C1",
+                    "sceneId": "S004",
+                    "score": 4.342
+                  },
+                  {
+                    "id": "S005-C1",
+                    "sceneId": "S005",
+                    "score": 3.319
+                  },
+                  {
+                    "id": "S004-C4",
+                    "sceneId": "S004",
+                    "score": 0.782
+                  },
+                  {
+                    "id": "S004-C2",
+                    "sceneId": "S004",
+                    "score": 0.743
+                  },
+                  {
+                    "id": "S005-C3",
+                    "sceneId": "S005",
+                    "score": 0.108
+                  }
+                ],
+                "status": "pending",
+                "note": ""
+              },
+              {
+                "id": "ALT004",
+                "entityId": "OBJ021",
+                "entityName": "copper fountain pen de Magnus",
+                "category": "state",
+                "severity": "medium",
+                "verdict": "ambiguous",
+                "title": "Copper fountain pen state change",
+                "description": "The pen’s nib is broken in S008 and later described as intact in S009, yet the narrative does not state that Magnus repaired or replaced the pen. The change could be due to an unseen repair or a different pen, but this is not clarified in the provided excerpts.",
+                "question": "Does the script indicate that Magnus repaired the copper fountain pen’s nib or obtained a new pen between scenes S008 and S009?",
+                "evidence": [
+                  {
+                    "sceneId": "S008",
+                    "quote": "Magnus drops his copper fountain pen. Its nib breaks off and it can no longer write.",
+                    "page": 16,
+                    "state": "broken",
+                    "owner": "Magnus",
+                    "action": "break",
+                    "temporal": "continuous",
+                    "id": "S008-E8d57c5d9dbce"
+                  },
+                  {
+                    "sceneId": "S009",
+                    "quote": "Magnus writes with his same copper fountain pen; its nib is intact.",
+                    "page": 17,
+                    "state": "intact",
+                    "owner": "Magnus",
+                    "action": "unknown",
+                    "temporal": "continuous",
+                    "id": "S009-E83e522c729a9"
+                  }
+                ],
+                "retrieved": [
+                  {
+                    "id": "S008-C1",
+                    "sceneId": "S008",
+                    "score": 2.134
+                  },
+                  {
+                    "id": "S009-C1",
+                    "sceneId": "S009",
+                    "score": 2.05
+                  },
+                  {
+                    "id": "S009-C2",
+                    "sceneId": "S009",
+                    "score": 0.195
+                  },
+                  {
+                    "id": "S008-C2",
+                    "sceneId": "S008",
+                    "score": 0.142
+                  }
+                ],
+                "status": "pending",
+                "note": ""
+              },
+              {
+                "id": "ALT005",
+                "entityId": "OBJ022",
+                "entityName": "steel memory key de Magnus",
+                "category": "state",
+                "severity": "high",
+                "verdict": "contradiction",
+                "title": "Steel memory key state conflict",
+                "description": "The key is described as \"destroyed\" in S008 (casing and circuit destroyed) and later as \"intact and working\" in S009 with no mention of repair, replacement, or other transition. This explicit incompatibility without explanatory context constitutes a contradiction.",
+                "question": "Is there any omitted scene or off‑screen action where Magnus repairs or replaces the steel memory key between S008 and S009?",
+                "evidence": [
+                  {
+                    "sceneId": "S008",
+                    "quote": "Magnus crushes his steel memory key with a hammer until its casing and circuit are destroyed.",
+                    "page": 16,
+                    "state": "destroyed",
+                    "owner": "Magnus",
+                    "action": "destroy",
+                    "temporal": "continuous",
+                    "id": "S008-Ed929e8c9eedf"
+                  },
+                  {
+                    "sceneId": "S009",
+                    "quote": "Magnus plugs in his same steel memory key, its casing and circuit intact and working.",
+                    "page": 17,
+                    "state": "intact",
+                    "owner": "Magnus",
+                    "action": "unknown",
+                    "temporal": "continuous",
+                    "id": "S009-E0534db2bd1fb"
+                  }
+                ],
+                "retrieved": [
+                  {
+                    "id": "S008-C1",
+                    "sceneId": "S008",
+                    "score": 2.134
+                  },
+                  {
+                    "id": "S009-C1",
+                    "sceneId": "S009",
+                    "score": 2.05
+                  },
+                  {
+                    "id": "S009-C2",
+                    "sceneId": "S009",
+                    "score": 0.195
+                  },
+                  {
+                    "id": "S008-C2",
+                    "sceneId": "S008",
+                    "score": 0.142
+                  }
+                ],
+                "status": "pending",
+                "note": ""
+              }
+            ],
+            "total_alert_count": 5,
+            "candidate_count": 5,
+            "rejected_evidence": 0,
+            "usage": {
+              "calls": 10,
+              "inputTokens": 18956,
+              "outputTokens": 4393,
+              "milliseconds": 12471,
+              "unmeasuredCalls": 3,
+              "logicalCalls": 5,
+              "physicalCalls": 10
+            },
+            "model": "openai/gpt-oss-120b",
+            "provider": "groq",
+            "prompt_version": "1.0.0",
+            "responseLanguage": "en",
+            "languageProfile": "english-output-v1",
+            "warnings": [
+              "A temporary rate limit required a 60000 ms wait and one retry; both attempts count toward the model-call budget.",
+              "A temporary rate limit required a 60000 ms wait and one retry; both attempts count toward the model-call budget.",
+              "A temporary rate limit required a 60000 ms wait and one retry; both attempts count toward the model-call budget.",
+              "Alerts are review candidates, not confirmed errors; only the selected scenes were checked."
+            ]
+          }
+        }
+      ],
+      "evidence": [
+        {
+          "sceneId": "S001",
+          "quote": "Runa drops her brass pocket watch. Its glass breaks and its mechanism stops.",
+          "page": 2,
+          "state": "broken",
+          "owner": "Runa",
+          "action": "break",
+          "temporal": "continuous",
+          "id": "S001-Ea617fb16c785"
+        },
+        {
+          "sceneId": "S002",
+          "quote": "Runa checks the same brass pocket watch: its glass is intact and its mechanism works. Nobody has repaired or replaced it.",
+          "page": 3,
+          "state": "intact",
+          "owner": "Runa",
+          "action": "observe",
+          "temporal": "continuous",
+          "id": "S002-E57f9b36b6ce3"
+        },
+        {
+          "sceneId": "S001",
+          "quote": "Lasse burns his red notebook completely. Only ashes remain.",
+          "page": 2,
+          "state": "destroyed",
+          "owner": "Lasse",
+          "action": "destroy",
+          "temporal": "continuous",
+          "id": "S001-Ed27a3eb1dea0"
+        },
+        {
+          "sceneId": "S002",
+          "quote": "Lasse opens the same red notebook, intact with all its original pages. No replacement has been obtained.",
+          "page": 3,
+          "state": "intact",
+          "owner": "Lasse",
+          "action": "observe",
+          "temporal": "continuous",
+          "id": "S002-E1d37bb7b4e9b"
+        },
+        {
+          "sceneId": "S004",
+          "quote": "Magnus takes the last cigarette from his blue cigarette case; the case is completely empty.",
+          "page": 5,
+          "state": "empty",
+          "owner": "Magnus",
+          "action": "take",
+          "temporal": "continuous",
+          "id": "S004-E8b83eaa5ff5c"
+        },
+        {
+          "sceneId": "S005",
+          "quote": "Magnus opens his same blue cigarette case; it is completely full of cigarettes.",
+          "page": 10,
+          "state": "full",
+          "owner": "Magnus",
+          "action": "unknown",
+          "temporal": "continuous",
+          "id": "S005-E127a27e4f368"
+        },
+        {
+          "sceneId": "S008",
+          "quote": "Magnus drops his copper fountain pen. Its nib breaks off and it can no longer write.",
+          "page": 16,
+          "state": "broken",
+          "owner": "Magnus",
+          "action": "break",
+          "temporal": "continuous",
+          "id": "S008-E8d57c5d9dbce"
+        },
+        {
+          "sceneId": "S009",
+          "quote": "Magnus writes with his same copper fountain pen; its nib is intact.",
+          "page": 17,
+          "state": "intact",
+          "owner": "Magnus",
+          "action": "unknown",
+          "temporal": "continuous",
+          "id": "S009-E83e522c729a9"
+        },
+        {
+          "sceneId": "S008",
+          "quote": "Magnus crushes his steel memory key with a hammer until its casing and circuit are destroyed.",
+          "page": 16,
+          "state": "destroyed",
+          "owner": "Magnus",
+          "action": "destroy",
+          "temporal": "continuous",
+          "id": "S008-Ed929e8c9eedf"
+        },
+        {
+          "sceneId": "S009",
+          "quote": "Magnus plugs in his same steel memory key, its casing and circuit intact and working.",
+          "page": 17,
+          "state": "intact",
+          "owner": "Magnus",
+          "action": "unknown",
+          "temporal": "continuous",
+          "id": "S009-E0534db2bd1fb"
+        }
+      ],
+      "drafts": []
+    }
+  ]
+}

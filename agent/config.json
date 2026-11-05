@@ -1,5 +1,5 @@
 {
-  "version": "agent-react-v1",
+  "version": "agent-react-v2",
   "provider": "groq",
   "model": "openai/gpt-oss-120b",
   "sample": "controlled-valkaama",
